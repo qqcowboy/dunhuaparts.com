@@ -1,0 +1,367 @@
+2016-03-12 20:17:35	URL:/Home/Login	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50b6c4)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:23 (0x466d8b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x4263e5)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413758)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:114 (0x462e95)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4d776a)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d5237)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x428501)
+	goexit: 
+
+2016-03-12 20:21:55	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:22:38	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:23:16	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:23:52	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:26:41	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:27:42	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:29:51	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:30:37	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:31:55	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:32:23	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:32:38	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:33:12	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:33:43	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:34:12	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:35:28	静态文件配置错误,文件index.htm不存在
+2016-03-12 20:35:32	URL:/Home/Login	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50b434)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:23 (0x466afb)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x426155)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x4134c8)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:114 (0x462c05)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4d74da)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d4fa7)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x428271)
+	goexit: 
+
+2016-03-12 20:36:36	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:07:37	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:08:00	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:14:14	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:16:58	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:16:59	URL:/	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50b434)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:23 (0x466afb)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x426155)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x4134c8)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:114 (0x462c05)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4d74da)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d4fa7)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x428271)
+	goexit: 
+
+2016-03-12 21:16:59	HttpHandler.Show505,页面展示时出错:View不存在
+2016-03-12 21:16:59	HttpHandler.Show404,页面展示时出错:View不存在
+2016-03-12 21:19:39	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:20:49	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:22:29	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:26:08	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:28:39	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:28:56	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:29:24	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:30:15	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:30:36	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:33:34	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:53:17	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:57:08	静态文件配置错误,文件index.htm不存在
+2016-03-12 21:57:09	In RouteCollection.GetRouteData:	runtime error: index out of range
+2016-03-12 22:00:31	静态文件配置错误,文件index.htm不存在
+2016-03-12 22:02:56	In HttpHandler.ProcessStatic:	runtime error: slice bounds out of range
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50bb74)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:246 (0x4675fd)
+	func.009: App.Log.AddErrMsg("In HttpHandler.ProcessStatic:\t" + err.Error())
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/usr/local/go/src/runtime/panic.go:18 (0x4121ee)
+	panicslice: panic(sliceError)
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:267 (0x464683)
+	(*HttpHandler).ProcessStatic: strFileName := v + requestPath[len(v):]
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:40 (0x462684)
+	(*HttpHandler).ServeHTTP: if this.ProcessStatic(requestPath, rw, r) {
+/usr/local/go/src/net/http/server.go:1703 (0x4d7a5a)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d5527)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:03:43	静态文件配置错误,文件index.htm不存在
+2016-03-12 22:03:45	In HttpHandler.ProcessStatic:	runtime error: slice bounds out of range
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50bc64)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:246 (0x4676ed)
+	func.009: App.Log.AddErrMsg("In HttpHandler.ProcessStatic:\t" + err.Error())
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/usr/local/go/src/runtime/panic.go:18 (0x4121ee)
+	panicslice: panic(sliceError)
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:267 (0x464776)
+	(*HttpHandler).ProcessStatic: strFileName := v + requestPath[len(v):]
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:40 (0x462684)
+	(*HttpHandler).ServeHTTP: if this.ProcessStatic(requestPath, rw, r) {
+/usr/local/go/src/net/http/server.go:1703 (0x4d7b4a)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d5617)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:05:00	静态文件配置错误,文件index.htm不存在
+2016-03-12 22:05:01	In HttpHandler.ProcessStatic:	runtime error: slice bounds out of range
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50bc64)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:246 (0x4676ed)
+	func.009: App.Log.AddErrMsg("In HttpHandler.ProcessStatic:\t" + err.Error())
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/usr/local/go/src/runtime/panic.go:18 (0x4121ee)
+	panicslice: panic(sliceError)
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:267 (0x464776)
+	(*HttpHandler).ProcessStatic: strFileName := v + requestPath[len(v):]
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:40 (0x462684)
+	(*HttpHandler).ServeHTTP: if this.ProcessStatic(requestPath, rw, r) {
+/usr/local/go/src/net/http/server.go:1703 (0x4d7b4a)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d5617)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:05:02	In HttpHandler.ProcessStatic:	runtime error: slice bounds out of range
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50bc64)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:246 (0x4676ed)
+	func.009: App.Log.AddErrMsg("In HttpHandler.ProcessStatic:\t" + err.Error())
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/usr/local/go/src/runtime/panic.go:18 (0x4121ee)
+	panicslice: panic(sliceError)
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:267 (0x464776)
+	(*HttpHandler).ProcessStatic: strFileName := v + requestPath[len(v):]
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:40 (0x462684)
+	(*HttpHandler).ServeHTTP: if this.ProcessStatic(requestPath, rw, r) {
+/usr/local/go/src/net/http/server.go:1703 (0x4d7b4a)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d5617)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:07:56	静态文件配置错误,文件index.htm不存在
+2016-03-12 22:13:34	In HttpHandler.ProcessStatic:	runtime error: invalid memory address or nil pointer dereference
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50be14)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:247 (0x46789d)
+	func.009: App.Log.AddErrMsg("In HttpHandler.ProcessStatic:\t" + err.Error())
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/usr/local/go/src/runtime/panic.go:42 (0x41232e)
+	panicmem: panic(memoryError)
+/usr/local/go/src/runtime/sigpanic_unix.go:26 (0x418794)
+	sigpanic: panicmem()
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:271 (0x464686)
+	(*HttpHandler).ProcessStatic: fmt.Println(m.IsDir())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:41 (0x462684)
+	(*HttpHandler).ServeHTTP: if this.ProcessStatic(requestPath, rw, r) {
+/usr/local/go/src/net/http/server.go:1703 (0x4d7cfa)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d57c7)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:29:57	URL:/home/a	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50bc14)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:24 (0x46711b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:117 (0x463198)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4d7afa)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d55c7)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:30:25	URL:/home/a	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50bc14)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:24 (0x46711b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:117 (0x463198)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4d7afa)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d55c7)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:31:39	URL:/home/a	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50be54)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:24 (0x46735b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:117 (0x4633d8)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4d7d3a)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d5807)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:32:11	URL:/home/a	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50c014)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:24 (0x46751b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:117 (0x463598)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4d7efa)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d59c7)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:33:57	URL:/home/a	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50c204)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:24 (0x46770b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:117 (0x463788)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4d80ea)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d5bb7)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:34:21	URL:/home/A	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50c204)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:24 (0x46770b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:117 (0x463788)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4d80ea)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d5bb7)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:34:27	URL:/home/a	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50c204)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:24 (0x46770b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:117 (0x463788)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4d80ea)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d5bb7)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:43:16	URL:/home/a/s1	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50c274)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:24 (0x46770b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:117 (0x463788)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4d80ea)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d5bb7)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-03-12 22:43:19	URL:/home/a/s	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x50c274)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:24 (0x46770b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:117 (0x463788)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4d80ea)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4d5bb7)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+

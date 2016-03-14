@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>dunhuaparts</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="content-type" charset="utf-8" />
+	<meta name="viewport" content="width=device-width">
+	<link rel="stylesheet" type="text/css" href="/static/lib/jquery-ui/jquery-ui.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/dunhuaparts.css">
+</head>
+<body>
+	<!-- top -->
+	<div class="index-top">
+		<div class="index-top-div">
+			<div class="index-top-menu">
+				<a href="http://en.dunhuaparts.cn" title="language" class="index-top-link">English</a>
+			</div>
+			<div class="index-top-company">
+				<span>Dunhua Office Equipment Co.,Ltd</span>
+			</div>
+		</div>
+	</div>
+	<!-- menu -->
+	<div class="index-menu">
+		<!-- logo -->
+		<div class="index-menu-logo">
+			<img alt="dunhuaparts.cn" title="dunhuaparts.cn" src="/static/img/logo.gif" />
+		</div>
+		<div class="btn current">Home</div>
+		<div class="btn">Products</div>
+		<div class="btn">News</div>
+		<div class="btn">Feedback</div>
+		<div class="btn right">About</div>
+	</div>
+	<!-- content -->
+	<div id="index-main-content">
+
+	</div>
+<script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js" type="text/javascript"></script>	
+<script src="/static/lib/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>	
+<script src="/static/lib/cowboy.js" type="text/javascript"></script>	
+<script type="text/javascript">
+	
+	$(function(){
+		var ctrl_content = $('#index-main-content');
+		$.ajax({url:'/home/main/index',type:'html'}).done(function(data){
+			ctrl_content.html(data);
+		});
+	});
+</script>	
+</body>
+</html>
