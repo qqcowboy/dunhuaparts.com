@@ -34,7 +34,7 @@
 		<div class="btn right">About</div>
 	</div>
 	<!-- content -->
-	<div id="index-main-content">
+	<div id="index-main-content" class="index-main-content">
 
 	</div>
 	<!-- foot -->
@@ -56,7 +56,7 @@
 	
 	$(function(){
 		var ctrl_content = $('#index-main-content');
-		$.ajax({url:'/home/main/index',type:'html'}).done(function(data){
+		$.ajax({url:'/home/about/about',type:'html'}).done(function(data){
 			ctrl_content.html(data);
 		});
 	});
