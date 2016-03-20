@@ -123,13 +123,14 @@ body{
 .home-main-index-content .about-news{
 	width:910px;
 	height: 200px;
+	margin-top: 20px;
 }
 .home-main-index-content .about{
 	float: left;
 	width:545px;
 	height: 200px;
-	border-radius: 15px 50px;
-	background: #008cd6;
+	border-radius: 20px 20px;
+	background: rgba(0, 140, 214, 0.43);
 }
 .home-main-index-content .news{
 	float: left;
@@ -209,7 +210,7 @@ body{
 }
 .home-main-index-content .about .tag{
 	margin-left:5px;
-	background-color: #2daebf;
+	background-color: #5EBF2D;
 	width: 75px;
 	height: 21px;
 	text-align:center;
@@ -257,7 +258,37 @@ body{
 .home-main-index-content .products .products-products .slides>div>img{
 	position: static !important;
 }
+.home-main-index-content .products .products-products .slides>div>img:hover{
+	opacity:0.85;
+}
 
 .products-category{
 
+}
+.products-category>div{
+	float: left;
+	border-radius: 4px 4px;
+	background-color: rgba(0, 140, 214, 0.39);
+	width: 40%;
+	height: 40px;
+	margin-left: 51px;
+	margin-top: 15px;
+	cursor: pointer;
+	text-align: center;
+	-webkit-box-shadow: 0 0 10px rgba(0, 204, 204, .5);
+	-moz-box-shadow: 0 0 10px rgba(0, 204, 204, .5);
+	box-shadow: 0 0 10px rgba(0, 204, 204, .5);
+}
+.products-category>div:hover{
+	background-color:#AACDFD;
+	color:#fff;
+}
+.products-category>div>span{
+	font-family: sans-serif;
+	font-weight: bold;
+	font-size: 25px;
+	line-height: 40px;
+}
+.products-hot{
+	
 }
