@@ -7,18 +7,17 @@ body{
 .index-top {
 	width: 100%;
 	height: 50px;
-	background: #008cd6;
+	background: rgb(104, 133, 158);
 }
 .index-foot{
 	width:100%;
 	height: 150px;
 	text-align:center;
-	margin-top: 20px;
+	margin-top: 60px;
 }
 .index-top-div {
 	width: 910px;
 	height: 50px;
-	background: #008cd6;
 	margin: 0 auto;
 }
 .index-top-company{
@@ -79,20 +78,20 @@ body{
 	border-right: 1px solid #f2f2f2;
 }
 .index-menu .btn:hover{
-	background: #229Ce7;
-	border-color: #229Ce7;
+	background: rgba(104, 133, 158, 0.79);
+	border-color: rgba(104, 133, 158, 0.79);
 	color:#fff;
 
-	-moz-transform: rotate(8deg);
-	-webkit-transform: rotate(8deg);
-	-o-transform: rotate(8deg);
-	transform: rotate(8deg);
+	-moz-transform: rotate(3deg);
+	-webkit-transform: rotate(3deg);
+	-o-transform: rotate(3deg);
+	transform: rotate(3deg);
 
 
 }
 .index-menu .current{
-	background: #008cd6;
-	border-color: #008cd6;
+	background: rgb(104, 133, 158);
+	border-color: rgba(104, 133, 158, 0.58);
 	color:#fff;
 }
 .index-menu-logo{
@@ -314,4 +313,43 @@ body{
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
+}
+
+.about-title {
+	color: #f9b014;
+	display: block;
+	font-size: 1.5em;
+	-webkit-margin-before: 0.83em;
+	-webkit-margin-after: 0.83em;
+	-webkit-margin-start: 0px;
+	-webkit-margin-end: 0px;
+	font-weight: bold;
+}
+.about-content{
+	font-family: -webkit-pictograph;
+	font-size: 18px;
+}
+.about-contact{
+	border: 1px solid #dedede;
+	border-radius: 3px;
+	padding: 40px;
+	background-color: #f5f5f5;
+}
+.about-contact-name{
+	float: left;
+	width: 96px;
+	height: 20px;
+	display: block;
+	font-size: 17px;
+	font-family: -webkit-pictograph;
+}
+.about-contact-value{
+	height: 32px;
+	display: block;
+	font-size: 17px;
+	font-family: -webkit-pictograph;
+}
+.about-contact-value>a{
+	color: #054E84;
+	text-decoration:none;
 }
