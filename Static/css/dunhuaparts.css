@@ -353,3 +353,68 @@ body{
 	color: #054E84;
 	text-decoration:none;
 }
+.products-div{
+	border: 1px solid rgba(119, 140, 158, 0.17);
+	width: 910px;
+	height: 600px;
+}
+.products-left{
+	float: left;
+	width: 300px;
+	height: 600px;
+	border-right: 1px solid rgba(104, 133, 158, 0.18);
+}
+.products-tree{
+
+}
+.products-tree .item{
+	position: relative;
+	height: 30px;
+	line-height: 30px;
+	display: block;
+	text-decoration: none;
+	font-size: 15px;
+	color: #555;
+	cursor: pointer;
+}
+.products-tree .item>span{
+	margin-left: 50px;
+}
+.products-tree .item:hover{
+	background-color: #00A3D1;
+}
+.products-tree .child{
+
+}
+.products-right{
+	float: left;
+	width: 600px;
+	height: 600px;
+}
+.products-current-category {
+	margin: 15px auto 15px 15px;
+}
+.products-current-list .item{
+	float: left;
+	width: 180px;
+	height: 180px;
+	margin-left: 15px;
+	text-align: center;
+	border:1px solid #fff;
+	cursor:pointer;
+}
+.products-current-list .item:hover{
+	border:1px solid #00A3D1;
+}
+.products-current-list .item>span{
+	width: 180px;
+	height: 15px;
+    font-size: 10px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.products-current-list .item>img{
+	width: 150px;
+	height: 150px;
+}
