@@ -1,23 +1,22 @@
-<div class="products-div">
+<div class="products-div" id="home-products-products">
 	<!-- left -->
 	<div class="products-left">
-		<div class="products-tree">
-			<a class="item"><span>c1</span></a>
-			<a class="item"><span>c2</span></a>
-			<a class="item"><span>c3</span></a>
-			<div class="child">
-				<a class="item"><span>c31</span></a>
-				<a class="item"><span>c32</span></a>
-				<a class="item"><span>c33</span></a>
-			</div>
-			<a class="item"><span>c4</span></a>
-			<a class="item"><span>c5</span></a>
+		<div class="products-title">
+			<span>Categories</span>
+		</div>
+		<div data-bind="foreach:ListCategories" class="products-tree">
+			<a class="item">
+				<span data-bind="text:'&gt;&nbsp;'+$data.ItemName"></span>
+			</a>
 		</div>
 	</div>
 	<!-- right -->
 	<div class="products-right">
+		<div class="products-title aleft">
+			<span>Products</span>
+			<span>all</span>
+		</div>
 		<!-- current category -->
-		<div class="products-current-category">all</div>
 		<div class="products-current-list">
 			<div class="item">
 				<span>Back Cover1</span>
@@ -53,4 +52,28 @@
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript">
+		
+		var ctrl = $('#home-products-products');
+		function Products_Products_V1(){
+			this.ListCategories = ko.observableArray([
+				{ID:1,ItemName:"HP 1000 Printer Series"},
+				{ID:2,ItemName:"HP 1320 Printer Series"},
+				{ID:3,ItemName:"HP 2420 Printer Series"},
+				{ID:4,ItemName:"HP 3005 Printer Series"},
+				{ID:5,ItemName:"HP 4250 Printer Series"},
+				{ID:6,ItemName:"Samsung Printer Series"},
+				{ID:7,ItemName:"Other HP Printer Parts"}
+			]);
+			this.Init = function(){
+
+			};
+			this.Bindings=function(ctrl){
+				ko.applyBindings(this,ctrl);
+				this.Init();
+			};
+		};
+		var products_Products_V1 = new Products_Products_V1();
+		products_Products_V1.Bindings(ctrl[0]);
+	</script>
 </div>

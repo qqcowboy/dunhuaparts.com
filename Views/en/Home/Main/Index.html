@@ -51,24 +51,9 @@
 					</div>
 				</div>
 			</div>
-			<div id="tabs-Categories" class="products-category">
+			<div data-bind="foreach:ListCategories" id="tabs-Categories" class="products-category">
 				<div>
-					<span>HP 1000 Printer Series</span>
-				</div>
-				<div>
-					<span>HP 1320 Printer Series</span>
-				</div>
-				<div>
-					<span>HP 2420 Printer Series</span>
-				</div>
-				<div>
-					<span>HP 3005 Printer Series</span>
-				</div>
-				<div>
-					<span>HP 4250 Printer Series</span>
-				</div>
-				<div>
-					<span>Samsung Printer Series</span>
+					<span data-bind="text:$data.ItemName">HP 1000 Printer Series</span>
 				</div>
 			</div>
 			<div id="tabs-HOT" class="products-hot">
@@ -103,7 +88,7 @@
 			<div class="news">
 				<a class="tag">News</a>
 				<div class="list">
-					<div class="item">
+					<div class="item" data-bind="click:$root.EventNewsDetail">
 						<img src="/static/img/Fuser Assembly.jpg" />
 						<div class="content">
 							<div class="title">习近平以“零容忍”“零懈怠”保证换届的风清气正</div>
@@ -127,10 +112,54 @@
 			</div>
 		</div>
 	</div>
+	<div data-bind="attr:{id:DialogID}">
+
+	</div>
 <script type="text/javascript">
 
 	$(function() {
-		$( "#home-main-index-products" ).tabs();
+		var ctrl = $('#home-main-index');
+		function Main_Index_V1(){
+			this.DialogID = cowboy.sys.guid();
+			this.ListCategories = ko.observableArray([
+				{ID:1,ItemName:"HP 1000 Printer Series"},
+				{ID:2,ItemName:"HP 1320 Printer Series"},
+				{ID:3,ItemName:"HP 2420 Printer Series"},
+				{ID:4,ItemName:"HP 3005 Printer Series"},
+				{ID:5,ItemName:"HP 4250 Printer Series"},
+				{ID:6,ItemName:"Samsung Printer Series"},
+				{ID:7,ItemName:"Other HP Printer Parts"}
+			]);
+			this.EventNewsDetail = function(m,e){
+				cowboy.func.get('/home/news/detail',function(data){
+					$('#'+this.DialogID).html(data);
+					$('#'+this.DialogID).dialog({
+						autoOpen: true,
+						modal:true,
+						title:'News',
+						width:910,
+						show: {
+							effect: "blind",
+							duration: 500
+						},
+						hide: {
+							effect: "blind",
+							duration: 200
+						}
+					});
+				}.bind(this))
+			}.bind(this);
+			this.Init = function(){
+				$( "#home-main-index-products" ).tabs();
+			};
+			this.Bindings=function(ctrl){
+				ko.applyBindings(this,ctrl);
+				this.Init();
+			};
+		};
+		var main_Index_V1 = new Main_Index_V1();
+		main_Index_V1.Bindings(ctrl[0]);
+
         	var jssor_slider1 = new $JssorSlider$('tabs-Products', {
         		$AutoPlay: true,
 			$Idle: 0,/*每张图片滚动间隔*/
