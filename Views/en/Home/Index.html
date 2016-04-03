@@ -106,6 +106,14 @@
 		};
 		ko.applyBindings(cowboy.views);
 		cowboy.views.FuncInit();
+		$('body').on('click','.ui-widget-overlay',function(){
+			console.log('gggg');
+			$.each($('[ui-dialog="true"]'),function(i,item){
+				try{
+				$(item).dialog('close');
+				}catch(e){console.log(e);}
+			});
+		}.bind(this));
 	});
 </script>	
 </body>

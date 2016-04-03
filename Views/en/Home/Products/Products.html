@@ -18,13 +18,13 @@
 		</div>
 		<!-- current category -->
 		<div data-bind="foreach:ListProducts" class="products-current-list">
-			<div class="item" data-bind="fadeVisible:$root.SelCategory().ID==undefined||$data.IndexID==$root.SelCategory().ID,click:$root.EventSelProducts">
+			<div class="item" data-bind="fadeVisible:$root.SelCategory().ID==undefined||$data.IndexID==$root.SelCategory().ID,if:$root.SelCategory().ID==undefined||$data.IndexID==$root.SelCategory().ID,click:$root.EventSelProducts">
 				<span data-bind="text:$data.Title">Back Cover1</span>
 				<img data-bind="attr:{src:$data.Src}"/>
 			</div>
 		</div>
 	</div>
-	<div data-bind="attr:{id:DialogID}">
+	<div data-bind="attr:{id:DialogID}" ui-dialog="true">
 		<div data-bind="if:SelProducts().ID!=undefined">
 			<div>
 				<span data-bind="text:SelProducts().Title"></span>
@@ -40,7 +40,7 @@
 		function Products_Products_V1(){
 			this.DialogID = cowboy.sys.guid();
 			//selected category
-			this.SelCategory = ko.observable({});
+			this.SelCategory = ko.observable({ID:1,ItemName:"HP 1000 Printer Series"});
 			//all categories
 			this.ListCategories = ko.observableArray([
 				{ID:1,ItemName:"HP 1000 Printer Series"},

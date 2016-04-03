@@ -105,8 +105,7 @@ body{
 }
 .index-main-content{
 	min-height: 600px;
-	width: 910px;
-	margin: 0 auto;
+	min-width: 910px;
 }
 
 
@@ -121,6 +120,7 @@ body{
 }
 .home-main-index-content{
 	width:910px;
+	margin: 0 auto;
 }
 .home-main-index-content .about-news{
 	width:910px;
@@ -314,7 +314,11 @@ body{
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
-
+.about-div{
+	width: 910px;
+	min-height: 600px;
+	margin: 0 auto;
+}
 .about-title {
 	color: #f9b014;
 	display: block;
@@ -357,6 +361,7 @@ body{
 	border: 1px solid rgba(119, 140, 158, 0.31);
 	width: 910px;
 	min-height: 600px;
+	margin: 0 auto;
 }
 .products-left{
 	display:inline-block;

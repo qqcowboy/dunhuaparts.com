@@ -16,62 +16,22 @@
 				<li><a href="#tabs-HOT">HOT Products</a></li>
 			</ul>
 			<div id="tabs-Products" class="products-products">
-				<div u="slides" class="slides">
-					<div>
-						<span >Back Cover</span>
-						<img u="image" src="/static/img/test/Back Cover.jpg" />
-					</div>
-					<div>
-						<span >Catridge</span>
-						<img u="image" src="/static/img/test/Catridge.jpg" />
-					</div>
-					<div>
-						<span >Face up Assembly</span>
-						<img u="image" src="/static/img/test/Face up Assembly.JPG"  />
-					</div>
-					<div>
-						<span >Gear Assembly</span>
-						<img u="image" src="/static/img/test/Gear Assembly.jpg"  />
-					</div>
-					<div>
-						<span >High Volt Board</span>
-						<img u="image" src="/static/img/test/High Volt Board.jpg"  />
-					</div>
-					<div>
-						<span >Laser Scaner</span>
-						<img u="image" src="/static/img/test/Laser Scaner.jpg"  />
-					</div>
-					<div>
-						<span >PIU</span>
-						<img u="image" src="/static/img/test/PIU.JPG" />
-					</div>
-					<div>
-						<span >Power Board</span>
-						<img u="image" src="/static/img/test/Power Board.JPG"/>
+				<div u="slides" data-bind="foreach:ListProducts" class="slides">
+					<div data-bind="click:$root.EventProductsDetail">
+						<span data-bind="text:$data.Title"></span>
+						<img data-bind="attr:{src:$data.Src}" u="image" />
 					</div>
 				</div>
 			</div>
 			<div data-bind="foreach:ListCategories" id="tabs-Categories" class="products-category">
-				<div>
-					<span data-bind="text:$data.ItemName">HP 1000 Printer Series</span>
+				<div data-bind="click:$root.EventSelCategory">
+					<span data-bind="text:$data.ItemName"></span>
 				</div>
 			</div>
-			<div id="tabs-HOT" class="products-hot">
-				<div class="item">
-					<span >High Volt Board</span><br/>
-					<img src="/static/img/test/High Volt Board.jpg"  />
-				</div>
-				<div class="item">
-					<span >Laser Scaner</span><br/>
-					<img src="/static/img/test/Laser Scaner.jpg"  />
-				</div>
-				<div class="item">
-					<span >PIU</span><br/>
-					<img src="/static/img/test/PIU.JPG" />
-				</div>
-				<div class="item">
-					<span >Power Board</span><br/>
-					<img src="/static/img/test/Power Board.JPG"/>
+			<div id="tabs-HOT" data-bind="foreach:ListHotProducts" class="products-hot">
+				<div class="item" data-bind="visible:$index()<4,click:$root.EventProductsDetail">
+					<span data-bind="text:$data.Title"></span><br/>
+					<img data-bind="attr:{src:$data.Src}" />
 				</div>
 			</div>
 		</div>
@@ -112,8 +72,18 @@
 			</div>
 		</div>
 	</div>
-	<div data-bind="attr:{id:DialogID}">
+	<div data-bind="attr:{id:DialogID}" ui-dialog="true">
 
+	</div>
+	<div data-bind="attr:{id:DialogProductID}" ui-dialog="true">
+		<div data-bind="if:SelProducts().ID!=undefined">
+			<div>
+				<span data-bind="text:SelProducts().Title"></span>
+			</div>
+			<div>
+				<img data-bind="attr:{src:SelProducts().Src}" />
+			</div>
+		</div>
 	</div>
 <script type="text/javascript">
 
@@ -121,6 +91,8 @@
 		var ctrl = $('#home-main-index');
 		function Main_Index_V1(){
 			this.DialogID = cowboy.sys.guid();
+			this.DialogProductID = cowboy.sys.guid();
+			this.SelProducts=ko.observable({});
 			this.ListCategories = ko.observableArray([
 				{ID:1,ItemName:"HP 1000 Printer Series"},
 				{ID:2,ItemName:"HP 1320 Printer Series"},
@@ -130,24 +102,71 @@
 				{ID:6,ItemName:"Samsung Printer Series"},
 				{ID:7,ItemName:"Other HP Printer Parts"}
 			]);
+			this.ListProducts = ko.observableArray([
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Back Cover.jpg',Title:'Back Cover'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Catridge.jpg',Title:'Catridge'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Face up Assembly.JPG',Title:'Face up Assembly'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Gear Assembly.jpg',Title:'Gear Assembly'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/High Volt Board.jpg',Title:'High Volt Board'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Laser Scaner.jpg',Title:'Laser Scaner'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/PIU.JPG',Title:'PIU'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Power Board.JPG',Title:'Power Board'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Drive Gear Assembly.jpg',Title:'Drive Gear Assembly'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Fuser Assembly.jpg',Title:'Fuser Assembly'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Laser Scanner.jpg',Title:'Laser Scanner'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Motor.jpg',Title:'Motor'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pick up Assembly.jpg',Title:'Pick up Assembly'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pick up Roller.jpg',Title:'Pick up Roller'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Power Board.jpg',Title:'Power Board'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pressure Roller.jpg',Title:'Pressure Roller'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Tray.jpg',Title:'Tray'}
+			]);
+			this.ListHotProducts = ko.observableArray([
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Laser Scaner.jpg',Title:'Laser Scaner'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/PIU.JPG',Title:'PIU'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Power Board.JPG',Title:'Power Board'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Drive Gear Assembly.jpg',Title:'Drive Gear Assembly'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Fuser Assembly.jpg',Title:'Fuser Assembly'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Laser Scanner.jpg',Title:'Laser Scanner'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Motor.jpg',Title:'Motor'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pick up Assembly.jpg',Title:'Pick up Assembly'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pick up Roller.jpg',Title:'Pick up Roller'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Power Board.jpg',Title:'Power Board'}
+			]);
 			this.EventNewsDetail = function(m,e){
 				cowboy.func.get('/home/news/detail',function(data){
 					$('#'+this.DialogID).html(data);
-					$('#'+this.DialogID).dialog({
-						autoOpen: true,
-						modal:true,
-						title:'News',
-						width:910,
-						show: {
-							effect: "blind",
-							duration: 500
-						},
-						hide: {
-							effect: "blind",
-							duration: 200
-						}
-					});
+					$('#'+this.DialogID).dialog('open');
 				}.bind(this))
+			}.bind(this);
+			this.funcSelCategory = function(ctrl,obj){
+				console.log(ctrl.find('#home-products-products'));
+				var mod = ko.contextFor(ctrl.find('#home-products-products')[0]).$root;
+				console.log(mod);
+				mod.SelCategory(obj);
+			}
+			this.EventSelCategory = function(m,e){
+				var url = '/home/products/products';
+				$('[data-url]').removeClass('current');
+				$('[data-url="/home/products/products"]').addClass('current');
+				var nctrl = $('#index-main-content').find('[page-url="'+url+'"]');
+				if(nctrl.length>0){
+					$('[page-url]').hide('fast');
+					nctrl.show('fast');
+					this.funcSelCategory(nctrl,m);
+					return;
+				}
+				cowboy.func.get(url,function(data){
+					$('[page-url]').hide('fast');
+					var div = $('<div page-url="'+url+'"></div>');
+					div.html(data);
+					$('#index-main-content').append(div);
+					this.funcSelCategory(div,m);
+				}.bind(this));
+			}.bind(this);
+			this.EventProductsDetail = function(m,e){
+				this.SelProducts(m);
+				$('#'+this.DialogProductID).dialog('open');
 			}.bind(this);
 			this.EventAboutUs = function(){
 				$('[data-url="/home/about/about"]').click();
@@ -157,6 +176,56 @@
 			};
 			this.Init = function(){
 				$( "#home-main-index-products" ).tabs();
+				$('#'+this.DialogProductID).dialog({
+					autoOpen: false,
+					modal:true,
+					title:'Product',
+					width:910,
+					show: {
+						effect: "blind",
+						duration: 500
+					},
+					hide: {
+						effect: "blind",
+						duration: 200
+					}
+				});
+				$('#'+this.DialogID).dialog({
+					autoOpen: false,
+					modal:true,
+					title:'News',
+					width:910,
+					show: {
+						effect: "blind",
+						duration: 500
+					},
+					hide: {
+						effect: "blind",
+						duration: 200
+					}
+				});
+		        	var jssor_slider1 = new $JssorSlider$('tabs-Products', {
+		        		$AutoPlay: true,
+					$Idle: 0,/*每张图片滚动间隔*/
+					$SlideDuration: 2920,
+					$SlideEasing: $Jease$.$Linear,
+					$SlideHeight:227,
+					$SlideWidth: 227,
+					$SlideSpacing:5,
+					$Cols: 4,
+					$FillMode:1
+		        	});
+				function ScaleSlider() {
+					var refSize = jssor_slider1.$Elmt.parentNode.clientWidth;
+					if (refSize) {
+						refSize = Math.min(refSize, 810);
+						jssor_slider1.$ScaleWidth(refSize);
+					}
+					else {
+						window.setTimeout(ScaleSlider, 30);
+					}
+				}
+				ScaleSlider();
 			};
 			this.Bindings=function(ctrl){
 				ko.applyBindings(this,ctrl);
@@ -166,28 +235,6 @@
 		var main_Index_V1 = new Main_Index_V1();
 		main_Index_V1.Bindings(ctrl[0]);
 
-        	var jssor_slider1 = new $JssorSlider$('tabs-Products', {
-        		$AutoPlay: true,
-			$Idle: 0,/*每张图片滚动间隔*/
-			$SlideDuration: 2920,
-			$SlideEasing: $Jease$.$Linear,
-			$SlideHeight:227,
-			$SlideWidth: 227,
-			$SlideSpacing:5,
-			$Cols: 4,
-			$FillMode:1
-        	});
-		function ScaleSlider() {
-			var refSize = jssor_slider1.$Elmt.parentNode.clientWidth;
-			if (refSize) {
-				refSize = Math.min(refSize, 810);
-				jssor_slider1.$ScaleWidth(refSize);
-			}
-			else {
-				window.setTimeout(ScaleSlider, 30);
-			}
-		}
-		ScaleSlider();
 	});
 </script>
 </div>
