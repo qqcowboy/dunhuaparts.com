@@ -1,6 +1,7 @@
 package Web
 
 import (
+	"encoding/json"
 	"fmt"
 	"mime"
 	"net/http"
@@ -27,6 +28,7 @@ func (this *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}()
+
 	//解析请求
 	contentType := r.Header.Get("Content-Type")
 	enctype, _, _ := mime.ParseMediaType(contentType)
@@ -42,7 +44,6 @@ func (this *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	routeData := Routing.RouteTable.GetRouteData(requestPath)
-	fmt.Println(routeData)
 	//路由匹配失败
 	if routeData == nil {
 		//404页面不存在
@@ -373,23 +374,29 @@ func (this *HttpHandler) Show404(w http.ResponseWriter) {
 
 //显示错误信息
 func (this *HttpHandler) Show505(w http.ResponseWriter, err error) {
+	/*
+		viewData := make(map[string]interface{})
+		errMsg := fmt.Sprintf("%v", err)
+		viewData["ErrMsg"] = errMsg
 
-	viewData := make(map[string]interface{})
-	errMsg := fmt.Sprintf("%v", err)
-	viewData["ErrMsg"] = errMsg
+		result := ViewResult{
+			ViewData:       viewData,
+			ViewEngine:     App.ViewEngine,
+			Response:       w,
+			ActionName:     "505",
+			ControllerName: "",
+			Theme:          App.Configs.Theme}
 
-	result := ViewResult{
-		ViewData:       viewData,
-		ViewEngine:     App.ViewEngine,
-		Response:       w,
-		ActionName:     "505",
-		ControllerName: "",
-		Theme:          App.Configs.Theme}
-
-	err = result.ExecuteResult()
-	if err != nil {
-		strErr := "HttpHandler.Show505,页面展示时出错:" + err.Error()
-		App.Log.Add(strErr)
-		w.Write([]byte(strErr))
-	}
+		err = result.ExecuteResult()
+		if err != nil {
+			strErr := "HttpHandler.Show505,页面展示时出错:" + err.Error()
+			App.Log.Add(strErr)
+			w.Write([]byte(strErr))
+		}
+	*/
+	b, _ := json.Marshal(map[string]interface{}{
+		"code": 40000,
+		"msg":  err.Error(),
+	})
+	w.Write(b)
 }

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Total in one</title>
+	<meta http-equiv="content-type" charset="utf-8" />
+    <link rel="Stylesheet" href="/static/lib/jquery-ui/jquery-ui.min.css" type="text/css" />
+	<link rel='stylesheet' href="/static/lib/liger/css/ligerui-grid.css" type='text/css' />
+</head>
+<body>	
+	<div>
+		<div data-bind="visible:AttrTip().length>0" style="display:none">
+			<!-- 提示 -->
+			<div data-bind="foreach:AttrTip" style="color:red;">
+				<span data-bind="text:$data.Data">提示</span>
+			</div>
+		</div>
+		<div data-bind="">
+			<hr>
+			<span>http</span>
+			<!-- 
+			this.AttrHttp={ispost:ko.observable(false),url:ko.observable(''),params:ko.observable('')};
+			 -->
+			是否是POST請求：<input data-bind="checked:AttrHttp.ispost"
+				type="checkbox" /> <br/>
+			
+			API:<input data-bind="value:AttrHttp.url" type="text" style="width:500px;"><br/>
+			
+			参数：<textarea data-bind="value:AttrHttp.params" rows="" cols="" style="width:500px;"></textarea><br/>
+			<button data-bind="click:EventHttp" type="button">测试</button>
+		</div>
+		<hr>
+		<div data-bind="attr:{id:CtrlGrid}"></div>
+	</div>
+	
+	<script src="/static/lib/jquery-2.2.2.min.js" type="text/javascript"></script>
+	<script src="/static/lib//knockout-3.3.0.js" type="text/javascript"></script>	
+	<script src="/static/lib/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="/static/lib/cowboy.js" type="text/javascript"></script>	
+	<script type="text/javascript" src="/static/lib/liger/base.js"></script>
+	<script type="text/javascript" src="/static/lib/liger/ligerGrid.js"></script>
+
+
+	<script type="text/javascript">
+	$(function() {
+		function ViewModel(){
+			//ctrl.serializeArray())
+			this.CtrlID = ko.observable("ctrlid");
+			//提示信息
+			this.AttrTip=ko.observableArray([]);
+	
+			this.FieldMD5=ko.observable('');
+			this.AttrMD5=ko.observable('');
+			
+			this.DialogCtrlID=ko.observable('ui-dialogctrlid');
+			this.ImageCtrlID=ko.observable('ui-imagectrlid');
+			
+			//提示信息
+			this.FuncAddTip=function(data){
+				if($.isArray(data)==false)return;
+				var tmp_id=[];
+				var that=this;
+				$.each(data,function(i,item){
+					var item_id=cowboy.sys.guid();
+					var tmp_item={ID:item_id,Data:item};
+					tmp_id.push(item_id);
+					that.AttrTip.push(tmp_item);
+				});
+				setTimeout(function(){
+					var temp=that.AttrTip();
+					var tmp_list=[];
+					$.each(temp,function(i,item){
+							if($.inArray(item.ID,tmp_id)!=-1){tmp_list.push(item);}
+					});
+					$.each(tmp_list,function(i,n){that.AttrTip.remove(n);});
+				},2500);
+			};
+			this.CtrlGrid = ko.observable('ui'+cowboy.sys.guid());
+			this.CtrlLog = ko.observable('ui'+cowboy.sys.guid());
+			this.AttrLog = ko.observable('');
+			//视图：0－http测试 1－tcp测试 2－查询
+			this.AttrViews=ko.observable(0);
+			this.AttrGridInit=ko.observable(false);
+			this.AttrIsLogin=ko.observable(false);
+			//{UID,Name,RealName,...}
+			this.AttrUser=ko.observable({});
+			
+			this.AttrTcp={url:ko.observable(''),params:ko.observable('')};
+			this.AttrHttp={ispost:ko.observable(false),url:ko.observable(''),params:ko.observable('')};
+			this.ListLog={data:[]};
+			
+			this.ListLogs = {Start:-1,End:0,total:ko.observable(0),
+				Key:ko.observable(''),TimeStart:ko.observable(''),TimeEnd:ko.observable(''),
+				data:[],LogsDatas:ko.observableArray([])
+			};
+
+			this.FuncClearData=function(){
+				this.AttrViews(0);
+				this.AttrGridInit(false);
+				this.AttrTcp.url('');
+				this.AttrTcp.params('');
+				this.AttrHttp.url('');
+				this.AttrHttp.params('');
+				this.ListLog.data=[];
+				this.ListLogs.Start=-1;
+				this.ListLogs.End=0;
+				this.ListLogs.data=[];
+				this.ListLogs.total(0);
+				this.ListLogs.Key('');
+				this.ListLogs.TimeStart('');
+				this.ListLogs.TimeEnd('');
+				this.ListLogs.LogsDatas([]);
+			};
+			//网格初始化
+			this.FuncInitGrid=function(){
+				this.CtrlGrid('ui'+cowboy.sys.guid());
+				var that=this;
+				$('#'+this.CtrlGrid()).ligerGrid({
+		            columns: [ 
+                       {display: '信息',width:300,
+                          render: function (data){
+                        	  var api=encodeURIComponent(data.Api);
+                        	  var input=encodeURIComponent(data.Input);
+                              var html = '<button type="button" ui-api='+api+' ui-input='+input+' ui-btngetparam="true">获取参数</button>';
+                              html += '<br/>';
+                              html += '<div align="left">接口：'+data.Api+'<br/>';
+                              return html;
+                          }},
+		            	{display: '输入', name: 'Input',type:'string',width:350},
+	                    {display: '输出',width:650,
+	                    	render: function (data){
+	                    		var html = '<div style="word-wrap:break-word;width:100%;height:auto;">'+data.Output+'</div>';
+	                        	return html;
+	                     	}}
+		            ],
+					width:'auto',title:'测试结果',dataAction:'local',dataType:'local',
+		            data: this.ListLog,root:'data',
+		            usePager:false,fixedCellHeight:false,checkbox:false
+		        });
+			};
+			this.FuncAddGridData=function(data){
+				if(this.AttrGridInit()==false){
+					this.FuncInitGrid();
+					this.AttrGridInit(true);
+				}
+				this.ListLog.data.unshift(data);
+				$.ligerui.get(this.CtrlGrid()).loadData(this.ListLog);
+			};
+			this.EventHttp=function(m,e){
+				var params=$.trim(this.AttrHttp.params());
+				if(params.length<2){
+					params="{}"
+				}
+				var tmp_type='get';
+				if(this.AttrHttp.ispost()){
+					tmp_type='post';
+				}
+				$.ajax({url:this.AttrHttp.url(),type:tmp_type,'data':{data:params},dataType:'json'}).done(function(data){
+					this.FuncAddGridData({Api:this.AttrHttp.url(),Input:params,Output:JSON.stringify(data)});
+				}.bind(this));
+			}.bind(this);
+			this.Views = function(){
+				var that=this;
+				$('body').on('click','button[ui-btngetparam="true"]',function(e){
+					var api=decodeURIComponent($(this).attr('ui-api'));
+					var input=decodeURIComponent($(this).attr('ui-input'));
+					if(input=='[]'){
+						input='{}';
+					}
+					if(that.AttrViews()==1){
+						that.AttrTcp.url(api);
+						that.AttrTcp.params(input);
+					}else{
+						that.AttrHttp.url(api);
+						that.AttrHttp.params(input);
+					}
+				});
+			};
+			this.Binding = function(element){
+				ko.applyBindings(this,element);
+				this.Views();
+			};
+		}
+		var viewModel = new ViewModel();
+		viewModel.Binding($('body')[0]);
+	});
+</script>
+
+</body>
+</html>

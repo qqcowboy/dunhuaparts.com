@@ -137,7 +137,6 @@ func (this *Controller) View(args ...string) *ViewResult {
 	actionName := fmt.Sprintf("%v", this.RouteData["action"])
 	controllerName := fmt.Sprintf("%v", this.RouteData["controller"])
 	views := fmt.Sprintf("%v", this.RouteData["views"])
-	fmt.Println(actionName, controllerName, views)
 	if len(views) > 0 {
 		actionName = fmt.Sprintf("%s/%s", actionName, views)
 	}

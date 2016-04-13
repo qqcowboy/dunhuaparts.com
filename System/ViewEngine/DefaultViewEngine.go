@@ -2,7 +2,6 @@ package ViewEngine
 
 import (
 	"errors"
-	"fmt"
 	"html/template"
 	"io"
 	"io/ioutil"
@@ -46,7 +45,6 @@ func NewDefualtEngine() *DefaultViewEngine {
 //展示
 func (this *DefaultViewEngine) RenderView(controllerName, actionName, theme string, viewData map[string]interface{}, writer io.Writer) error {
 	strTplPath := this.getViewPath(controllerName, actionName, theme)
-	fmt.Println("strTplPath", strTplPath)
 	//模板不存在
 	if strTplPath == "" {
 		return PageNoFind
