@@ -6,6 +6,7 @@ import (
 
 	"github.com/qqcowboy/lib/config"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type moduleBase struct {

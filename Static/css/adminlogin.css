@@ -1,0 +1,55 @@
+
+body{
+	background-color: #96D1F1;
+}
+.content{
+	position:absolute;
+	left: 45%;
+	top: 33%;
+}
+.content>div{
+	height:63px;
+}
+.content>div>input{
+	height:45px;
+	width:235px;
+	border: 1px solid #59c1df;
+	text-indent: 10px;
+	font-size: 22px;
+}
+ .btn{
+	width: 195px;
+	height: 36px;
+	cursor: pointer;
+	background-color: #2fb2d7;
+	color: #ffffff;
+	font-size: 18px;
+	border-radius: 45px;
+	border: none;
+}
+.btn:hover{
+	background-color: rgba(47, 178, 215, 0.44);
+}
+.verifyimg{
+	float:left;
+	margin-left:10px;
+	width:120px;
+	height:50px;
+	cursor: pointer;
+}
+.verifycode{
+	float:left;
+	width:105px !important;
+}
+.pagetitle{
+	text-align: center;
+	color: #0D8ACE;
+    font-family: "微软雅黑";
+    font-size: 21px;
+}
+#tips{
+	position: relative;
+    top: -279px;
+    left: 44px;
+    color: red;
+}

@@ -1,6 +1,90 @@
+<!DOCTYPE html>
 <html>
-<head></head>
+<head>
+<meta charset="UTF-8">
+<title>admin</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="content-type" charset="utf-8" />
+	<meta name="viewport" content="width=device-width">
+	<link rel="stylesheet" type="text/css" href="/static/css/adminlogin.css">
+</head>
 <body>
-login
+	<div class="content">
+		<div class="pagetitle">
+			<span>后台管理</span>
+		</div>
+		<div>
+			<input tabindex="1" type="text" id="User" placeholder="用户帐号"/>
+		</div>
+		<div>
+			<input tabindex="2" type="password" id="Psw" placeholder="密码"/>
+		</div>
+		<div>
+			<input tabindex="3" type="text" id="Code" placeholder="验证码" class="verifycode"/>
+			<img class="verifyimg" id="verifyimg" src="/img/VerityCode" onclick="this.src='/img/VerityCode?_r='+Math.random()" title="点击更新"/>
+		</div>
+		<div>
+			<button onclick="adminLogin.EventLogin()" id="btn_login" class="btn" type="button">登陆</button>
+		</div>
+		<div id="tips" style="display:none;"></div>
+	</div>
+<script src="/static/lib/jquery-2.2.2.min.js" type="text/javascript"></script>
+<script src="/static/lib/md5/spark-md5.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	$(function(){
+		function AdminLogin() {
+			this.EventLogin = function(){
+				var user=$.trim($('#User').val()),psw=$.trim($('#Psw').val()),code = $.trim($('#Code').val());
+				if(user.length<1){
+					$('#tips').text("请输入用户帐号");
+					$('#tips').show('fast').delay(2000).hide('fast');
+					return;
+				}
+				if(psw.length<1){
+					$('#tips').text("请输入密码");
+					$('#tips').show('fast').delay(2000).hide('fast');
+					return;
+				}
+				if(code.length<1){
+					$('#tips').text("请输入验证码");
+					$('#tips').show('fast').delay(2000).hide('fast');
+					return;
+				}
+				if(this.logining){
+					return
+				}
+				this.logining=true;
+				$.ajax({url:'/user/adminlogin',data:{User:user,Psw:SparkMD5.hash(psw),Code:code},type:'post',dataType:'json'}).done(function(data){
+					this.logining=false;
+					if(data.code==1){
+						window.location="/admin/index";
+					}else{
+						$('#verifyimg').click();
+						$('#tips').text(data.error);
+						$('#tips').show('fast').delay(2000).hide('fast');
+						if(data.code==43008){
+							$('#Code').val('').focus();
+						}
+					}
+				}.bind(this)).fail(function(){
+					this.logining=false;
+						$('#tips').text("请求失败");
+						$('#tips').show('fast').delay(2000).hide('fast');
+				}.bind(this));
+			}.bind(this);
+			this.FuncInit=function(){
+				$('body').bind('keypress',function(event){
+					if(event.keyCode == "13"){
+						$('#btn_login').click();
+					}
+					return true;
+				}.bind(this));
+				$('input:eq(0)').focus();
+			};
+		};
+		adminLogin = new(AdminLogin)
+		adminLogin.FuncInit();
+	});
+</script>	
 </body>
 </html>

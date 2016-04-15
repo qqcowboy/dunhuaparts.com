@@ -172,3 +172,21 @@ func (this *Controller) Default() *ViewResult {
 	this.RouteData["views"] = ""
 	return this.View()
 }
+
+type MyResult struct {
+	Data  interface{} `json:"data,omitempty"`
+	Code  int         `json:"code,omitempty"`
+	Error []string    `json:"error,omitempty"`
+}
+
+/*该函数可以接受两个参数，第一个参数为json的内容，可以是一个Json字符串，也可以是一个对像，第二个为charSet字符集，第二个参数都可以省略，
+第一个参数省略时或为""时，会把ViewData的内容转换为Json字符串，字符集省略时，默认为utf-8*/
+func (this *Controller) JsonResult(code int, data interface{}, Error ...string) *JsonResult {
+	result := &JsonResult{Response: this.Response}
+	result.Data = MyResult{
+		Data:  data,
+		Code:  code,
+		Error: Error,
+	}
+	return result
+}

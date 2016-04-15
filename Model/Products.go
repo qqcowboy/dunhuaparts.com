@@ -2,7 +2,6 @@ package Model
 
 import (
 	"fmt"
-	"sync"
 
 	"github.com/qqcowboy/lib/mystr"
 	"gopkg.in/mgo.v2/bson"

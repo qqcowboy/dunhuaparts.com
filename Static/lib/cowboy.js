@@ -14,6 +14,65 @@ cowboy.sys={
 
 }
 
+cowboy.func={
+    cache:{},
+    get:function(url,callback){
+        mcallback = function(d){
+            try{
+                callback(d);
+            }catch(e){
+                console.log(e);
+            }
+        }
+        var key = 'html'+url;
+        if(this.cache[key]!=undefined){
+            mcallback(this.cache[key]);
+            return;
+        }
+        $.ajax({url:url,type:'html'}).done(function(data){
+            this.cache[key]=data;
+            mcallback(this.cache[key]);
+        }.bind(this));
+    },
+    loadjs : function(url,callback) {
+        if (url == undefined){
+            return false;
+        }
+        if (callback==undefined||$.isFunction(callback)==false){
+            callback=function(){}
+        }
+        if(this.cache['js'+url]){
+            callback(true);
+            return true;
+        }
+        $.ajax({url : url,dataType : 'script'}).done(function() {
+            this.cache['js'+url]=true;
+            try{
+                callback(true);
+            }catch(e){
+                console.log(e);
+            }
+        }.bind(this)).fail(function() {
+            try{
+                callback(false);
+            }catch(e){
+                console.log(e);
+            }
+        });
+        return true;
+    },
+    loadcss : function(url) {
+        if (url == undefined){
+            return false;
+        }
+        if(this.cache['css'+url]){
+            return true;
+        }
+        $('head').append('<link rel="stylesheet" type="text/css" href="'+url+'">');
+        this.cache['css'+url]=true;
+        return true;
+    }
+};
 
 String.prototype.toDate = function(){
 	return new Date(this.replace(/-/g,"/"));

@@ -1,6 +1,66 @@
+<!DOCTYPE html>
 <html>
-<head></head>
+<head>
+<meta charset="UTF-8">
+<title>admin</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="content-type" charset="utf-8" />
+	<meta name="viewport" content="width=device-width">
+	<link rel="stylesheet" type="text/css" href="/static/lib/jquery-ui/jquery-ui.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/dunhuaparts.css">
+</head>
 <body>
-admin
+
+<!--
+<script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js" type="text/javascript"></script>	
+-->
+<script src="/static/lib/jquery-2.2.2.min.js" type="text/javascript"></script>
+<script src="/static/lib//knockout-3.3.0.js" type="text/javascript"></script>	
+<script src="/static/lib/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>	
+<script src="/static/lib/jssor.slider.mini.js" type="text/javascript"></script>
+<script src="/static/lib/cowboy.js" type="text/javascript"></script>	
+<script type="text/javascript">
+	$(function(){
+		var ctrl_content = $('#index-main-content');
+		cowboy.views = {
+			FuncInit:function(){
+				$('[data-url]').on('click','',function(e){
+					var ictrl;
+					if($(e.target).is('[data-url]')){
+						ictrl=$(e.target);
+					}else{
+						ictrl=$($(e.target).parents('[data-url]')[0]);
+					}
+					$('[data-url]').removeClass('current');
+					ictrl.addClass('current');
+					var url = ictrl.attr('data-url');
+					var nctrl = ctrl_content.find('[page-url="'+url+'"]');
+					if(nctrl.length>0){
+						$('[page-url]').hide('fast');
+						nctrl.show('fast');
+						return;
+					}
+					cowboy.func.get(url,function(data){
+						$('[page-url]').hide('fast');
+						var div = $('<div page-url="'+url+'"></div>');
+						div.html(data);
+						ctrl_content.append(div);
+					});
+				}.bind(this));
+				$('[data-url="/home/main/index"]').click();
+			}
+		};
+		ko.applyBindings(cowboy.views);
+		cowboy.views.FuncInit();
+		$('body').on('click','.ui-widget-overlay',function(){
+			$.each($('[ui-dialog="true"]'),function(i,item){
+				try{
+					$(item).dialog('close');
+				}catch(e){console.log(e);}
+			});
+		}.bind(this));
+	});
+</script>	
 </body>
 </html>

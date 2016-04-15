@@ -14,7 +14,11 @@ func init() {
 	Web.App.RegisterController(Admin{})
 }
 func (this *Admin) OnLoad() {
-
+	//如果没有登陆则跳转到后台主页，由主页显示登陆页面
+	if !this.isLogin() && this.RouteData["action"] != "Index" {
+		this.Redirect("/admin")
+		this.ResponseEnd()
+	}
 }
 func (this *Admin) isLogin() bool {
 	if tmp, ok := this.Session["login"]; ok {
@@ -33,17 +37,6 @@ func (this *Admin) Index() *Web.ViewResult {
 		this.RouteData["action"] = "Login"
 	}
 	return this.View()
-}
-
-/*Login
-@see : 登陆后台
-*/
-func (this *Admin) Login() *Web.JsonResult {
-	if !this.IsPost {
-		return this.Json(map[string]interface{}{"code": 43002})
-	}
-	this.Session["login"] = true
-	return this.Json(map[string]interface{}{"code": 1})
 }
 
 /*Loginout

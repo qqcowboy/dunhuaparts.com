@@ -1,9 +1,11 @@
 package Controllers
 
 import (
+	"net/http"
 	"strconv"
 	"strings"
 
+	"github.com/dchest/captcha"
 	"github.com/qqcowboy/dunhuaparts.com/Model"
 	"github.com/qqcowboy/dunhuaparts.com/System/Web"
 )
@@ -11,6 +13,8 @@ import (
 type Img struct {
 	Web.Controller
 }
+
+var VerityCodeCookieName = "vercode"
 
 //注册Controller
 func init() {
@@ -41,5 +45,14 @@ func (this *Img) Product() *Web.ImgResult {
 	}
 	str, _ := Model.MProducts.GetImage(id)
 	result.Base64 = str
+	return result
+}
+
+//输出验证码
+func (this *Img) VerityCode() *Web.ImgResult {
+	result := &Web.ImgResult{Response: this.Response}
+	vkey := captcha.NewLen(5)
+	http.SetCookie(this.Response, &http.Cookie{Name: VerityCodeCookieName, Value: vkey, Path: "/", HttpOnly: true})
+	captcha.WriteImage(this.Response, vkey, 120, 50)
 	return result
 }

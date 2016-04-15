@@ -20,12 +20,17 @@ func init() {
 type UserNum struct {
 	ID      bson.ObjectId `bson:"_id" json:"ID"`
 	ExtType int
-	AuthNum int
+	AutoNum int
 }
+
+/*UserInfo
+@see : Auths 0超级管理/<10后台管理
+*/
 type UserInfo struct {
 	UID      bson.ObjectId `bson:"_id" json:"UID"`
 	UserNum  int           `bson:"UserNum"`
 	UserName string        `bson:"UserName"`
+	Mail     string        `bson:"Mail" json:",omitempty"`
 	Password string        `bson:"Password" json:",omitempty"`
 	ExtType  int           `bson:"ExtType" json:",omitempty"`
 	Enable   bool          `bson:"Enable" json:",omitempty"`
@@ -35,6 +40,23 @@ type UserInfo struct {
 type User struct {
 	moduleBase
 	addlock sync.Locker
+}
+
+func (this UserInfo) IsSupAdmin() bool {
+	for _, auth := range this.Auths {
+		if auth == 1 {
+			return true
+		}
+	}
+	return false
+}
+func (this UserInfo) IsAdmin() bool {
+	for _, auth := range this.Auths {
+		if auth < 10 {
+			return true
+		}
+	}
+	return false
 }
 
 /*AddUser
@@ -53,7 +75,7 @@ func (this *User) AddUser(name, psw string, enable bool, auths []int) error {
 	}
 
 	autonum := UserNum{}
-	_, err := col.Find(bson.M{"ExtType": 100}).Apply(mgo.Change{
+	_, err = col.Find(bson.M{"ExtType": 100}).Apply(mgo.Change{
 		Update:    bson.M{"$inc": bson.M{"AutoNum": 1}},
 		Upsert:    true,
 		Remove:    false,
@@ -62,7 +84,17 @@ func (this *User) AddUser(name, psw string, enable bool, auths []int) error {
 	if err != nil {
 		return fmt.Errorf("生成用户编号失败：%s", err.Error())
 	}
-
+	if autonum.AutoNum < 1000 {
+		_, err = col.Find(bson.M{"ExtType": 100}).Apply(mgo.Change{
+			Update:    bson.M{"$inc": bson.M{"AutoNum": 1000}},
+			Upsert:    true,
+			Remove:    false,
+			ReturnNew: true,
+		}, &autonum)
+		if err != nil {
+			return fmt.Errorf("生成用户编号失败：%s", err.Error())
+		}
+	}
 	tmp := bson.M{"_id": bson.NewObjectId(), "Name": name, "Password": psw, "ExtType": 0, "UserNum": autonum.AutoNum,
 		"Version": mystr.TimeStamp(), "CreateDate": mystr.Date(), "Auths": auths, "Enable": enable,
 	}
@@ -117,7 +149,7 @@ func (this *User) AddAuth(id string, auth ...int) (err error) {
 /*DelAuth
 @see : 删除权限
 */
-func (this *User) AddAuth(id string, auth ...int) (err error) {
+func (this *User) DelAuth(id string, auth ...int) (err error) {
 	mongo := this.mSession()
 	defer mongo.Close()
 	mdb := mongo.DB(this.db)
@@ -157,13 +189,13 @@ func (this *User) FindOne(name, psw string, num int) (user UserInfo, err error) 
 	mdb := mongo.DB(this.db)
 	col := mdb.C(this.coll)
 	user = UserInfo{}
-	var qs mgo.Query
+	var qs *mgo.Query
 	if len(name) > 0 {
-		qs = col.Find(bson.M{"Name": name, "Password": psw, "Enable": true})
+		qs = col.Find(bson.M{"UserName": name, "Password": psw, "Enable": true})
 	} else {
 		qs = col.Find(bson.M{"UserNum": num, "Password": psw, "Enable": true})
 	}
 	qs.Select(bson.M{"ExtType": 0, "Password": 0, "Enable": 0})
-	err := qs.One(&user)
+	err = qs.One(&user)
 	return
 }
