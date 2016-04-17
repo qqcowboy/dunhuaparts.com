@@ -19,6 +19,14 @@ func init() {
 }
 func (this *User) OnLoad() {
 }
+func (this *User) isLogin() bool {
+	if tmp, ok := this.Session["login"]; ok {
+		if login, ok := tmp.(bool); ok && login {
+			return true
+		}
+	}
+	return false
+}
 
 /*AdminLogin
 @see : 登陆后台
@@ -55,5 +63,22 @@ func (this *User) AdminLogin() *Web.JsonResult {
 	}
 	this.Session["login"] = true
 	this.Session["user"] = myjson.JsonEncode(userinfo)
+	return this.JsonResult(1, userinfo)
+}
+
+/*Info
+@see : 当前用户信息
+*/
+func (this *User) Info() *Web.JsonResult {
+	if !this.isLogin() {
+		return this.JsonResult(40001, nil, "用户未登陆")
+	}
+	udata, ok := this.Session["user"]
+	if !ok {
+		return this.JsonResult(40002, nil, "用户登陆信息出错")
+	}
+	userinfo := Model.UserInfo{}
+	myjson.JsonDecode(udata.(string), &userinfo)
+
 	return this.JsonResult(1, userinfo)
 }

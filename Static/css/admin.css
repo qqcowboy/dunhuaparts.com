@@ -1,0 +1,130 @@
+.sidebar {
+  display: block;
+  float: left;
+  width: 250px;
+  background: #0948AB;
+}
+.content {
+  display: block;
+  overflow: hidden;
+  width: auto;
+}
+.sidebar-nav {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  background-image: -webkit-linear-gradient(left, color-stop(#0948AB 10px), color-stop(#517FC5 10px));
+  background-image: linear-gradient(to right, #0948AB 10px, #517FC5 10px);
+  background-repeat: repeat-x;
+  filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#0948AB', endColorstr='#517FC5', GradientType=1);
+}
+.sidebar-nav ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.sidebar-nav a, .sidebar-nav a:hover, .sidebar-nav a:focus, .sidebar-nav a:active {
+  outline: none;
+}
+.sidebar-nav ul li, .sidebar-nav ul a {
+  display: block;
+}
+.sidebar-nav ul a {
+  padding: 10px 20px;
+  color: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05) inset;
+  text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+.sidebar-nav ul a:hover, .sidebar-nav ul a:focus, .sidebar-nav ul a:active {
+  color: rgba(255, 255, 255, 0.57);
+  text-decoration: none;
+}
+.current .sidebar-nav-item-icon{
+  color: red;
+  text-decoration: none;
+}
+.sidebar-nav ul ul a {
+  padding: 10px 30px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.sidebar-nav ul ul a:hover, .sidebar-nav ul ul a:focus, .sidebar-nav ul ul a:active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.sidebar-nav-item {
+  padding-left: 5px;
+}
+.sidebar-nav-item-icon {
+	padding-right: 5px;
+	color:rgba(255, 255, 255, 0.57);;
+}
+#rtlh3 small {
+    transform: rotateY(180deg);
+    display: inline-block;
+}
+
+.top{
+	height:100px;
+	width:100%;
+	background-color: #0948AB;
+	FILTER: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=rgba(9, 72, 171, 0.43),endColorStr=rgb(33, 90, 179)); /*IE 6 7 8*/ 
+	background: -ms-linear-gradient(top, rgba(9, 72, 171, 0.43),  rgb(33, 90, 179));        /* IE 10 */
+	background:-moz-linear-gradient(top,rgba(9, 72, 171, 0.43),rgb(33, 90, 179));/*火狐*/ 
+	background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(rgba(9, 72, 171, 0.43)), to(rgb(33, 90, 179)));/*谷歌*/ 
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(9, 72, 171, 0.43)), to(rgb(33, 90, 179)));      /* Safari 4-5, Chrome 1-9*/
+	background: -webkit-linear-gradient(top, rgba(9, 72, 171, 0.43), rgb(33, 90, 179));   /*Safari5.1 Chrome 10+*/
+	background: -o-linear-gradient(top, rgba(9, 72, 171, 0.43), rgb(33, 90, 179));  /*Opera 11.10+*/
+}
+.top .left{
+	float:left;
+	width:60%;
+}
+.top .left .title{
+	line-height: 100px;
+	font-size: 47px;
+	color: #0D10B5;
+	margin-left: 136px;
+}
+.top .right{
+	margin-top:20px;
+	float:left;
+	width:40%;
+}
+.top .right div,.top .right a{
+	float:right;
+	margin-right:15px;
+	color:#fff!important;
+}
+
+.ibody{
+	border: 7px ridge #668ECB;
+	width: 100%;
+	height: 85%;
+	min-height:600px;
+	position: absolute;
+}
+
+.ibody .menu{
+	border-right: 3px ridge #668ECB;
+	width: 250px;
+	height: 100%;
+	position: absolute;
+	display: inline-block;
+}
+.ibody .content{
+	height: 100%;
+	position: relative;
+	margin-left: 250px;
+	min-width:1000px;
+	background-color:#fff;
+}
+.welcome{
+	position:absolute;
+	left: 30%;
+	top: 33%;
+}
+.welcome .txt{
+    text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,0.1), 0 0 5px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.3),0 3px 5px rgba(0,0,0,0.2),0 5px 10px rgba(0,0,0,0.25);
+    font-size: 80px;
+    color: #4D418C;
+    font-family: fantasy;
+}

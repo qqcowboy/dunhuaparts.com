@@ -112,3 +112,13 @@ ko.bindingHandlers.fadeVisible = {
         ko.utils.unwrapObservable(value) ? $(element).fadeIn() : $(element).hide();
     }
 };
+$.fn.jparent=function(expr,i){
+	if(i==undefined){
+		i=0;
+	}
+	if(i>=50) return $();
+	if($(this).is(expr))return $(this);
+	if($(this).parent().is(expr))return $(this).parent();
+	if($(this).is('body')==true)return $();
+	return $(this).parent().jparent(expr,i+1);
+};
