@@ -1,3 +1,163 @@
-<div>
-	产品
+<div class="products-div admin-products" id="admin-products-products">
+	<!-- left -->
+	<div class="products-left">
+		<div class="products-title">
+			<span>Categories</span>
+		</div>
+		<div data-bind="foreach:ListCategories" class="products-tree">
+			<a class="item" data-bind="css:{'current':$root.SelCategory().ID==$data.ID},click:$root.EventSelCategory">
+				<span data-bind="text:'&gt;&nbsp;'+$data.ItemName"></span>
+			</a>
+		</div>
+	</div>
+	<!-- right -->
+	<div class="products-right productsright">
+		<div class="products-title aleft">
+			<span>Products</span>
+			<span>all</span>
+		</div>
+		<!-- current category -->
+		<div data-bind="foreach:ListProducts" class="products-current-list productslist">
+			<div class="item" data-bind="fadeVisible:$root.SelCategory().ID==undefined||$data.IndexID==$root.SelCategory().ID,if:$root.SelCategory().ID==undefined||$data.IndexID==$root.SelCategory().ID,click:$root.EventSelProducts">
+				<span data-bind="text:$data.Title">Back Cover1</span>
+				<img data-bind="attr:{src:$data.Src}"/>
+			</div>
+		</div>
+	</div>
+	<div data-bind="attr:{id:DialogID}" ui-dialog="true">
+		<div data-bind="if:SelProducts().ID!=undefined">
+			<div>
+				<span data-bind="text:SelProducts().Title"></span>
+			</div>
+			<div class="imgdialog">
+				<img data-bind="attr:{src:SelProducts().Src}" />
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		
+		var ctrl = $('#admin-products-products');
+		function Products_Products_V1(){
+			this.DialogID = cowboy.sys.guid();
+			//selected category
+			this.SelCategory = ko.observable({ID:1,ItemName:"HP 1000 Printer Series"});
+			//all categories
+			this.ListCategories = ko.observableArray([
+				{ID:1,ItemName:"HP 1000 Printer Series"},
+				{ID:2,ItemName:"HP 1320 Printer Series"},
+				{ID:3,ItemName:"HP 2420 Printer Series"},
+				{ID:4,ItemName:"HP 3005 Printer Series"},
+				{ID:5,ItemName:"HP 4250 Printer Series"},
+				{ID:6,ItemName:"Samsung Printer Series"},
+				{ID:7,ItemName:"Other HP Printer Parts"}
+			]);
+			this.ListProducts = ko.observableArray([
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Back Cover.jpg',Title:'Back Cover'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Catridge.jpg',Title:'Catridge'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Face up Assembly.JPG',Title:'Face up Assembly'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Gear Assembly.jpg',Title:'Gear Assembly'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/High Volt Board.jpg',Title:'High Volt Board'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Laser Scaner.jpg',Title:'Laser Scaner'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/PIU.JPG',Title:'PIU'},
+				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Power Board.JPG',Title:'Power Board'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Drive Gear Assembly.jpg',Title:'Drive Gear Assembly'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Fuser Assembly.jpg',Title:'Fuser Assembly'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Laser Scanner.jpg',Title:'Laser Scanner'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Motor.jpg',Title:'Motor'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pick up Assembly.jpg',Title:'Pick up Assembly'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pick up Roller.jpg',Title:'Pick up Roller'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Power Board.jpg',Title:'Power Board'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pressure Roller.jpg',Title:'Pressure Roller'},
+				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Tray.jpg',Title:'Tray'},
+				{ID:1,IndexID:3,Src:'/static/img/products/HP 2420 Printer Series/Drive Gear Kits.jpg',Title:'Drive Gear Kits'},
+				{ID:1,IndexID:3,Src:'/static/img/products/HP 2420 Printer Series/Fan.jpg',Title:'Fan'},
+				{ID:1,IndexID:3,Src:'/static/img/products/HP 2420 Printer Series/Formatter Board.jpg',Title:'Formatter Board'},
+				{ID:1,IndexID:3,Src:'/static/img/products/HP 2420 Printer Series/Fuser Assembly.jpg',Title:'Fuser Assembly'},
+				{ID:1,IndexID:3,Src:'/static/img/products/HP 2420 Printer Series/High Volt Board.jpg',Title:'High Volt Board'},
+				{ID:1,IndexID:3,Src:'/static/img/products/HP 2420 Printer Series/Motor.jpg',Title:'Motor'},
+				{ID:1,IndexID:3,Src:'/static/img/products/HP 2420 Printer Series/Panel Control.jpg',Title:'Panel Control'},
+				{ID:1,IndexID:3,Src:'/static/img/products/HP 2420 Printer Series/Pressure Roller.jpg',Title:'Pressure Roller'},
+				{ID:1,IndexID:3,Src:'/static/img/products/HP 2420 Printer Series/Tray.jpg',Title:'Tray'},
+				{ID:1,IndexID:4,Src:'/static/img/products/HP 3005 Printer Series/Fan.jpg',Title:'Fan'},
+				{ID:1,IndexID:4,Src:'/static/img/products/HP 3005 Printer Series/Formatter Board.jpg',Title:'Formatter Board'},
+				{ID:1,IndexID:4,Src:'/static/img/products/HP 3005 Printer Series/Fuser Assembly.jpg',Title:'Fuser Assembly'},
+				{ID:1,IndexID:4,Src:'/static/img/products/HP 3005 Printer Series/Gear Kits.jpg',Title:'Gear Kits'},
+				{ID:1,IndexID:4,Src:'/static/img/products/HP 3005 Printer Series/Memeory Card.jpg',Title:'Memeory Card'},
+				{ID:1,IndexID:4,Src:'/static/img/products/HP 3005 Printer Series/Motor.jpg',Title:'Motor'},
+				{ID:1,IndexID:4,Src:'/static/img/products/HP 3005 Printer Series/Pick Up Roller.jpg',Title:'Pick Up Roller'},
+				{ID:1,IndexID:4,Src:'/static/img/products/HP 3005 Printer Series/Power Board.jpg',Title:'Power Board'},
+				{ID:1,IndexID:5,Src:'/static/img/products/HP 4250 Printer Series/Fan.jpg',Title:'Fan'},
+				{ID:1,IndexID:5,Src:'/static/img/products/HP 4250 Printer Series/Formatter Board.jpg',Title:'Formatter Board'},
+				{ID:1,IndexID:5,Src:'/static/img/products/HP 4250 Printer Series/Laser Scanner.jpg',Title:'Laser Scanner'},
+				{ID:1,IndexID:5,Src:'/static/img/products/HP 4250 Printer Series/Pick Up Roller.gif',Title:'Pick Up Roller'},
+				{ID:1,IndexID:5,Src:'/static/img/products/HP 4250 Printer Series/Pick up Roller.jpg',Title:'Pick up Roller'},
+				{ID:1,IndexID:5,Src:'/static/img/products/HP 4250 Printer Series/Power Board.jpg',Title:'Power Board'},
+				{ID:1,IndexID:5,Src:'/static/img/products/HP 4250 Printer Series/Roller.jpg',Title:'Roller'},
+				{ID:1,IndexID:6,Src:'/static/img/products/Samsung Printer Series/1404-001337.jpg',Title:'1404-001337'},
+				{ID:1,IndexID:6,Src:'/static/img/products/Samsung Printer Series/AF030090.jpg',Title:'AF030090'},
+				{ID:1,IndexID:6,Src:'/static/img/products/Samsung Printer Series/JC61-02335a.jpg',Title:'JC61-02335a'},
+				{ID:1,IndexID:6,Src:'/static/img/products/Samsung Printer Series/JC66-01254a.jpg',Title:'JC66-01254a'},
+				{ID:1,IndexID:6,Src:'/static/img/products/Samsung Printer Series/JC81-00584a.jpg',Title:'JC81-00584a'},
+				{ID:1,IndexID:6,Src:'/static/img/products/Samsung Printer Series/JC96-04743a.jpg',Title:'JC96-04743a'},
+				{ID:1,IndexID:6,Src:'/static/img/products/Samsung Printer Series/JC97-02233a.jpg',Title:'JC97-02233a'},
+				{ID:1,IndexID:6,Src:'/static/img/products/Samsung Printer Series/LU2088001.jpg',Title:'LU2088001'},
+				{ID:1,IndexID:6,Src:'/static/img/products/Samsung Printer Series/Thermistor R.jpg',Title:'Thermistor R'},
+				{ID:1,IndexID:6,Src:'/static/img/products/Samsung Printer Series/Thermistor.jpg',Title:'Thermistor'},
+				{ID:1,IndexID:6,Src:'/static/img/products/Samsung Printer Series/Thermostat D.jpg',Title:'Thermostat D'},
+				{ID:1,IndexID:6,Src:'/static/img/products/Samsung Printer Series/Thermostat S.jpg',Title:'Thermostat S'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/Disk.jpg',Title:'Disk'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 1000 Fuser Assembly.jpg',Title:'HP 1000 Fuser Assembly'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 1000 Roller and Pad.jpg',Title:'HP 1000 Roller and Pad'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 1022 Fuser Assembly.jpg',Title:'HP 1022 Fuser Assembly'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 1100 Cable.jpg',Title:'HP 1100 Cable'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 2015N Formatter Board.jpg',Title:'HP 2015N Formatter Board'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 3055 Formatter Board.jpg',Title:'HP 3055 Formatter Board'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 3600 Fuser Film Sleeve.jpg',Title:'HP 3600 Fuser Film Sleeve'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 4015 Fuser Film Sleeve.jpg',Title:'HP 4015 Fuser Film Sleeve'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 4700 Fuser Film Sleeve.jpg',Title:'HP 4700 Fuser Film Sleeve'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 5100 Power Board.jpg',Title:'HP 5100 Power Board'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 8000 Fuser Assembly.jpg',Title:'HP 8000 Fuser Assembly'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 8100 Duplexer.jpg',Title:'HP 8100 Duplexer'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP 9050 Formatter Board.jpg',Title:'HP 9050 Formatter Board'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP DJ430 Carriage Light.jpg',Title:'HP DJ430 Carriage Light'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP DJ430 Formatter Board.jpg',Title:'HP DJ430 Formatter Board'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP DJ430 Motor.jpg',Title:'HP DJ430 Motor'},
+				{ID:1,IndexID:7,Src:'/static/img/products/Other HP Printer Parts/HP M1005 Scanner Head.jpg',Title:'HP M1005 Scanner Head'}
+			]);
+			this.SelProducts = ko.observable({});
+
+			this.EventSelCategory = function(m,e){
+				if(this.SelCategory().ID==m.ID){
+					return;
+				}
+				this.SelCategory(m);
+			}.bind(this);
+			this.EventSelProducts = function(m,e){
+				this.SelProducts(m);
+				$('#'+this.DialogID).dialog('open');
+			}.bind(this);
+			this.Init = function(){
+				$('#'+this.DialogID).dialog({
+					autoOpen: false,
+					modal:true,
+					title:'Product',
+					width:910,
+					show: {
+						effect: "blind",
+						duration: 500
+					},
+					hide: {
+						effect: "blind",
+						duration: 200
+					}
+				});
+			};
+			this.Bindings=function(ctrl){
+				ko.applyBindings(this,ctrl);
+				this.Init();
+			};
+		};
+		var products_Products_V1 = new Products_Products_V1();
+		products_Products_V1.Bindings(ctrl[0]);
+	</script>
 </div>

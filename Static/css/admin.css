@@ -128,3 +128,13 @@
     color: #4D418C;
     font-family: fantasy;
 }
+
+.admin-products{
+	width:100%;
+}
+.productsright{
+	width:83%;
+}
+.productslist{
+	padding-right: 86px;
+}

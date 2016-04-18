@@ -454,7 +454,10 @@ body{
 	width: 150px;
 	height: 150px;
 }
-
+.imgdialog img{
+	width:850px;
+	max-height:1000px;
+}
 .comming{
 	font-size: 50px;
 	color: #000;
