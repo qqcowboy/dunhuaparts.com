@@ -68,9 +68,9 @@ body{
 	border-left: 1px solid #f2f2f2;
 	font-size: 20px;
 
-	-webkit-transition: -webkit-transform 1s,opacity 1s,background 1s,width 1s,height 1s,font-size 1s;
-	transition-property: width,height,transform,background,font-size,opacity;
-	transition-duration: 1s,1s,1s,1s,1s,1s;
+	/*-webkit-transition: -webkit-transform 1s,opacity 1s,background 1s,width 1s,height 1s,font-size 1s;*/
+	/*transition-property: width,height,transform,background,font-size,opacity;*/
+	/*transition-duration: 1s,1s,1s,1s,1s,1s;*/
 	border-radius: 5px;
 
 }
@@ -82,10 +82,10 @@ body{
 	border-color: rgba(104, 133, 158, 0.79);
 	color:#fff;
 
-	-moz-transform: rotate(3deg);
+/*	-moz-transform: rotate(3deg);
 	-webkit-transform: rotate(3deg);
 	-o-transform: rotate(3deg);
-	transform: rotate(3deg);
+	transform: rotate(3deg);*/
 
 
 }
@@ -246,6 +246,7 @@ body{
 }
 
 .home-main-index-content .products .products-products .slides{
+	text-align: center;
 	cursor: pointer; 
 	position: absolute; 
 	overflow: hidden; 
@@ -295,6 +296,7 @@ body{
 
 }
 .products-hot .item{
+	text-align: center;
 	cursor: pointer;
 	float: left;
 	margin-left: 15px;
