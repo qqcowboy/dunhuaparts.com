@@ -1,0 +1,38 @@
+2016-04-19 21:02:13	in SessionGob.Decode()，EOF
+2016-04-19 21:02:13	in FileSession.readSession，gob.Decode时出错：EOF
+2016-04-19 22:15:24	URL:/products/ceatecategory	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x529054)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:25 (0x470f8b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:113 (0x46cd7f)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4eebaa)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4ec677)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-04-19 22:16:56	URL:/products/ceateCategory	View不存在
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x529054)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:25 (0x470f8b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:113 (0x46cd7f)
+	(*HttpHandler).ServeHTTP: panic(err)
+/usr/local/go/src/net/http/server.go:1703 (0x4eebaa)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4ec677)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+

@@ -131,10 +131,84 @@
 
 .admin-products{
 	width:100%;
+	border:none;
 }
-.productsright{
+.admin-products-left{
+	border-right: 1px solid rgba(104, 133, 158, 0.18); 
+}
+.admin-products-right{
+	border-left:none;
 	width:83%;
 }
 .productslist{
 	padding-right: 86px;
+}
+.addcategory{
+	position: relative;
+	height: 30px;
+	line-height: 30px;
+	display: block;
+	text-decoration: none;
+	font-size: 15px;
+	color: #555;
+	cursor: pointer;
+}
+.addcategory:hover{
+	color:green;
+}
+.products-tree .item i{
+	margin-left:20px;
+}
+.addcategory i{
+	margin-left: 72px;
+}
+
+.category-editdialog{
+	text-align:center;
+}
+.category-editdialog input{
+	margin-top:20px;
+	margin-left: 5px;
+	width:200px;
+}
+.category-editdialog textarea{
+	margin-top:20px;
+	margin-left: 5px;
+	width:200px;
+	height:100px;
+}
+.category-editdialog .s2{
+	margin-left:27px;
+}
+.category-editdialog .btn{
+	margin-top:20px;
+	width: 195px;
+	height: 36px;
+	cursor: pointer;
+	background-color: #2fb2d7;
+	color: #ffffff;
+	font-size: 18px;
+	border-radius: 45px;
+	border: none;
+}
+.category-editdialog .btn:hover{
+	background-color: rgba(47, 178, 215, 0.67);
+}
+.hovdisplay .ctrl{
+	display:none;
+	float:right;
+	margin-right:10px;
+}
+.hovdisplay:hover .ctrl{
+	display:inline-table;
+}
+.hovbig:hover i{
+	-webkit-transform:scale(1.3);
+	-moz-transform:scale(1.3);
+}
+.product-add-btn{
+	left: 350px;
+	width: 95px;
+	position: absolute;
+	top: 3px;
 }

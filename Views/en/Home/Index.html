@@ -11,6 +11,9 @@
 </head>
 <body>
 	<!-- top -->
+	<div data-bind="foreach:ListTips,visible:ListTips().length>0" class="ui_popup_notice" style="display:none;">
+		<span data-bind="text:$data"></span>
+	</div>
 	<div class="index-top">
 		<div class="index-top-div">
 			<div class="index-top-menu">
@@ -78,6 +81,24 @@
 			}
 		};
 		cowboy.views = {
+			ListTips:ko.observableArray([]),
+			FuncAddTip:function(list,timeout){
+				if(timeout==undefined){
+					timeout=2000;
+				}
+				if($.isArray(list)==false){
+					list=[list];
+				}
+				$.each(list,function(index,item){
+					if($.trim(item).length>0){
+						this.ListTips.unshift(item);
+						var that = this;
+						setTimeout(function(){
+							that.ListTips.splice(-1);
+						},timeout);
+					}
+				}.bind(this));
+			},
 			FuncInit:function(){
 				$('[data-url]').on('click','',function(e){
 					var ictrl;
