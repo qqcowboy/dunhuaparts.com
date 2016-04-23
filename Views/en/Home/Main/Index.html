@@ -24,8 +24,8 @@
 				</div>
 			</div>
 			<div data-bind="foreach:ListCategories" id="tabs-Categories" class="products-category">
-				<div data-bind="click:$root.EventSelCategory">
-					<span data-bind="text:$data.ItemName"></span>
+				<div data-bind="click:$root.EventSelCategory,attr:{title:$data.Remark}">
+					<span data-bind="text:$data.Name"></span>
 				</div>
 			</div>
 			<div id="tabs-HOT" data-bind="foreach:ListHotProducts" class="products-hot">
@@ -96,15 +96,7 @@
 			this.DialogID = cowboy.sys.guid();
 			this.DialogProductID = cowboy.sys.guid();
 			this.SelProducts=ko.observable({});
-			this.ListCategories = ko.observableArray([
-				{ID:1,ItemName:"HP 1000 Printer Series"},
-				{ID:2,ItemName:"HP 1320 Printer Series"},
-				{ID:3,ItemName:"HP 2420 Printer Series"},
-				{ID:4,ItemName:"HP 3005 Printer Series"},
-				{ID:5,ItemName:"HP 4250 Printer Series"},
-				{ID:6,ItemName:"Samsung Printer Series"},
-				{ID:7,ItemName:"Other HP Printer Parts"}
-			]);
+			this.ListCategories = ko.observableArray([]);
 			this.ListProducts = ko.observableArray([
 				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Back Cover.jpg',Title:'Back Cover'},
 				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Catridge.jpg',Title:'Catridge'},
@@ -136,6 +128,13 @@
 				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pick up Roller.jpg',Title:'Pick up Roller'},
 				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Power Board.jpg',Title:'Power Board'}
 			]);
+			this.FuncGetCategories = function(){
+				$.ajax({url:'/products/categories'}).done(function(data){
+					if(data.code==1){
+						this.ListCategories(data.data);
+					}
+				}.bind(this));
+			};
 			this.EventNewsDetail = function(m,e){
 				cowboy.func.get('/home/news/detail',function(data){
 					$('#'+this.DialogID).html(data);
@@ -178,6 +177,7 @@
 				$('[data-url="/home/news/news"]').click();
 			};
 			this.Init = function(){
+				this.FuncGetCategories();
 				$( "#home-main-index-products" ).tabs();
 				$('#'+this.DialogProductID).dialog({
 					autoOpen: false,
