@@ -5,18 +5,18 @@ body{
 	min-width: 910px;
 }
 .ui_popup_notice{
-	z-index: 10;
+	z-index: 9999;
 	background-color: #fff2c8;
 	border: 1px solid #eed487;
 	border-radius: 3px;
 	width: 645px;
 	height: 43px;
 	line-height: 43px;
-	color: #f6ac00;
+	color: #CE9001;
 	font-weight: bold;
 	text-align: center;
 	position: fixed;
-	bottom: -1px;
+	top: 32px;
 	left: 50%;
 	margin-left: -322px;
 	box-shadow: 0px 1px 4px rgba(0,0,0,0.1);

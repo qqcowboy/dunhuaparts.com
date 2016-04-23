@@ -23,7 +23,7 @@ func (this *Products) OnLoad() {
 
 /*Create
 @see 新增产品[post]
-@param data : json {Title,CategoryID,Remark,Images,ExtType}
+@param data : json {Title,TitleCN,CategoryID,Remark,RemarkCN,Images,ExtType:0普通/1首页大图}
 */
 func (this *Products) Create() *Web.JsonResult {
 	if !this.IsPost {
@@ -38,6 +38,10 @@ func (this *Products) Create() *Web.JsonResult {
 		return this.Json(map[string]interface{}{"code": 43005, "msg": "请输入产品名称"})
 	}
 	title := strings.TrimSpace(params["Title"].(string))
+	if titlecn, ok := params["TitleCN"]; !ok || !mystr.IsString(titlecn) || len(strings.TrimSpace(titlecn.(string))) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "请输入产品中文名称"})
+	}
+	titlecn := strings.TrimSpace(params["TitleCN"].(string))
 	if indexid, ok := params["CategoryID"]; !ok || !mystr.IsString(indexid) || len(strings.TrimSpace(indexid.(string))) < 1 {
 		return this.Json(map[string]interface{}{"code": 43005, "msg": "请选择产品分类"})
 	}
@@ -65,10 +69,19 @@ func (this *Products) Create() *Web.JsonResult {
 			remark = tmp1
 		}
 	}
+	remarkcn := ""
+	if tmp, ok := params["RemarkCN"]; ok {
+		if tmp1, ok := tmp.(string); ok {
+			if len(tmp1) > Model.RemarkMaxLen {
+				tmp1 = string([]byte(tmp1)[0:Model.RemarkMaxLen])
+			}
+			remarkcn = tmp1
+		}
+	}
 	if len(title) > Model.TitleMaxLen {
 		return this.Json(map[string]interface{}{"code": 43005, "msg": "产品名称过长"})
 	}
-	product, err := Model.MProducts.CreateProduct(title, indexid, remark, images, exttype)
+	product, err := Model.MProducts.CreateProduct(title, titlecn, indexid, remark, remarkcn, images, exttype)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
@@ -77,7 +90,7 @@ func (this *Products) Create() *Web.JsonResult {
 
 /*Update
 @see 更新产品[post]
-@param data : json {ID,Title,CategoryID,Remark,ExtType,Images:[]string}
+@param data : json {ID,Title,TitleCN,CategoryID,Remark,RemarkCN,ExtType,Images:[]string}
 */
 func (this *Products) Update() *Web.JsonResult {
 	if !this.IsPost {
@@ -98,6 +111,12 @@ func (this *Products) Update() *Web.JsonResult {
 		fields["Title"] = strings.TrimSpace(title.(string))
 		if len(strings.TrimSpace(title.(string))) > Model.TitleMaxLen {
 			return this.Json(map[string]interface{}{"code": 43005, "msg": "产品名称过长"})
+		}
+	}
+	if titlecn, ok := params["TitleCN"]; ok && mystr.IsString(titlecn) && len(strings.TrimSpace(titlecn.(string))) > 0 {
+		fields["TitleCN"] = strings.TrimSpace(titlecn.(string))
+		if len(strings.TrimSpace(titlecn.(string))) > Model.TitleMaxLen {
+			return this.Json(map[string]interface{}{"code": 43005, "msg": "产品中文名称过长"})
 		}
 	}
 	if indexid, ok := params["CategoryID"]; ok && mystr.IsString(indexid) && len(indexid.(string)) > 0 {
@@ -121,6 +140,14 @@ func (this *Products) Update() *Web.JsonResult {
 			fields["Remark"] = tmp1
 		}
 	}
+	if tmp, ok := params["RemarkCN"]; ok {
+		if tmp1, ok := tmp.(string); ok {
+			if len(tmp1) > Model.RemarkMaxLen {
+				tmp1 = string([]byte(tmp1)[0:Model.RemarkMaxLen])
+			}
+			fields["RemarkCN"] = tmp1
+		}
+	}
 	err := Model.MProducts.UpdateId(id, fields)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
@@ -130,7 +157,7 @@ func (this *Products) Update() *Web.JsonResult {
 
 /*UpdateCategory
 @see 更新产品分类[post]
-@param data : json {ID,Name,Remark}
+@param data : json {ID,Name,Remark,NameCN,RemarkCN}
 */
 func (this *Products) UpdateCategory() *Web.JsonResult {
 	if !this.IsPost {
@@ -153,12 +180,26 @@ func (this *Products) UpdateCategory() *Web.JsonResult {
 			return this.Json(map[string]interface{}{"code": 43005, "msg": "分类名称过长"})
 		}
 	}
+	if name, ok := params["NameCN"]; ok && mystr.IsString(name) && len(strings.TrimSpace(name.(string))) > 0 {
+		fields["NameCN"] = strings.TrimSpace(name.(string))
+		if len(strings.TrimSpace(name.(string))) > Model.TitleMaxLen {
+			return this.Json(map[string]interface{}{"code": 43005, "msg": "分类中文名称过长"})
+		}
+	}
 	if tmp, ok := params["Remark"]; ok {
 		if tmp1, ok := tmp.(string); ok {
 			if len(tmp1) > Model.RemarkMaxLen {
 				tmp1 = string([]byte(tmp1)[0:Model.RemarkMaxLen])
 			}
 			fields["Remark"] = tmp1
+		}
+	}
+	if tmp, ok := params["RemarkCN"]; ok {
+		if tmp1, ok := tmp.(string); ok {
+			if len(tmp1) > Model.RemarkMaxLen {
+				tmp1 = string([]byte(tmp1)[0:Model.RemarkMaxLen])
+			}
+			fields["RemarkCN"] = tmp1
 		}
 	}
 	err := Model.MProducts.UpdateId(id, fields)
@@ -320,7 +361,7 @@ func (this *Products) Categories() *Web.JsonResult {
 
 /*CreateCategory
 @see 新增新产品分类，暂不支持多级分类[post]
-@params Remark,Name
+@params Remark,Name,RemarkCN,NameCN
 */
 func (this *Products) CreateCategory() *Web.JsonResult {
 	if !this.IsPost {
@@ -335,7 +376,17 @@ func (this *Products) CreateCategory() *Web.JsonResult {
 		return this.Json(map[string]interface{}{"code": 43005, "msg": "请输入产品分类名称"})
 	}
 	name := params["Name"].(string)
+	if len(name) > Model.TitleMaxLen {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "产品类名过长"})
+	}
+	if namecn, ok := params["NameCN"]; !ok || !mystr.IsString(namecn) || len(namecn.(string)) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "请输入产品分类中文名称"})
+	}
+	namecn := params["NameCN"].(string)
 
+	if len(namecn) > Model.TitleMaxLen {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "产品分类中文名过长"})
+	}
 	remark := ""
 	if tmp, ok := params["Remark"]; ok {
 		if tmp1, ok := tmp.(string); ok {
@@ -345,10 +396,16 @@ func (this *Products) CreateCategory() *Web.JsonResult {
 			remark = tmp1
 		}
 	}
-	if len(name) > Model.TitleMaxLen {
-		return this.Json(map[string]interface{}{"code": 43005, "msg": "产品类名过长"})
+	remarkcn := ""
+	if tmp, ok := params["RemarkCN"]; ok {
+		if tmp1, ok := tmp.(string); ok {
+			if len(tmp1) > Model.RemarkMaxLen {
+				tmp1 = string([]byte(tmp1)[0:Model.RemarkMaxLen])
+			}
+			remarkcn = tmp1
+		}
 	}
-	category, err := Model.MProducts.CreateCategory(name, remark)
+	category, err := Model.MProducts.CreateCategory(name, namecn, remark, remarkcn)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}

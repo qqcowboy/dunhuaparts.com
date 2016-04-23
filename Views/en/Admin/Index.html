@@ -23,7 +23,7 @@
 </head>
 <body>
 <div>
-	<div data-bind="foreach:ListTips,visible:ListTips().length>0" class="ui_popup_notice" style="display:none;">
+	<div data-bind="foreach:ListTips,visible:ListTips().length>0" class="ui_popup_notice" role="alert" style="display:none;">
 		<span data-bind="text:$data"></span>
 	</div>
 	<div class="top">

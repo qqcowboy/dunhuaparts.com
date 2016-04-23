@@ -166,19 +166,25 @@
 .category-editdialog{
 	text-align:center;
 }
-.category-editdialog input{
-	margin-top:20px;
-	margin-left: 5px;
-	width:200px;
+.category-editdialog .left{
+    width: 100px;
+    float: left;
+    margin-top: 15px;
+    text-align: left;
+    margin-left: 76px;
+}
+.category-editdialog .right{
+    width: 300px;
+    float: left;
+    margin-top: 15px;
+    text-align: left;
+}
+.category-editdialog .right .name{
+	width:274;
 }
 .category-editdialog textarea{
-	margin-top:20px;
-	margin-left: 5px;
-	width:200px;
+	width:274px;
 	height:100px;
-}
-.category-editdialog .s2{
-	margin-left:27px;
 }
 .category-editdialog .btn{
 	margin-top:20px;
@@ -211,4 +217,17 @@
 	width: 95px;
 	position: absolute;
 	top: 3px;
+}
+.editimg img{
+	height:100px;
+}
+.editimg {
+	min-height:100px;
+}
+.editimg .btn-del{
+	position: absolute;
+	left: 190px;
+}
+.editimg:hover .btn-del{
+	display:inline-table!important;
 }

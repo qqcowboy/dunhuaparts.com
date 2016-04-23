@@ -24,53 +24,156 @@
 		<div class="products-title aleft">
 			<span>Products</span>
 			<span data-bind="text:SelCategory().Name">all</span>
-			<a class="btn btn-success product-add-btn" data-bind="visible:SelCategory().ID!=undefined" style="display:none;">
+			<a class="btn btn-success product-add-btn" data-bind="visible:SelCategory().ID!=undefined,click:EventAddProduct" style="display:none;">
  				<i class="fa fa-plus fa-lg"></i> Add
 			</a>
 		</div>
 		<!-- current category -->
 		<div data-bind="foreach:ListProducts" class="products-current-list productslist">
-			<div class="item" data-bind="fadeVisible:$root.SelCategory().ID==undefined||$data.IndexID==$root.SelCategory().ID,if:$root.SelCategory().ID==undefined||$data.IndexID==$root.SelCategory().ID,click:$root.EventSelProducts">
-				<span data-bind="text:$data.Title">Back Cover1</span>
-				<img data-bind="attr:{src:$data.Src}"/>
+			<div class="item" data-bind="click:$root.EventSelProducts">
+				<span>
+					<i data-bind="visible:$data.ExtType==1" class="fa fa-star"></i>
+					<span data-bind="text:$data.Title"></span>
+				</span>
+				<img data-bind="attr:{src:'/img/product/2?id='+$data.Images[0]}"/>
 			</div>
 		</div>
 	</div>
 	<div data-bind="attr:{id:DialogID}" ui-dialog="true">
-		<div data-bind="if:SelProducts().ID!=undefined">
+		<div data-bind="if:SelProduct().ID!=undefined">
 			<div>
-				<span data-bind="text:SelProducts().Title"></span>
+				<span data-bind="text:SelProduct().Title"></span>
 			</div>
 			<div class="imgdialog">
-				<img data-bind="attr:{src:SelProducts().Src}" />
+				<img data-bind="attr:{src:'/img/product?id='+SelProduct().Images[0]}" />
 			</div>
 		</div>
 	</div>
-	
+	<!-- 分类编辑弹出层 -->
 	<div data-bind="attr:{id:DialogEditID}" title="添加/编辑分类" class="category-editdialog" style="display:none;">
 		<div>
-			<span>分类名称</span>
-			<input data-bind="value:AttrCategory().Name" type="text"/><br>
-			<span class="s2">说明</span>
-			<textarea data-bind="value:AttrCategory().Remark" type="text"></textarea>
+			<div class="left">
+				<span>分类名称</span>
+			</div>
+			<div class="right">
+				<input class="name" data-bind="value:AttrCategory().Name" type="text"/>
+			</div>
+			<div class="left">
+				<span>分类中文名称</span>
+			</div>
+			<div class="right">
+				<input class="name" data-bind="value:AttrCategory().NameCN" type="text"/>
+			</div>
+			<div class="left">
+				<span>说明</span>
+			</div>
+			<div class="right">
+				<textarea data-bind="value:AttrCategory().Remark" type="text"></textarea>
+			</div>
+			<div class="left">
+				<span>中文说明</span>
+			</div>
+			<div class="right">
+				<textarea data-bind="value:AttrCategory().RemarkCN" type="text"></textarea>
+			</div>
 		</div>
 		<div class="btn" data-bind="click:EventSaveCategory">
 			<span>保存</span>
 		</div>
 	</div>
+	<!-- 产品编辑弹出层 -->
+	<div data-bind="attr:{id:DialogEdit1ID}" title="添加/编辑产品" class="category-editdialog" style="display:none;">
+		<div>
+			<div class="left">
+				<span>产品名称</span>
+			</div>
+			<div class="right">
+				<input class="name" data-bind="value:AttrProduct().Title" type="text"/>
+			</div>
+			<div class="left">
+				<span>产品中文名称</span>
+			</div>
+			<div class="right">
+				<input class="name" data-bind="value:AttrProduct().TitleCN" type="text"/>
+			</div>
+			<div class="left">
+				<span>产品说明</span>
+			</div>
+			<div class="right">
+				<textarea data-bind="value:AttrProduct().Remark" type="text"></textarea>
+			</div>
+			<div class="left">
+				<span>产品中文说明</span>
+			</div>
+			<div class="right">
+				<textarea data-bind="value:AttrProduct().RemarkCN" type="text"></textarea>
+			</div>
+			<div class="left">
+				<span>是否首页大图</span>
+			</div>
+			<div class="right">
+				<span data-bind="css:{'fa-square-o':AttrProduct().UI_ExtType()==0},click:EventShowBig" class="fa fa-check-square-o fa-lg"></span>
+			</div>
+			<div class="left">
+				<span>产品图片</span>
+			</div>
+			<div class="right editimg" data-bind="visible:AttrProduct().UI_Image().length<1">
+				<input type="file" accept="image/*" data-bind="event:{'change':EventUpImg}"/>
+			</div>
+			<div class="right editimg" data-bind="visible:AttrProduct().UI_Image().length>0,foreach:AttrProduct().UI_Image">
+				<img data-bind="attr:{src:$data.Data||'/img/product?id='+$data.ID}" />
+				<button data-bind="click:$root.EventDelImg" class="btn-del" type="button" style="display:none;"><i class="fa fa-trash-o fa-lg"></i></button>
+			</div>
+		</div>
+		<div class="btn" data-bind="click:EventSaveProduct">
+			<span>保存</span>
+		</div>
+	</div>
+	<!-- 删除分类提醒 -->
+	<div data-bind="attr:{id:DialogDelID}" style="display:none;text-align:center;">
+		<div style="color:red;margin-bottom:20px;">
+			<b>注意，删除分类将同时删除分类下的产品</b>
+		</div>
+		<button data-bind="click:EventCanDel" class="btn btn-default btn-lg" type="button">取消</button>
+		<span>&nbsp;</span>
+		<button data-bind="click:EventSureDel" class="btn btn-danger btn-lg" type="button"><i class="fa fa-remove"></i>删除</button>
+	</div>
 	<script type="text/javascript">
-		
 		var ctrl = $('#admin-products-products');
 		function Products_Products_V1(){
 			this.DialogID = cowboy.sys.guid();
 			this.DialogEditID = cowboy.sys.guid();
+			this.DialogEdit1ID = cowboy.sys.guid();
+			this.DialogDelID = cowboy.sys.guid();
 			//selected category
 			this.SelCategory = ko.observable({});
 			//all categories
 			this.ListCategories = ko.observableArray([]);
-			this.AttrCategory = ko.observable({Name:'',Remark:''});
+			this.AttrCategory = ko.observable({Name:'',Remark:'',NameCN:'',RemarkCN:''});
+			this.TmpCategory={};
+			//  UI_Image:[{ID,Data}]
+			this.AttrProduct = ko.observable({Title:'',Remark:'',TitleCN:'',RemarkCN:'',UI_ExtType:ko.observable(0),UI_Image:ko.observableArray([])});
 			this.ListProducts = ko.observableArray([]);
-			this.SelProducts = ko.observable({});
+			this.AttrLimitProducts = 30;
+			this.SelProduct = ko.observable({});
+			this.FuncGetProducts = function(start,limit,categoryid,callback){
+				if(this.funcgetproducts){
+					return;
+				}
+				var params={Start:start,Limit:limit,CategoryID:categoryid};
+				this.funcgetproducts=true;
+				this.ListProducts([]);
+				$.ajax({url:'/products/query',data:{data:JSON.stringify(params)},type:'post'}).done(function(data){
+					this.funcgetproducts=false;
+					if(data.code==1){
+						console.log(data.data);
+						this.ListProducts(data.data);
+					}
+				}.bind(this)).fail(function(){
+					cowboy.views.FuncAddTip('网络出小差了...');
+					this.funcgetproducts=false;
+				}.bind(this));
+			};
 			this.FuncGetCategory = function(callback){
 				if(this.funcgetcategory){
 					return;
@@ -87,20 +190,107 @@
 					this.funcgetcategory=false;
 				}.bind(this));
 			};
+			this.EventAddProduct=function(m,e){
+				this.AttrProduct({Title:'',Remark:'',TitleCN:'',RemarkCN:'',UI_ExtType:ko.observable(0),UI_Image:ko.observableArray([])});
+				$('#'+this.DialogEdit1ID).dialog('open');
+			}.bind(this);
+			this.EventSaveProduct = function(m,e){
+				if(this.SelCategory().ID==m.ID){
+					return;
+				}
+				this.SelCategory(m);
+				this.FuncGetProducts(-1,this.AttrLimitProducts,m.ID);
+			}.bind(this);
+			this.EventAddCategory=function(m,e){
+				this.AttrCategory({Name:'',Remark:'',NameCN:'',RemarkCN:''});
+				$('#'+this.DialogEditID).dialog('open');
+			}.bind(this);
+			this.EventSaveProduct=function(){
+				var params={Remark:this.AttrProduct().Remark||'',RemarkCN:this.AttrProduct().RemarkCN||'',Title:$.trim(this.AttrProduct().Title||''),TitleCN:$.trim(this.AttrProduct().TitleCN||'')};
+				if (params.Title.length<1){
+					cowboy.views.FuncAddTip('请输入名称');
+					return;
+				}
+				if (params.TitleCN.length<1){
+					cowboy.views.FuncAddTip('请输入中文名称');
+					return;
+				}
+				if(this.eventsaveproduct){
+					return;
+				}
+				this.eventsaveproduct=true;
+				params.ExtType=this.AttrProduct().UI_ExtType();
+				if(this.AttrProduct().ID==undefined){
+					params.CategoryID=this.SelCategory().ID;
+					params.Images=[];
+					$.each(this.AttrProduct().UI_Image(),function(i,item){
+						if(item.Data==undefined||item.Data.length<1){
+							return true;
+						}
+						params.Images.push(item.Data);
+					});
+					if(params.Images.length<1){
+						this.eventsaveproduct=false;
+						cowboy.views.FuncAddTip('请上传图片');
+						return;
+					}
+					$.ajax({url:'/products/create',data:{data:JSON.stringify(params)},type:'post'}).done(function(data){
+						this.eventsaveproduct=false;
+						if(data.code==1){
+							var tmp = data.data;
+							tmp.UI_ExtType=ko.observable(tmp.ExtType);
+							var tmpimg=[];
+							$.each(tmp.Images,function(i,item){
+								tmpimg.push({ID:item,Data:''});
+							});
+							tmp.UI_Image = ko.observableArray(tmpimg);
+							this.ListProducts.unshift(tmp);
+							cowboy.views.FuncAddTip('添加成功');
+							$('#'+this.DialogEdit1ID).dialog('close');
+						}else{
+							cowboy.views.FuncAddTip(data.msg);
+						}
+					}.bind(this)).fail(function(){
+						cowboy.views.FuncAddTip('网络出小差了...');
+						this.eventsaveproduct=false;
+					}.bind(this));
+				}else{
+					params.ID=this.AttrCategory().ID
+					$.ajax({url:'/products/update',data:{data:JSON.stringify(params)},type:'post'}).done(function(data){
+						this.eventsaveproduct=false;
+						if(data.code==1){
+							this.FuncGetCategory();
+							cowboy.views.FuncAddTip('更新成功');
+							$('#'+this.DialogEdit1ID).dialog('close');
+						}else{
+							cowboy.views.FuncAddTip(data.msg);
+						}
+						
+					}.bind(this)).fail(function(){
+						cowboy.views.FuncAddTip('网络出小差了...');
+						this.eventsaveproduct=false;
+					}.bind(this));
+				}
+			};
 			this.EventSelCategory = function(m,e){
 				if(this.SelCategory().ID==m.ID){
 					return;
 				}
 				this.SelCategory(m);
+				this.FuncGetProducts(-1,this.AttrLimitProducts,m.ID);
 			}.bind(this);
 			this.EventAddCategory=function(m,e){
-				this.AttrCategory({Name:'',Remark:''});
+				this.AttrCategory({Name:'',Remark:'',NameCN:'',RemarkCN:''});
 				$('#'+this.DialogEditID).dialog('open');
 			}.bind(this);
 			this.EventSaveCategory=function(){
-				var params={Remark:this.AttrCategory().Remark||'',Name:$.trim(this.AttrCategory().Name||'')};
+				var params={Remark:this.AttrCategory().Remark||'',RemarkCN:this.AttrCategory().RemarkCN||'',Name:$.trim(this.AttrCategory().Name||''),NameCN:$.trim(this.AttrCategory().NameCN||'')};
 				if (params.Name.length<1){
 					cowboy.views.FuncAddTip('请输入分类名称');
+					return;
+				}
+				if (params.NameCN.length<1){
+					cowboy.views.FuncAddTip('请输入分类中文名称');
 					return;
 				}
 				if(this.eventsavecategory){
@@ -140,29 +330,58 @@
 				}
 			}.bind(this);
 			this.EventSelProducts = function(m,e){
-				this.SelProducts(m);
+				this.SelProduct(m);
 				$('#'+this.DialogID).dialog('open');
 			}.bind(this);
 			this.EventEditCategory = function(m,e){
 				this.AttrCategory(m);
 				$('#'+this.DialogEditID).dialog('open');
 			}.bind(this);
-			this.EventDelCategory = function(m,e){
+			this.EventCanDel = function(){
+				this.TmpCategory={};
+				$('#'+this.DialogDelID).dialog('close');
+			};
+			this.EventShowBig = function(m,e){
+				this.AttrProduct().UI_ExtType(this.AttrProduct().UI_ExtType()==0?1:0);
+			};
+			this.EventDelImg = function(m,e){
+				this.AttrProduct().UI_Image.remove(m);
+			}.bind(this);
+			this.EventUpImg = function(m,e){
+				var ctrl = $(e.target);
+				cowboy.func.img_handle(ctrl[0],function(data){
+					ctrl.val('');
+					if(data==''){
+						cowboy.views.FuncAddTip('图片上传失败');
+						return;
+					}
+					this.AttrProduct().UI_Image.push({ID:'',Data:data});
+				}.bind(this),800);
+			};
+			this.EventSureDel = function(){
+				m=this.TmpCategory;
 				var params={ID:m.ID};
 				$.ajax({url:'/products/removecategory',data:{data:JSON.stringify(params)},type:'get'}).done(function(data){
 					if(data.code==1){
 						this.ListCategories.remove(m);
 						this.FuncGetCategory();
 						cowboy.views.FuncAddTip('删除成功');
+						$('#'+this.DialogDelID).dialog('close');
 					}else{
 						cowboy.views.FuncAddTip(data.msg);
 					}
 				}.bind(this)).fail(function(){
 					cowboy.views.FuncAddTip('网络出小差了...');
 				}.bind(this));
+			};
+			this.EventDelCategory = function(m,e){
+				this.TmpCategory=m;
+				$('#'+this.DialogDelID).dialog('open');
 			}.bind(this);
 			this.Init = function(){
-				this.FuncGetCategory ();
+				this.FuncGetCategory(function(){
+					
+				}.bind(this));
 				$('#'+this.DialogID).dialog({
 					autoOpen: false,
 					modal:true,
@@ -180,8 +399,8 @@
 				$('#'+this.DialogEditID).dialog({
 					autoOpen: false,
 					modal:true,
-					width:500,
-					height:300,
+					width:580,
+					height:500,
 					show: {
 					  effect: "blind",
 					  duration: 20
@@ -190,6 +409,32 @@
 					  effect: "explode"
 					}
 				});
+				$('#'+this.DialogEdit1ID).dialog({
+					autoOpen: false,
+					modal:true,
+					width:580,
+					height:600,
+					show: {
+					  effect: "blind",
+					  duration: 20
+					},
+					hide: {
+					  effect: "explode"
+					}
+				});	
+				$('#'+this.DialogDelID).dialog({
+					title:"注意",
+					autoOpen: false,
+					modal:true,
+					show: {
+					  effect: "blind",
+					  duration: 20
+					},
+					hide: {
+					  effect: "explode",
+					  duration: 200
+					}
+				});			
 			};
 			this.Bindings=function(ctrl){
 				ko.applyBindings(this,ctrl);

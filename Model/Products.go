@@ -12,9 +12,11 @@ var MProducts *Products
 type ProductsInfo struct {
 	ID         bson.ObjectId `bson:"_id"`
 	Title      string        `bson:"Title" 产品名称`
+	TitleCN    string        `bson:"TitleCN" 产品中文名称`
 	Images     []string      `bson:"Images" json:",omitempty" 图片id`
 	CategoryID string        `bson:"IndexID"  json:"CategoryID" 分类`
 	Remark     string        `bson:"Remark" 产品说明`
+	RemarkCN   string        `bson:"RemarkCN" 产品中文说明`
 	ExtType    int           `bson:"ExtType" 0普通/1首页大图`
 	Score      int           `bson:"Score" 分数 浏览次数 分数多的为热门商品`
 	Version    float64       `bson:"Version" 时间戳 用于排序 索引`
@@ -23,7 +25,9 @@ type ProductsInfo struct {
 type ProductsCategory struct {
 	ID         bson.ObjectId `bson:"_id"`
 	Name       string        `bson:"Name" 分类名称`
+	NameCN     string        `bson:"NameCN" 分类中文名称`
 	Remark     string        `bson:"Remark" 说明`
+	RemarkCN   string        `bson:"RemarkCN" 中文说明`
 	ExtType    int           `bson:"ExtType" json:",omitempty" 100`
 	Version    float64       `bson:"Version" 时间戳　用于排序　索引`
 	CreateDate string        `bson:"CreateDate"  创建时间`
@@ -120,10 +124,10 @@ func (this *Products) GetImage(id string) (base64 string, err error) {
 @see :新增产品
 @params : Images [base64]
 */
-func (this *Products) CreateProduct(Title, IndexID, Remark string, Images []string, ExtType int) (product ProductsInfo, err error) {
+func (this *Products) CreateProduct(Title, TitleCN, IndexID, Remark, RemarkCN string, Images []string, ExtType int) (product ProductsInfo, err error) {
 	imageids := []string{}
 	productid := bson.NewObjectId()
-	tmpproduct := bson.M{"_id": productid, "Title": Title, "IndexID": IndexID, "Remark": Remark,
+	tmpproduct := bson.M{"_id": productid, "Title": Title, "TitleCN": TitleCN, "IndexID": IndexID, "Remark": Remark, "RemarkCN": RemarkCN,
 		"ExtType": ExtType, "Images": imageids, "Score": 0, "Version": mystr.TimeStamp(), "CreateDate": mystr.Date(),
 	}
 	mongo := this.mSession()
@@ -216,9 +220,9 @@ func (this *Products) AddScore(id string) (err error) {
 @see :创建分类
 @params :
 */
-func (this *Products) CreateCategory(Name, Remark string) (category ProductsCategory, err error) {
+func (this *Products) CreateCategory(Name, Remark, NameCN, RemarkCN string) (category ProductsCategory, err error) {
 	//{_id,Remark,Name,CreateDate,ParentID,UID}
-	tmp := bson.M{"_id": bson.NewObjectId(), "Name": Name, "Remark": Remark,
+	tmp := bson.M{"_id": bson.NewObjectId(), "Name": Name, "Remark": Remark, "NameCN": NameCN, "RemarkCN": RemarkCN,
 		"ExtType": 100, "Version": mystr.TimeStamp(), "CreateDate": mystr.Date(),
 	}
 	mongo := this.mSession()

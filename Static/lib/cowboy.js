@@ -71,7 +71,79 @@ cowboy.func={
         $('head').append('<link rel="stylesheet" type="text/css" href="'+url+'">');
         this.cache['css'+url]=true;
         return true;
-    }
+    },
+	img_handle:function(obj,func,max_size){
+		if(func!=undefined && $.isFunction(func)==true){
+			var data;
+			$.when((function(obj,max_size){
+				var dom ;
+				var def = $.Deferred();
+				if(obj.html!=undefined) dom = obj.get(0);
+				else  if(obj.nodeType!=undefined)dom = obj;
+				if(dom.files==undefined){data ='';def.reject();}
+				else if(dom.value=="") {data = '';def.reject();}
+				else{
+					var file = dom.files[0];
+					var type_str = "image";
+					if(file.type=="" ||file.type.indexOf(type_str)==-1){data='';def.reject();}
+					else{
+						var filereader = new FileReader();
+						var str;
+						if(max_size ==undefined)max_size =300; //默认为300K大小
+						filereader.onload = function(e){
+							var img = $('<img>').get(0);
+							str = e.target.result;
+							img.src = str;	
+							img.onload = function(){
+								var pic=img_context(img),persent = max_size/pic.size;
+								if(persent<1) pic.src = img_context(img,100*persent).src;
+								data = pic.src;
+								def.resolve();
+							};
+						};		
+						filereader.readAsDataURL(file);
+					}
+				}
+				return def;
+			})(obj,max_size)).always(function(){func(data);});
+		}
+		function img_context(img,p){
+			if(p==undefined) p = 100;
+			var canvas_tmp = $('<canvas ></canvas>').get(0);
+			var width = img.width,height = img.height;
+			canvas_tmp.width = width*(p/100);canvas_tmp.height = height*(p/100);
+			var ctx = canvas_tmp.getContext('2d');
+			ctx.drawImage(img,0,0,width*(p/100),height*(p/100));
+			var str = canvas_tmp.toDataURL('image/jpeg');
+			var size = ((atob(str.split(',')[1])).length)/1024;
+			return {src:str,size:size};
+		}
+	},
+	img_resize:function(img,w,h){
+		var pw,ph;
+		if(w==undefined&&h==undefined){
+			pw=1;
+			ph=1;
+		}else if(w==undefined){
+			ph=h/img.height;
+			pw=ph;
+		}else if(h==undefined){
+			pw=w/img.width;
+			ph=pw;
+		}else{
+			pw=w/img.width;
+			ph=h/img.height;
+		}
+		var canvas_tmp = $('<canvas ></canvas>').get(0);
+		var width = img.width,height = img.height;
+		canvas_tmp.width = width*pw;
+		canvas_tmp.height = height*ph;
+		
+		var ctx = canvas_tmp.getContext('2d');
+		ctx.drawImage(img,0,0,width*pw,height*ph);
+		var str = canvas_tmp.toDataURL('image/jpeg');
+		return str;
+	}
 };
 
 String.prototype.toDate = function(){
