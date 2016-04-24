@@ -155,12 +155,12 @@ func (this *Products) CreateProduct(Title, TitleCN, IndexID, Remark, RemarkCN st
 }
 
 /*AddImg
-@see :添加产品的图片 先锁定--取产品信息--插入图片--更新产品信息
+@see :添加产品的图片 取产品信息--插入图片--暂不更新产品信息
 @params :
 */
-func (this *Products) AddImg(id string, imgdata string) (err error) {
+func (this *Products) AddImg(id string, imgdata string) (imgid string, err error) {
 	if len(imgdata) < 1 {
-		return nil
+		return
 	}
 	product := ProductsInfo{}
 	mongo := this.mSession()
@@ -180,10 +180,11 @@ func (this *Products) AddImg(id string, imgdata string) (err error) {
 	if err != nil {
 		return
 	}
-	err = col.UpdateId(bson.ObjectIdHex(id), bson.M{"$push": bson.M{"Images": tmpid.Hex()}})
-	if err != nil {
-		col.RemoveId(tmpid)
-	}
+	//	err = col.UpdateId(bson.ObjectIdHex(id), bson.M{"$push": bson.M{"Images": tmpid.Hex()}})
+	//	if err != nil {
+	//		col.RemoveId(tmpid)
+	//	}
+	imgid = tmpid.Hex()
 	return
 }
 

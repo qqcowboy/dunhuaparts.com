@@ -19,7 +19,7 @@
 				<div u="slides" data-bind="foreach:ListProducts" class="slides">
 					<div data-bind="click:$root.EventProductsDetail">
 						<span data-bind="text:$data.Title"></span>
-						<img data-bind="attr:{src:$data.Src}" u="image" />
+						<img data-bind="attr:{src:'/img/product/4?id='+$data.Images[0]}" u="image" />
 					</div>
 				</div>
 			</div>
@@ -84,7 +84,7 @@
 				<span data-bind="text:SelProducts().Title"></span>
 			</div>
 			<div  class="imgdialog">
-				<img data-bind="attr:{src:SelProducts().Src}" />
+				<img data-bind="attr:{src:'/img/product?id='+SelProducts().Images[0]}" />
 			</div>
 		</div>
 	</div>
@@ -97,25 +97,7 @@
 			this.DialogProductID = cowboy.sys.guid();
 			this.SelProducts=ko.observable({});
 			this.ListCategories = ko.observableArray([]);
-			this.ListProducts = ko.observableArray([
-				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Back Cover.jpg',Title:'Back Cover'},
-				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Catridge.jpg',Title:'Catridge'},
-				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Face up Assembly.JPG',Title:'Face up Assembly'},
-				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Gear Assembly.jpg',Title:'Gear Assembly'},
-				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/High Volt Board.jpg',Title:'High Volt Board'},
-				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Laser Scaner.jpg',Title:'Laser Scaner'},
-				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/PIU.JPG',Title:'PIU'},
-				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Power Board.JPG',Title:'Power Board'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Drive Gear Assembly.jpg',Title:'Drive Gear Assembly'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Fuser Assembly.jpg',Title:'Fuser Assembly'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Laser Scanner.jpg',Title:'Laser Scanner'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Motor.jpg',Title:'Motor'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pick up Assembly.jpg',Title:'Pick up Assembly'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pick up Roller.jpg',Title:'Pick up Roller'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Power Board.jpg',Title:'Power Board'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pressure Roller.jpg',Title:'Pressure Roller'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Tray.jpg',Title:'Tray'}
-			]);
+			this.ListProducts = ko.observableArray([]);
 			this.ListHotProducts = ko.observableArray([
 				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Laser Scaner.jpg',Title:'Laser Scaner'},
 				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/PIU.JPG',Title:'PIU'},
@@ -134,6 +116,38 @@
 						this.ListCategories(data.data);
 					}
 				}.bind(this));
+			};
+			this.FuncGetProducts = function(){
+				$.ajax({url:'/products/query',type:'post',data:{data:JSON.stringify({Limit:20})}}).done(function(data){
+					if(data.code==1){
+						this.ListProducts(data.data);
+						this.FuncSlide();
+					}
+				}.bind(this));
+			};
+			this.FuncSlide = function(){
+		        	var jssor_slider1 = new $JssorSlider$('tabs-Products', {
+		        		$AutoPlay: true,
+					$Idle: 0,/*每张图片滚动间隔*/
+					$SlideDuration: 2920,
+					$SlideEasing: $Jease$.$Linear,
+					$SlideHeight:227,
+					$SlideWidth: 227,
+					$SlideSpacing:5,
+					$Cols: 4,
+					$FillMode:1
+		        	});
+				function ScaleSlider() {
+					var refSize = jssor_slider1.$Elmt.parentNode.clientWidth;
+					if (refSize) {
+						refSize = Math.min(refSize, 810);
+						jssor_slider1.$ScaleWidth(refSize);
+					}
+					else {
+						window.setTimeout(ScaleSlider, 30);
+					}
+				}
+				ScaleSlider();
 			};
 			this.EventNewsDetail = function(m,e){
 				cowboy.func.get('/home/news/detail',function(data){
@@ -178,12 +192,14 @@
 			};
 			this.Init = function(){
 				this.FuncGetCategories();
+				this.FuncGetProducts();
 				$( "#home-main-index-products" ).tabs();
 				$('#'+this.DialogProductID).dialog({
 					autoOpen: false,
 					modal:true,
 					title:'Product',
 					width:910,
+					position:{ my: "top", at: "top", of: window },
 					show: {
 						effect: "blind",
 						duration: 500
@@ -198,6 +214,7 @@
 					modal:true,
 					title:'News',
 					width:910,
+					position:{ my: "top", at: "top", of: window },
 					show: {
 						effect: "blind",
 						duration: 500
@@ -207,28 +224,6 @@
 						duration: 200
 					}
 				});
-		        	var jssor_slider1 = new $JssorSlider$('tabs-Products', {
-		        		$AutoPlay: true,
-					$Idle: 0,/*每张图片滚动间隔*/
-					$SlideDuration: 2920,
-					$SlideEasing: $Jease$.$Linear,
-					$SlideHeight:227,
-					$SlideWidth: 227,
-					$SlideSpacing:5,
-					$Cols: 4,
-					$FillMode:1
-		        	});
-				function ScaleSlider() {
-					var refSize = jssor_slider1.$Elmt.parentNode.clientWidth;
-					if (refSize) {
-						refSize = Math.min(refSize, 810);
-						jssor_slider1.$ScaleWidth(refSize);
-					}
-					else {
-						window.setTimeout(ScaleSlider, 30);
-					}
-				}
-				ScaleSlider();
 			};
 			this.Bindings=function(ctrl){
 				ko.applyBindings(this,ctrl);

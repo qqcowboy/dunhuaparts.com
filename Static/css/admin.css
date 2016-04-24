@@ -89,7 +89,7 @@
 	float:left;
 	width:40%;
 }
-.top .right div,.top .right a{
+.top .right div, .top .right a{
 	float:right;
 	margin-right:15px;
 	color:#fff!important;
@@ -98,8 +98,7 @@
 .ibody{
 	border: 7px ridge #668ECB;
 	width: 100%;
-	height: 85%;
-	min-height:600px;
+	min-height:1000px;
 	position: absolute;
 }
 
@@ -135,13 +134,40 @@
 }
 .admin-products-left{
 	border-right: 1px solid rgba(104, 133, 158, 0.18); 
+	width: 320px;
 }
 .admin-products-right{
 	border-left:none;
-	width:83%;
+	width:80%;
+	min-width:500px;
+	left:320px;
 }
 .productslist{
-	padding-right: 86px;
+	padding-left: 26px;
+	padding-top: 26px;
+	overflow-y:scroll;
+}
+.productslist .hometag{
+	position: absolute;
+	left: 21px;
+	top: 5px;
+}
+.productslist .hovshow{
+	position: absolute;
+	top: 6px;
+	right:24px;
+}
+.productslist .item{
+	cursor: pointer;
+}
+.productslist .item:hover .hovshow{
+	display:block!important;
+}
+.productslist .item .hovshow a{
+	margin-left:7px;
+}
+.grid-item {
+	width: 250px; 
 }
 .addcategory{
 	position: relative;
@@ -159,6 +185,13 @@
 .products-tree .item i{
 	margin-left:20px;
 }
+.products-tree .item .name{
+	display: inline-flex;
+	width: 205px;
+	white-space:nowrap; 
+	overflow:hidden; 
+	text-overflow:ellipsis;
+}
 .addcategory i{
 	margin-left: 72px;
 }
@@ -166,25 +199,11 @@
 .category-editdialog{
 	text-align:center;
 }
-.category-editdialog .left{
-    width: 100px;
-    float: left;
+.category-editdialog .item{
     margin-top: 15px;
-    text-align: left;
-    margin-left: 76px;
 }
-.category-editdialog .right{
-    width: 300px;
-    float: left;
-    margin-top: 15px;
-    text-align: left;
-}
-.category-editdialog .right .name{
-	width:274;
-}
-.category-editdialog textarea{
-	width:274px;
-	height:100px;
+.category-editdialog .item>textarea{
+    height:100px;
 }
 .category-editdialog .btn{
 	margin-top:20px;
@@ -214,6 +233,12 @@
 }
 .product-add-btn{
 	left: 350px;
+	width: 95px;
+	position: absolute;
+	top: 3px;
+}
+.product-lang-btn{
+	left: 450px;
 	width: 95px;
 	position: absolute;
 	top: 3px;

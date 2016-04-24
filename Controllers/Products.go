@@ -122,7 +122,7 @@ func (this *Products) Update() *Web.JsonResult {
 	if indexid, ok := params["CategoryID"]; ok && mystr.IsString(indexid) && len(indexid.(string)) > 0 {
 		fields["IndexID"] = indexid
 	}
-	if images, ok := params["Images"]; ok && mystr.IsStrings(images) {
+	if images, ok := params["Images"]; ok && mystr.IsInterfaces(images) {
 		fields["Images"] = images
 	}
 
@@ -149,6 +149,31 @@ func (this *Products) Update() *Web.JsonResult {
 		}
 	}
 	err := Model.MProducts.UpdateId(id, fields)
+	if err != nil {
+		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
+	}
+	return this.Json(map[string]interface{}{"code": 1, "data": true})
+}
+
+/*AddView
+@see 浏览产品次数+1[get]
+@param data : json {ID}
+*/
+func (this *Products) AddView() *Web.JsonResult {
+	if this.IsPost {
+		return this.Json(map[string]interface{}{"code": 43001})
+	}
+	if _, ok := this.QueryString["data"]; !ok {
+		return this.Json(map[string]interface{}{"code": 43004})
+	}
+	params := make(map[string]interface{})
+	myjson.JsonDecode(this.QueryString["data"], &params)
+	if id, ok := params["ID"]; !ok || !mystr.IsString(id) || len(id.(string)) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "要更新的ID不存在"})
+	}
+	id := params["ID"].(string)
+
+	err := Model.MProducts.AddScore(id)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
@@ -231,11 +256,11 @@ func (this *Products) AddProductImg() *Web.JsonResult {
 		return this.Json(map[string]interface{}{"code": 43005, "msg": "参数不完整Image"})
 	}
 	image := params["Image"].(string)
-	err := Model.MProducts.AddImg(id, image)
+	imgid, err := Model.MProducts.AddImg(id, image)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
-	return this.Json(map[string]interface{}{"code": 1, "data": true})
+	return this.Json(map[string]interface{}{"code": 1, "data": imgid})
 }
 
 /*Remove

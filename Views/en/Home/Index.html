@@ -99,6 +99,9 @@
 					}
 				}.bind(this));
 			},
+			FuncAddProductView:function(id){
+				$.ajax({url:'/products/addview',type:'get',data:{data:JSON.stringify({ID:id})}});
+			},
 			FuncInit:function(){
 				$('[data-url]').on('click','',function(e){
 					var ictrl;

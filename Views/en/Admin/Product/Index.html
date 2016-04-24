@@ -7,10 +7,10 @@
 		<div data-bind="foreach:ListCategories" class="products-tree">
 			<div class="item hovdisplay hovbig" data-bind="attr:{title:$data.Remark},css:{'current':$root.SelCategory().ID==$data.ID},click:$root.EventSelCategory">
 				<i class="fa fa-chevron-circle-right"></i>
-				<span data-bind="text:$data.Name"></span>
+				<div class="name"><span data-bind="text:$root.AttrLang()==0?$data.Name:$data.NameCN"></span></div>
 				<div class="ctrl">
-					<a data-bind="click:$root.EventEditCategory,clickBubble:false"><i class="fa fa-edit"></i></a>
-					<a data-bind="click:$root.EventDelCategory,clickBubble:false"><i class="fa fa-remove"></i></a>
+					<a data-bind="click:$root.EventEditCategory,clickBubble:false" title="编辑分类信息"><i class="fa fa-edit"></i></a>
+					<a data-bind="click:$root.EventDelCategory,clickBubble:false" title="删除分类"><i class="fa fa-remove"></i></a>
 				</div>
 			</div>
 		</div>
@@ -23,28 +23,40 @@
 	<div class="products-right admin-products-right">
 		<div class="products-title aleft">
 			<span>Products</span>
-			<span data-bind="text:SelCategory().Name">all</span>
+			<span data-bind="text:AttrLang()==0?SelCategory().Name:SelCategory().NameCN">all</span>
 			<a class="btn btn-success product-add-btn" data-bind="visible:SelCategory().ID!=undefined,click:EventAddProduct" style="display:none;">
  				<i class="fa fa-plus fa-lg"></i> Add
 			</a>
+			<a class="btn btn-success product-lang-btn" data-bind="click:EventLang">
+				<i class="fa fa-eye fa-lg"></i>
+ 				<span data-bind="text:AttrLang()==0?'英文':'中文'">中文/英文</span>
+			</a>
 		</div>
 		<!-- current category -->
-		<div data-bind="foreach:ListProducts" class="products-current-list productslist">
-			<div class="item" data-bind="click:$root.EventSelProducts">
-				<span>
-					<i data-bind="visible:$data.ExtType==1" class="fa fa-star"></i>
-					<span data-bind="text:$data.Title"></span>
-				</span>
-				<img data-bind="attr:{src:'/img/product/2?id='+$data.Images[0]}"/>
+		<div data-bind="foreach:ListProducts" class="row grid productslist">
+			<div class="col-sm-3 col-md-2 grid-item item" data-bind="click:$root.EventSelProducts">
+				<div class="thumbnail">
+					<i data-bind="visible:$data.ExtType==1" class="label label-warning fa-lg hometag" style="display:none;">首页大图</i>
+					<img data-bind="attr:{src:'/img/product/3?id='+$data.Images[0]}">
+					<div class="caption">
+						<h3 data-bind="text:$root.AttrLang()==0?$data.Title:$data.TitleCN"></h3>
+						<p data-bind="text:$root.AttrLang()==0?$data.Remark:$data.RemarkCN"></p>
+					</div>
+					<div class="hovshow" style="display:none;">
+						<a data-bind="click:$root.EventEditProduct,clickBubble:false" title="编辑"><i class="fa fa-edit fa-lg"></i></a>
+						<a data-bind="click:$root.EventDelProduct,clickBubble:false" title="删除"><i class="fa fa-remove fa-lg"></i></a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
+	<!-- 浏览产品弹出层 -->
 	<div data-bind="attr:{id:DialogID}" ui-dialog="true">
 		<div data-bind="if:SelProduct().ID!=undefined">
 			<div>
 				<span data-bind="text:SelProduct().Title"></span>
 			</div>
-			<div class="imgdialog">
+			<div  class="imgdialog">
 				<img data-bind="attr:{src:'/img/product?id='+SelProduct().Images[0]}" />
 			</div>
 		</div>
@@ -52,29 +64,21 @@
 	<!-- 分类编辑弹出层 -->
 	<div data-bind="attr:{id:DialogEditID}" title="添加/编辑分类" class="category-editdialog" style="display:none;">
 		<div>
-			<div class="left">
-				<span>分类名称</span>
+			<div class="input-group input-group-lg item">
+				  <span class="input-group-addon" id="sizing-addon1">名称 <span class="label label-primary">英文</span></span>
+				  <input type="text" class="form-control" data-bind="value:AttrCategory().Name" aria-describedby="sizing-addon1">
 			</div>
-			<div class="right">
-				<input class="name" data-bind="value:AttrCategory().Name" type="text"/>
+			<div class="input-group input-group-lg item">
+				  <span class="input-group-addon" id="sizing-addon2">名称 <span class="label label-info">中文</span></span>
+				  <input type="text" class="form-control" data-bind="value:AttrCategory().NameCN" aria-describedby="sizing-addon2">
 			</div>
-			<div class="left">
-				<span>分类中文名称</span>
+			<div class="input-group input-group-lg item">
+				  <span class="input-group-addon" id="sizing-addon3">说明 <span class="label label-primary">英文</span></span>
+				  <textarea type="text" class="form-control" data-bind="value:AttrCategory().Remark" aria-describedby="sizing-addon3"></textarea>
 			</div>
-			<div class="right">
-				<input class="name" data-bind="value:AttrCategory().NameCN" type="text"/>
-			</div>
-			<div class="left">
-				<span>说明</span>
-			</div>
-			<div class="right">
-				<textarea data-bind="value:AttrCategory().Remark" type="text"></textarea>
-			</div>
-			<div class="left">
-				<span>中文说明</span>
-			</div>
-			<div class="right">
-				<textarea data-bind="value:AttrCategory().RemarkCN" type="text"></textarea>
+			<div class="input-group input-group-lg item">
+				  <span class="input-group-addon" id="sizing-addon4">说明 <span class="label label-info">中文</span></span>
+				  <textarea type="text" class="form-control" data-bind="value:AttrCategory().RemarkCN" aria-describedby="sizing-addon4"></textarea>
 			</div>
 		</div>
 		<div class="btn" data-bind="click:EventSaveCategory">
@@ -84,40 +88,32 @@
 	<!-- 产品编辑弹出层 -->
 	<div data-bind="attr:{id:DialogEdit1ID}" title="添加/编辑产品" class="category-editdialog" style="display:none;">
 		<div>
-			<div class="left">
-				<span>产品名称</span>
+			<div class="input-group input-group-lg item">
+				  <span class="input-group-addon" id="sizing-addon1">名称 <span class="label label-primary">英文</span></span>
+				  <input type="text" class="form-control" data-bind="value:AttrProduct().Title" aria-describedby="sizing-addon1">
 			</div>
-			<div class="right">
-				<input class="name" data-bind="value:AttrProduct().Title" type="text"/>
+			<div class="input-group input-group-lg item">
+				  <span class="input-group-addon" id="sizing-addon2">名称 <span class="label label-info">中文</span></span>
+				  <input type="text" class="form-control" data-bind="value:AttrProduct().TitleCN" aria-describedby="sizing-addon2">
 			</div>
-			<div class="left">
-				<span>产品中文名称</span>
+			<div class="input-group input-group-lg item">
+				  <span class="input-group-addon" id="sizing-addon3">说明 <span class="label label-primary">英文</span></span>
+				  <textarea type="text" class="form-control" data-bind="value:AttrProduct().Remark" aria-describedby="sizing-addon3"></textarea>
 			</div>
-			<div class="right">
-				<input class="name" data-bind="value:AttrProduct().TitleCN" type="text"/>
+			<div class="input-group input-group-lg item">
+				  <span class="input-group-addon" id="sizing-addon4">说明 <span class="label label-info">中文</span></span>
+				  <textarea type="text" class="form-control" data-bind="value:AttrProduct().RemarkCN" aria-describedby="sizing-addon4"></textarea>
 			</div>
-			<div class="left">
-				<span>产品说明</span>
-			</div>
-			<div class="right">
-				<textarea data-bind="value:AttrProduct().Remark" type="text"></textarea>
-			</div>
-			<div class="left">
-				<span>产品中文说明</span>
-			</div>
-			<div class="right">
-				<textarea data-bind="value:AttrProduct().RemarkCN" type="text"></textarea>
-			</div>
-			<div class="left">
-				<span>是否首页大图</span>
-			</div>
-			<div class="right">
-				<span data-bind="css:{'fa-square-o':AttrProduct().UI_ExtType()==0},click:EventShowBig" class="fa fa-check-square-o fa-lg"></span>
+			<div class="input-group input-group-lg item">
+				<span class="input-group-addon">
+					<input data-bind="checked:AttrProduct().UI_ExtType()==1,event:{'change':EventShowBig}" type="checkbox">
+				</span>
+				<span class="form-control">是否首页大图</span>
 			</div>
 			<div class="left">
 				<span>产品图片</span>
 			</div>
-			<div class="right editimg" data-bind="visible:AttrProduct().UI_Image().length<1">
+			<div class="right editimg" data-bind="visible:AttrProduct().UI_Image().length<AttrImgLimit">
 				<input type="file" accept="image/*" data-bind="event:{'change':EventUpImg}"/>
 			</div>
 			<div class="right editimg" data-bind="visible:AttrProduct().UI_Image().length>0,foreach:AttrProduct().UI_Image">
@@ -155,7 +151,23 @@
 			this.AttrProduct = ko.observable({Title:'',Remark:'',TitleCN:'',RemarkCN:'',UI_ExtType:ko.observable(0),UI_Image:ko.observableArray([])});
 			this.ListProducts = ko.observableArray([]);
 			this.AttrLimitProducts = 30;
+			this.AttrLang = ko.observable(0);
+			this.AttrImgLimit = 1; 
+			this.AttrmasonryOptions = {itemSelector: '.grid-item',
+				columnWidth:20,
+				fitWidth: false
+			};
+			this.Attrmasonry={};
 			this.SelProduct = ko.observable({});
+			this.FuncMasonry=function(){
+				try{
+					this.Attrmasonry.masonry('destroy');
+				}catch(e){console.log(e);}
+				this.Attrmasonry.masonry( this.AttrmasonryOptions );
+				this.Attrmasonry.imagesLoaded().progress( function() {
+				 	this.Attrmasonry.masonry('layout');
+				}.bind(this));
+			}
 			this.FuncGetProducts = function(start,limit,categoryid,callback){
 				if(this.funcgetproducts){
 					return;
@@ -166,8 +178,8 @@
 				$.ajax({url:'/products/query',data:{data:JSON.stringify(params)},type:'post'}).done(function(data){
 					this.funcgetproducts=false;
 					if(data.code==1){
-						console.log(data.data);
 						this.ListProducts(data.data);
+						this.FuncMasonry();
 					}
 				}.bind(this)).fail(function(){
 					cowboy.views.FuncAddTip('网络出小差了...');
@@ -190,16 +202,12 @@
 					this.funcgetcategory=false;
 				}.bind(this));
 			};
+			this.EventLang = function(){
+				this.AttrLang(this.AttrLang()==0?1:0);
+			};
 			this.EventAddProduct=function(m,e){
 				this.AttrProduct({Title:'',Remark:'',TitleCN:'',RemarkCN:'',UI_ExtType:ko.observable(0),UI_Image:ko.observableArray([])});
 				$('#'+this.DialogEdit1ID).dialog('open');
-			}.bind(this);
-			this.EventSaveProduct = function(m,e){
-				if(this.SelCategory().ID==m.ID){
-					return;
-				}
-				this.SelCategory(m);
-				this.FuncGetProducts(-1,this.AttrLimitProducts,m.ID);
 			}.bind(this);
 			this.EventAddCategory=function(m,e){
 				this.AttrCategory({Name:'',Remark:'',NameCN:'',RemarkCN:''});
@@ -215,6 +223,17 @@
 					cowboy.views.FuncAddTip('请输入中文名称');
 					return;
 				}
+				params.Images=[];
+				$.each(this.AttrProduct().UI_Image(),function(i,item){
+					if(item.ID==undefined||item.ID.length<1){
+						return true;
+					}
+					params.Images.push(item.ID);
+				});
+				if (params.Images.length<1){
+					cowboy.views.FuncAddTip('需要上传产品图片');
+					return;
+				}
 				if(this.eventsaveproduct){
 					return;
 				}
@@ -222,13 +241,6 @@
 				params.ExtType=this.AttrProduct().UI_ExtType();
 				if(this.AttrProduct().ID==undefined){
 					params.CategoryID=this.SelCategory().ID;
-					params.Images=[];
-					$.each(this.AttrProduct().UI_Image(),function(i,item){
-						if(item.Data==undefined||item.Data.length<1){
-							return true;
-						}
-						params.Images.push(item.Data);
-					});
 					if(params.Images.length<1){
 						this.eventsaveproduct=false;
 						cowboy.views.FuncAddTip('请上传图片');
@@ -245,6 +257,7 @@
 							});
 							tmp.UI_Image = ko.observableArray(tmpimg);
 							this.ListProducts.unshift(tmp);
+							this.FuncMasonry();
 							cowboy.views.FuncAddTip('添加成功');
 							$('#'+this.DialogEdit1ID).dialog('close');
 						}else{
@@ -255,11 +268,11 @@
 						this.eventsaveproduct=false;
 					}.bind(this));
 				}else{
-					params.ID=this.AttrCategory().ID
+					params.ID=this.AttrProduct().ID
 					$.ajax({url:'/products/update',data:{data:JSON.stringify(params)},type:'post'}).done(function(data){
 						this.eventsaveproduct=false;
 						if(data.code==1){
-							this.FuncGetCategory();
+							this.FuncGetProducts(-1,this.AttrLimitProducts,this.AttrCategory().ID);
 							cowboy.views.FuncAddTip('更新成功');
 							$('#'+this.DialogEdit1ID).dialog('close');
 						}else{
@@ -333,6 +346,30 @@
 				this.SelProduct(m);
 				$('#'+this.DialogID).dialog('open');
 			}.bind(this);
+			this.EventEditProduct = function(m,e){
+				m.UI_ExtType=ko.observable(m.ExtType);
+				var tmp=[];
+				$.each(m.Images,function(i,item){
+					tmp.push({ID:item,Data:''});
+				});
+				m.UI_Image=ko.observableArray(tmp);
+				this.AttrProduct(m);
+				$('#'+this.DialogEdit1ID).dialog('open');
+			}.bind(this);
+			this.EventDelProduct = function(m,e){
+				var params={ID:[m.ID]};
+				$.ajax({url:'/products/remove',data:{data:JSON.stringify(params)},type:'get'}).done(function(data){
+					if(data.code==1){
+						this.ListProducts.remove(m);
+						this.Attrmasonry.masonry('layout');
+						cowboy.views.FuncAddTip('删除成功');
+					}else{
+						cowboy.views.FuncAddTip(data.msg);
+					}
+				}.bind(this)).fail(function(){
+					cowboy.views.FuncAddTip('网络出小差了...');
+				}.bind(this));
+			}.bind(this);
 			this.EventEditCategory = function(m,e){
 				this.AttrCategory(m);
 				$('#'+this.DialogEditID).dialog('open');
@@ -355,16 +392,27 @@
 						cowboy.views.FuncAddTip('图片上传失败');
 						return;
 					}
-					this.AttrProduct().UI_Image.push({ID:'',Data:data});
+					$.ajax({url:'/products/addproductimg',type:'post',dataType:'json',data:{data:JSON.stringify({ProductID:this.AttrProduct().ID,Image:data})}}).done(function(result){
+						if(result.code==1){
+							this.AttrProduct().UI_Image.push({ID:result.data,Data:''});
+						}else{
+							cowboy.views.FuncAddTip(result.msg);
+						}
+					}.bind(this)).fail(function(){
+						cowboy.views.FuncAddTip('网络出小差了...');
+					});
 				}.bind(this),800);
 			};
 			this.EventSureDel = function(){
 				m=this.TmpCategory;
+				if(m==this.SelCategory()){
+					this.SelCategory('');
+					this.ListProducts([]);
+				}
 				var params={ID:m.ID};
 				$.ajax({url:'/products/removecategory',data:{data:JSON.stringify(params)},type:'get'}).done(function(data){
 					if(data.code==1){
 						this.ListCategories.remove(m);
-						this.FuncGetCategory();
 						cowboy.views.FuncAddTip('删除成功');
 						$('#'+this.DialogDelID).dialog('close');
 					}else{
@@ -379,6 +427,7 @@
 				$('#'+this.DialogDelID).dialog('open');
 			}.bind(this);
 			this.Init = function(){
+				this.Attrmasonry = $('.grid').masonry( this.AttrmasonryOptions );
 				this.FuncGetCategory(function(){
 					
 				}.bind(this));
@@ -387,6 +436,7 @@
 					modal:true,
 					title:'Product',
 					width:910,
+					position:{ my: "top", at: "top", of: window },
 					show: {
 						effect: "blind",
 						duration: 50
@@ -413,7 +463,7 @@
 					autoOpen: false,
 					modal:true,
 					width:580,
-					height:600,
+					height:700,
 					show: {
 					  effect: "blind",
 					  duration: 20
