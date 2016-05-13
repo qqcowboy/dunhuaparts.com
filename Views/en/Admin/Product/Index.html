@@ -272,7 +272,7 @@
 					$.ajax({url:'/products/update',data:{data:JSON.stringify(params)},type:'post'}).done(function(data){
 						this.eventsaveproduct=false;
 						if(data.code==1){
-							this.FuncGetProducts(-1,this.AttrLimitProducts,this.AttrCategory().ID);
+							this.FuncGetProducts(-1,this.AttrLimitProducts,this.SelCategory().ID);
 							cowboy.views.FuncAddTip('更新成功');
 							$('#'+this.DialogEdit1ID).dialog('close');
 						}else{

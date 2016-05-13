@@ -159,6 +159,10 @@
 }
 .productslist .item{
 	cursor: pointer;
+	max-height:320px;
+	margin-bottom: 10px;
+	overflow:hidden; 
+	text-overflow:ellipsis;
 }
 .productslist .item:hover .hovshow{
 	display:block!important;
