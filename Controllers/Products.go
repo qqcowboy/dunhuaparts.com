@@ -291,6 +291,22 @@ func (this *Products) Remove() *Web.JsonResult {
 	return this.Json(map[string]interface{}{"code": 1})
 }
 
+/*Hot
+@see 查询热门产品[get]
+*/
+func (this *Products) Hot() *Web.JsonResult {
+	if this.IsPost {
+		return this.Json(map[string]interface{}{"code": 43001})
+	}
+	start := -0.1
+	limit := 4
+	_, lists, err := Model.MProducts.QueryProducts(start, limit, "", []string{"-Score", "-Version"})
+	if err != nil {
+		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
+	}
+	return this.Json(map[string]interface{}{"code": 1, "data": lists})
+}
+
 /*Query
 @see 查询普通产品[post]
 @param data : json {Start:float64,Limit:int,CategoryID:string}

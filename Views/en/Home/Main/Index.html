@@ -31,7 +31,7 @@
 			<div id="tabs-HOT" data-bind="foreach:ListHotProducts" class="products-hot">
 				<div class="item" data-bind="visible:$index()<4,click:$root.EventProductsDetail">
 					<span data-bind="text:$data.Title"></span><br/>
-					<img data-bind="attr:{src:$data.Src}" />
+					<img data-bind="attr:{src:'/img/product/4?id='+$data.Images[0]}" u="image" />
 				</div>
 			</div>
 		</div>
@@ -98,18 +98,7 @@
 			this.SelProducts=ko.observable({});
 			this.ListCategories = ko.observableArray([]);
 			this.ListProducts = ko.observableArray([]);
-			this.ListHotProducts = ko.observableArray([
-				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Laser Scaner.jpg',Title:'Laser Scaner'},
-				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/PIU.JPG',Title:'PIU'},
-				{ID:1,IndexID:1,Src:'/static/img/products/HP 1000 Printer Series/Power Board.JPG',Title:'Power Board'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Drive Gear Assembly.jpg',Title:'Drive Gear Assembly'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Fuser Assembly.jpg',Title:'Fuser Assembly'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Laser Scanner.jpg',Title:'Laser Scanner'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Motor.jpg',Title:'Motor'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pick up Assembly.jpg',Title:'Pick up Assembly'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Pick up Roller.jpg',Title:'Pick up Roller'},
-				{ID:1,IndexID:2,Src:'/static/img/products/HP 1320 Printer Series/Power Board.jpg',Title:'Power Board'}
-			]);
+			this.ListHotProducts = ko.observableArray([]);
 			this.FuncGetCategories = function(){
 				$.ajax({url:'/products/categories'}).done(function(data){
 					if(data.code==1){
@@ -122,6 +111,13 @@
 					if(data.code==1){
 						this.ListProducts(data.data);
 						this.FuncSlide();
+					}
+				}.bind(this));
+			};
+			this.FuncGetHotProducts = function(){
+				$.ajax({url:'/products/hot',type:'get',}).done(function(data){
+					if(data.code==1){
+						this.ListHotProducts(data.data);
 					}
 				}.bind(this));
 			};
@@ -183,6 +179,7 @@
 			this.EventProductsDetail = function(m,e){
 				this.SelProducts(m);
 				$('#'+this.DialogProductID).dialog('open');
+				$.get('/products/addview?data={"ID":"'+m.ID+'"}');
 			}.bind(this);
 			this.EventAboutUs = function(){
 				$('[data-url="/home/about/about"]').click();
@@ -193,6 +190,7 @@
 			this.Init = function(){
 				this.FuncGetCategories();
 				this.FuncGetProducts();
+				this.FuncGetHotProducts();
 				$( "#home-main-index-products" ).tabs();
 				$('#'+this.DialogProductID).dialog({
 					autoOpen: false,

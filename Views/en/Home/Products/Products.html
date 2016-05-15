@@ -73,6 +73,7 @@
 			this.EventSelProducts = function(m,e){
 				this.SelProducts(m);
 				$('#'+this.DialogID).dialog('open');
+				$.get('/products/addview?data={"ID":"'+m.ID+'"}');
 			}.bind(this);
 			this.Init = function(){
 				this.FuncGetCategories();
