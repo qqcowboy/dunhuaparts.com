@@ -8,6 +8,7 @@ import (
 	"github.com/qqcowboy/dunhuaparts.com/System/Web"
 	"github.com/qqcowboy/lib/myjson"
 	"github.com/qqcowboy/lib/mystr"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type Products struct {
@@ -148,7 +149,7 @@ func (this *Products) Update() *Web.JsonResult {
 			fields["RemarkCN"] = tmp1
 		}
 	}
-	err := Model.MProducts.UpdateId(id, fields)
+	err := Model.MProducts.UpdateId(bson.ObjectIdHex(id), fields)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
@@ -227,7 +228,7 @@ func (this *Products) UpdateCategory() *Web.JsonResult {
 			fields["RemarkCN"] = tmp1
 		}
 	}
-	err := Model.MProducts.UpdateId(id, fields)
+	err := Model.MProducts.UpdateId(bson.ObjectIdHex(id), fields)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}

@@ -30,7 +30,7 @@ func (this *moduleBase) mSession() *mgo.Session {
 @see :通用更新
 @params :Remark,Title,IndexID,Images...
 */
-func (this *moduleBase) UpdateId(id string, fields map[string]interface{}) (err error) {
+func (this *moduleBase) UpdateId(id interface{}, fields map[string]interface{}) (err error) {
 	if len(fields) < 1 {
 		return nil
 	}
@@ -38,7 +38,19 @@ func (this *moduleBase) UpdateId(id string, fields map[string]interface{}) (err 
 	defer mongo.Close()
 	mdb := mongo.DB(this.db)
 	col := mdb.C(this.coll)
-	err = col.UpdateId(bson.ObjectIdHex(id), bson.M{"$set": fields})
+	err = col.UpdateId(id, bson.M{"$set": fields})
+	return
+}
+
+/*RemoveId
+@see :通用删除
+*/
+func (this *moduleBase) RemoveId(id interface{}) (err error) {
+	mongo := this.mSession()
+	defer mongo.Close()
+	mdb := mongo.DB(this.db)
+	col := mdb.C(this.coll)
+	err = col.RemoveId(id)
 	return
 }
 

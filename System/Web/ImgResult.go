@@ -12,6 +12,7 @@ import (
 type ImgResult struct {
 	Response http.ResponseWriter
 	Base64   string
+	Bytes    []byte
 	Type     string
 	MaxSize  int
 }
@@ -24,29 +25,32 @@ func (this *ImgResult) ExecuteResult() error {
 	}
 	this.Response.Header().Add("Content-Type", this.Type)
 
-	if len(this.Base64) < 1 {
+	if len(this.Base64) < 1 && len(this.Bytes) < 1 {
 		this.Base64 = NOIMAGE
 	}
-	spl := strings.Split(this.Base64, ",")
-	if len(spl) > 1 {
-		this.Base64 = spl[1]
-	}
-	fb, err := base64.StdEncoding.DecodeString(this.Base64)
-	if err != nil {
-		fb, err = base64.StdEncoding.DecodeString(NOIMAGE)
+	if len(this.Base64) > 0 {
+		spl := strings.Split(this.Base64, ",")
+		if len(spl) > 1 {
+			this.Base64 = spl[1]
+		}
+		var err error
+		this.Bytes, err = base64.StdEncoding.DecodeString(this.Base64)
 		if err != nil {
-			return err
+			this.Bytes, err = base64.StdEncoding.DecodeString(NOIMAGE)
+			if err != nil {
+				return err
+			}
 		}
 	}
-	if this.MaxSize > 0 && len(fb) > this.MaxSize {
-		bf := bytes.NewBuffer(fb)
+	if this.MaxSize > 0 && len(this.Bytes) > this.MaxSize {
+		bf := bytes.NewBuffer(this.Bytes)
 		var img image.Image
 		if this.Type != "image/gif" {
 			img, _ = jpeg.Decode(bf)
-			jpeg.Encode(bf, img, &jpeg.Options{(100 * this.MaxSize / len(fb))})
-			fb = bf.Bytes()
+			jpeg.Encode(bf, img, &jpeg.Options{(100 * this.MaxSize / len(this.Bytes))})
+			this.Bytes = bf.Bytes()
 		}
 	}
-	this.Response.Write(fb)
+	this.Response.Write(this.Bytes)
 	return nil
 }
