@@ -181,6 +181,7 @@ func (this *Products) AddView() *Web.JsonResult {
 	return this.Json(map[string]interface{}{"code": 1, "data": true})
 }
 
+/*
 func (this *Products) Test() *Web.JsonResult {
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
@@ -190,7 +191,7 @@ func (this *Products) Test() *Web.JsonResult {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
 	return this.Json(map[string]interface{}{"code": 1, "data": true})
-}
+}*/
 
 /*UpdateCategory
 @see 更新产品分类[post]
