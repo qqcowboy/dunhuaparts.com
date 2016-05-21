@@ -44,7 +44,8 @@ func (this *Img) Product() *Web.ImgResult {
 		return result
 	}
 	str, _ := Model.MProducts.GetImage(id)
-	result.Bytes, _ = Model.AddWaterMark(str)
+	result.Base64 = str
+	//result.Bytes, _ = Model.AddWaterMark(str)
 	return result
 }
 

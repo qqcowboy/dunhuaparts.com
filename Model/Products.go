@@ -1,6 +1,7 @@
 package Model
 
 import (
+	"encoding/base64"
 	"fmt"
 
 	"github.com/qqcowboy/lib/mystr"
@@ -100,11 +101,41 @@ func (this *Products) QueryProducts(start float64, limit int, indexid string, so
 	return
 }
 
+/*AddWater
+ */
+func (this *Products) AddWater() (err error) {
+	//{_id,Remark,Name,CreateDate,ParentID,UID}
+	mongo := this.mSession()
+	defer mongo.Close()
+	mdb := mongo.DB(this.db)
+	col := mdb.C(this.coll)
+
+	query := bson.M{"ExtType": 200}
+	qs := col.Find(query) //.Select(bson.M{"Images": 0})
+	if err != nil {
+		return
+	}
+	imgs := make([]Image, 0)
+	err = qs.All(&imgs)
+	if err != nil {
+		return
+	}
+	for _, item := range imgs {
+		b, err := AddWaterMark(item.Base64)
+		if err != nil {
+			col.RemoveId(item.ID)
+			continue
+		}
+		col.UpdateId(item.ID, bson.M{"Base64": base64.StdEncoding.EncodeToString(b)})
+	}
+	return
+}
+
 /*GetImage
 @see :获取图片base64数据
 @params :id
 */
-func (this *Products) GetImage(id string) (base64 string, err error) {
+func (this *Products) GetImage(id string) (b64 string, err error) {
 	mongo := this.mSession()
 	defer mongo.Close()
 	mdb := mongo.DB(this.db)
@@ -116,7 +147,7 @@ func (this *Products) GetImage(id string) (base64 string, err error) {
 	if err != nil {
 		return
 	}
-	base64 = img.Base64
+	b64 = img.Base64
 	return
 }
 
@@ -136,6 +167,11 @@ func (this *Products) CreateProduct(Title, TitleCN, IndexID, Remark, RemarkCN st
 	col := mdb.C(this.coll)
 	objs := []interface{}{tmpproduct}
 	for _, image := range Images {
+		b, err := AddWaterMark(image)
+		if err != nil {
+			continue
+		}
+		image = base64.StdEncoding.EncodeToString(b)
 		tmpid := bson.NewObjectId()
 		tmp := bson.M{"_id": tmpid, "IndexID": IndexID, "ProductsID": productid.Hex(),
 			"ExtType": 200, "Base64": image, "Version": mystr.TimeStamp(), "CreateDate": mystr.Date(),
@@ -172,6 +208,11 @@ func (this *Products) AddImg(id string, imgdata string) (imgid string, err error
 	if err != nil {
 		return
 	}
+	b, err := AddWaterMark(imgdata)
+	if err != nil {
+		return
+	}
+	imgdata = base64.StdEncoding.EncodeToString(b)
 	tmpid := bson.NewObjectId()
 	tmp := bson.M{"_id": tmpid, "IndexID": product.CategoryID, "ProductsID": id,
 		"ExtType": 200, "Base64": imgdata, "Version": mystr.TimeStamp(), "CreateDate": mystr.Date(),

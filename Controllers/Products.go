@@ -181,6 +181,17 @@ func (this *Products) AddView() *Web.JsonResult {
 	return this.Json(map[string]interface{}{"code": 1, "data": true})
 }
 
+func (this *Products) Test() *Web.JsonResult {
+	if !this.IsPost {
+		return this.Json(map[string]interface{}{"code": 43002})
+	}
+	err := Model.MProducts.AddWater()
+	if err != nil {
+		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
+	}
+	return this.Json(map[string]interface{}{"code": 1, "data": true})
+}
+
 /*UpdateCategory
 @see 更新产品分类[post]
 @param data : json {ID,Name,Remark,NameCN,RemarkCN}
