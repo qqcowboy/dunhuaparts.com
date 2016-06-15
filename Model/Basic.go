@@ -54,6 +54,19 @@ func (this *moduleBase) RemoveId(id interface{}) (err error) {
 	return
 }
 
+/*Removes
+@see :通用删除
+*/
+func (this *moduleBase) Removes(ids ...interface{}) (err error) {
+	mongo := this.mSession()
+	defer mongo.Close()
+	mdb := mongo.DB(this.db)
+	col := mdb.C(this.coll)
+
+	_, err = col.RemoveAll(bson.M{"_id": bson.M{"$in": ids}})
+	return
+}
+
 var session *mgo.Session
 var lock sync.Locker
 

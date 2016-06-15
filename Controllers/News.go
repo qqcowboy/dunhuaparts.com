@@ -7,6 +7,7 @@ import (
 	"github.com/qqcowboy/dunhuaparts.com/System/Web"
 	"github.com/qqcowboy/lib/myjson"
 	"github.com/qqcowboy/lib/mystr"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type News struct {
@@ -67,4 +68,64 @@ func (this *News) Create() *Web.JsonResult {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
 	return this.Json(map[string]interface{}{"code": 1, "data": news})
+}
+
+/*Remove
+@see 删除新闻[get]
+@param data : json {IDs:string}
+*/
+func (this *News) Remove() *Web.JsonResult {
+	if !this.IsPost {
+		return this.Json(map[string]interface{}{"code": 43002})
+	}
+	if _, ok := this.Form["data"]; !ok {
+		return this.Json(map[string]interface{}{"code": 43004})
+	}
+	params := make(map[string]interface{})
+	myjson.JsonDecode(this.Form["data"], &params)
+	if idstr, ok := params["IDs"]; !ok || !mystr.IsString(idstr) || len(strings.TrimSpace(idstr.(string))) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "没有需要删除的新闻"})
+	}
+	idstr := strings.TrimSpace(params["IDs"].(string))
+	ids := strings.Split(idstr, ",")
+	idsi := []interface{}{}
+	for _, v := range ids {
+		idsi = append(idsi, bson.ObjectIdHex(v))
+	}
+	err := Model.MNews.Removes(idsi)
+	if err != nil {
+		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
+	}
+	return this.Json(map[string]interface{}{"code": 1, "data": true})
+}
+
+/*Update
+@see 更新新闻[get]
+@param data : json {ID,Data:map[string]interface{}}
+*/
+func (this *News) Update() *Web.JsonResult {
+	if !this.IsPost {
+		return this.Json(map[string]interface{}{"code": 43002})
+	}
+	if _, ok := this.Form["data"]; !ok {
+		return this.Json(map[string]interface{}{"code": 43004})
+	}
+	params := make(map[string]interface{})
+	myjson.JsonDecode(this.Form["data"], &params)
+	if idstr, ok := params["ID"]; !ok || !mystr.IsString(idstr) || len(strings.TrimSpace(idstr.(string))) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "ID是必须参数"})
+	}
+	if data, ok := params["Data"]; !ok {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "Data是必须参数"})
+	}
+	param, ok := params["Data"].(map[string]interface{})
+	if !ok || len(param) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "Data格式不正确"})
+	}
+	ID := bson.ObjectIdHex(strings.TrimSpace(params["ID"].(string)))
+	err := Model.MNews.UpdateId(bson.ObjectIdHex(ids), param)
+	if err != nil {
+		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
+	}
+	return this.Json(map[string]interface{}{"code": 1, "data": true})
 }
