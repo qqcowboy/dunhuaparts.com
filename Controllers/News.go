@@ -21,11 +21,53 @@ func init() {
 func (this *News) OnLoad() {
 }
 
+func (this *News) hasAuth() bool {
+	if tmp, ok := this.Session["login"]; ok {
+		if login, ok := tmp.(bool); ok && login {
+			return true
+		}
+	}
+	return false
+}
+
+/*Query
+@see 查询[post]
+@param data : json {Start:float64,Limit:int,Key:string}
+*/
+func (this *News) Query() *Web.JsonResult {
+	if !this.IsPost {
+		return this.Json(map[string]interface{}{"code": 43002})
+	}
+	start := -0.1
+	limit := 20
+	if _, ok := this.Form["data"]; ok {
+		params := make(map[string]interface{})
+		myjson.JsonDecode(this.Form["data"], &params)
+		if _, ok := params["Start"]; ok && mystr.IsFloat64(params["Start"]) {
+			start = params["Start"].(float64)
+		}
+		if tmp, ok := params["Limit"]; ok {
+			tmp1, err := mystr.ToInt(tmp)
+			if err == nil {
+				limit = tmp1
+			}
+		}
+	}
+	count, lists, err := Model.MNews.QueryNews(start, limit, []string{"-Version"})
+	if err != nil {
+		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
+	}
+	return this.Json(map[string]interface{}{"code": 1, "data": lists, "count": count})
+}
+
 /*Create
 @see 新增新闻[post]
 @param data : json {Title,ExtType:0普通,Content,Lead}
 */
 func (this *News) Create() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
@@ -75,6 +117,9 @@ func (this *News) Create() *Web.JsonResult {
 @param data : json {IDs:string}
 */
 func (this *News) Remove() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
@@ -104,6 +149,9 @@ func (this *News) Remove() *Web.JsonResult {
 @param data : json {ID,Data:map[string]interface{}}
 */
 func (this *News) Update() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
@@ -115,7 +163,7 @@ func (this *News) Update() *Web.JsonResult {
 	if idstr, ok := params["ID"]; !ok || !mystr.IsString(idstr) || len(strings.TrimSpace(idstr.(string))) < 1 {
 		return this.Json(map[string]interface{}{"code": 43005, "msg": "ID是必须参数"})
 	}
-	if data, ok := params["Data"]; !ok {
+	if _, ok := params["Data"]; !ok {
 		return this.Json(map[string]interface{}{"code": 43005, "msg": "Data是必须参数"})
 	}
 	param, ok := params["Data"].(map[string]interface{})
@@ -123,7 +171,7 @@ func (this *News) Update() *Web.JsonResult {
 		return this.Json(map[string]interface{}{"code": 43005, "msg": "Data格式不正确"})
 	}
 	ID := bson.ObjectIdHex(strings.TrimSpace(params["ID"].(string)))
-	err := Model.MNews.UpdateId(bson.ObjectIdHex(ids), param)
+	err := Model.MNews.UpdateId(ID, param)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}

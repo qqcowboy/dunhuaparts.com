@@ -22,11 +22,23 @@ func init() {
 func (this *Products) OnLoad() {
 }
 
+func (this *Products) hasAuth() bool {
+	if tmp, ok := this.Session["login"]; ok {
+		if login, ok := tmp.(bool); ok && login {
+			return true
+		}
+	}
+	return false
+}
+
 /*Create
 @see 新增产品[post]
 @param data : json {Title,TitleCN,CategoryID,Remark,RemarkCN,Images,ExtType:0普通/1首页大图}
 */
 func (this *Products) Create() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
@@ -94,6 +106,9 @@ func (this *Products) Create() *Web.JsonResult {
 @param data : json {ID,Title,TitleCN,CategoryID,Remark,RemarkCN,ExtType,Images:[]string}
 */
 func (this *Products) Update() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
@@ -198,6 +213,9 @@ func (this *Products) Test() *Web.JsonResult {
 @param data : json {ID,Name,Remark,NameCN,RemarkCN}
 */
 func (this *Products) UpdateCategory() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
@@ -252,6 +270,9 @@ func (this *Products) UpdateCategory() *Web.JsonResult {
 @param data : json {ProductID,Image:string}
 */
 func (this *Products) AddProductImg() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
@@ -281,6 +302,9 @@ func (this *Products) AddProductImg() *Web.JsonResult {
 @param data : json {ID:[string]}
 */
 func (this *Products) Remove() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
 	if this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
@@ -359,6 +383,9 @@ func (this *Products) Query() *Web.JsonResult {
 @param data : json {ID:string}
 */
 func (this *Products) RemoveCategory() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
 	if this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
@@ -418,6 +445,9 @@ func (this *Products) Categories() *Web.JsonResult {
 @params Remark,Name,RemarkCN,NameCN
 */
 func (this *Products) CreateCategory() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}

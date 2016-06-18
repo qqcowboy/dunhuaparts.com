@@ -1,3 +1,19 @@
-<div>
-	建设中...
+<div id="admin-news-index">
+	<h2>&nbsp; <small>新闻管理</small><small style="float:right"><input type="text" placeholder="搜索"/></small></h2>
+	<span class="badge" style="display:none;">新</span>
+	<ul class="list-group">
+	   <li class="list-group-item">
+	   </li>
+	</ul>
+	<script type="text/javascript">
+		var ctrl=$('#admin-news-index');
+		function Admin_News_Index_V1(){
+			this.ListNews={List:ko.observableArray([]),Limit:20,Skip:ko.observable(-1),Total:ko.observable(0)};
+			this.FuncGetNews=function(skip){
+				
+			};
+		}
+	</script>
+	
+	
 </div>

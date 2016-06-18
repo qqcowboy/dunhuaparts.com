@@ -39,6 +39,43 @@ func init() {
 	}
 }
 
+/*QueryNews
+@see :查询新闻，默认按时间例序
+@params :exttype []int
+*/
+func (this *News) QueryNews(start float64, limit int, sorts []string, exttype ...int) (count int, news []NewsInfo, err error) {
+	//{_id,Remark,Name,CreateDate,ParentID,UID}
+	mongo := this.mSession()
+	defer mongo.Close()
+	mdb := mongo.DB(this.db)
+	col := mdb.C(this.coll)
+
+	if start < 0 {
+		start = mystr.TimeStamp()
+	}
+	if limit < 1 {
+		limit = 20
+	}
+	query := bson.M{"Version": bson.M{"$lt": start}}
+	if len(exttype) > 0 {
+		query["ExtType"] = bson.M{"$in": exttype}
+	}
+	qs := col.Find(query) //.Select(bson.M{"Images": 0})
+	if len(sorts) > 0 {
+		qs.Sort(sorts...)
+	} else {
+		qs.Sort("-Version")
+	}
+	count, err = qs.Count()
+	if err != nil {
+		return
+	}
+	qs.Limit(limit)
+	news = make([]NewsInfo, 0)
+	err = qs.All(&news)
+	return
+}
+
 /*CreateNews
 @see :新增News
 */
