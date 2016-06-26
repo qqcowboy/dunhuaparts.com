@@ -13,7 +13,8 @@ type NewsInfo struct {
 	Content    string        `bson:"Content" 内容`
 	Lead       string        `bson:"Lead" 导语`
 	User       string        `bson:"User" 作者`
-	ExtType    int           `bson:"ExtType" 0/1/2`
+	ExtType    int           `bson:"ExtType" 0中文/1英文`
+	Top        int           `bson:"Top" 0/1置顶`
 	Score      int           `bson:"Score" 分数 浏览次数 分数多的为热门`
 	Version    float64       `bson:"Version" 时间戳 用于排序 索引`
 	CreateDate string        `bson:"CreateDate"  创建时间`
@@ -43,7 +44,7 @@ func init() {
 @see :查询新闻，默认按时间例序
 @params :exttype []int
 */
-func (this *News) QueryNews(start float64, limit int, sorts []string, exttype ...int) (count int, news []NewsInfo, err error) {
+func (this *News) QueryNews(start float64, limit int, sorts []string, top int, key string, exttype ...int) (count int, news []NewsInfo, err error) {
 	//{_id,Remark,Name,CreateDate,ParentID,UID}
 	mongo := this.mSession()
 	defer mongo.Close()
@@ -59,6 +60,13 @@ func (this *News) QueryNews(start float64, limit int, sorts []string, exttype ..
 	query := bson.M{"Version": bson.M{"$lt": start}}
 	if len(exttype) > 0 {
 		query["ExtType"] = bson.M{"$in": exttype}
+	}
+	if top > 0 {
+		query["Top"] = 1
+	}
+	if len(key) > 0 {
+		reg := bson.RegEx{fmt.Sprintf("^.*%s.*$", key), "g"}
+		query["$or"] = []bson.M{bson.M{"Content": reg}, bson.M{"Title": reg}}
 	}
 	qs := col.Find(query) //.Select(bson.M{"Images": 0})
 	if len(sorts) > 0 {
@@ -79,8 +87,8 @@ func (this *News) QueryNews(start float64, limit int, sorts []string, exttype ..
 /*CreateNews
 @see :新增News
 */
-func (this *News) CreateNews(Title, Lead, Content string, ExtType int) (news NewsInfo, err error) {
-	tmp := bson.M{"_id": bson.NewObjectId(), "Title": Title, "Content": Content, "Lead": Lead,
+func (this *News) CreateNews(Title, Lead, Content string, ExtType, Top int) (news NewsInfo, err error) {
+	tmp := bson.M{"_id": bson.NewObjectId(), "Title": Title, "Content": Content, "Lead": Lead, "Top": Top,
 		"ExtType": ExtType, "Score": 0, "Version": mystr.TimeStamp(), "CreateDate": mystr.Date(),
 	}
 	mongo := this.mSession()
@@ -94,6 +102,7 @@ func (this *News) CreateNews(Title, Lead, Content string, ExtType int) (news New
 	qs := col.FindId(tmp["_id"])
 	news = NewsInfo{}
 	err = qs.One(&news)
+	fmt.Println(tmp, news)
 	return
 }
 

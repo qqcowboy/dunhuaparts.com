@@ -143,6 +143,15 @@ cowboy.func={
 		ctx.drawImage(img,0,0,width*pw,height*ph);
 		var str = canvas_tmp.toDataURL('image/jpeg');
 		return str;
+	},
+
+	setRollDownEvent:function(obj,callback){
+		$(obj).scroll(function(){
+			var ctrl=$(obj)[0];
+	        if (ctrl.scrollTop + ctrl.clientHeight +30 >= ctrl.scrollHeight) {
+	            callback();
+	        }
+	    });
 	}
 };
 

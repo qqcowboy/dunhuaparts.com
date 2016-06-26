@@ -117,7 +117,7 @@
 	background-color:#fff;
 }
 .welcome{
-	position:absolute;
+	position:relative;
 	left: 30%;
 	top: 33%;
 }
@@ -259,4 +259,10 @@
 }
 .editimg:hover .btn-del{
 	display:inline-table!important;
+}
+.news-list .item:hover .ctrl{
+	display:inline-table!important;
+}
+.news-list .item:hover{
+	background-color: #EFEFEF;
 }

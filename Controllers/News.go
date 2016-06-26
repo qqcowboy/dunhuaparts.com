@@ -32,7 +32,7 @@ func (this *News) hasAuth() bool {
 
 /*Query
 @see 查询[post]
-@param data : json {Start:float64,Limit:int,Key:string}
+@param data : json {Start:float64,Limit:int,Key:string,Top:int,Lang:all/cn/en}
 */
 func (this *News) Query() *Web.JsonResult {
 	if !this.IsPost {
@@ -40,6 +40,9 @@ func (this *News) Query() *Web.JsonResult {
 	}
 	start := -0.1
 	limit := 20
+	top := 0
+	lang := "all"
+	key := ""
 	if _, ok := this.Form["data"]; ok {
 		params := make(map[string]interface{})
 		myjson.JsonDecode(this.Form["data"], &params)
@@ -52,8 +55,36 @@ func (this *News) Query() *Web.JsonResult {
 				limit = tmp1
 			}
 		}
+		if tmp, ok := params["Top"]; ok {
+			tmp1, err := mystr.ToInt(tmp)
+			if err == nil {
+				top = tmp1
+			}
+		}
+		if tmp, ok := params["Lang"]; ok && mystr.IsString(tmp) {
+			switch tmp.(string) {
+			case "cn":
+				lang = "cn"
+			case "en":
+				lang = "en"
+			default:
+				lang = "all"
+			}
+		}
+		if tmp, ok := params["Key"]; ok && mystr.IsString(tmp) {
+			key = tmp.(string)
+		}
 	}
-	count, lists, err := Model.MNews.QueryNews(start, limit, []string{"-Version"})
+	exttype := []int{}
+	switch lang {
+	case "cn":
+		exttype = []int{0}
+	case "en":
+		exttype = []int{1}
+	default:
+		exttype = []int{0, 1}
+	}
+	count, lists, err := Model.MNews.QueryNews(start, limit, []string{"-Top", "-Version"}, top, key, exttype...)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
@@ -62,7 +93,7 @@ func (this *News) Query() *Web.JsonResult {
 
 /*Create
 @see 新增新闻[post]
-@param data : json {Title,ExtType:0普通,Content,Lead}
+@param data : json {Title,ExtType:0普通,Content,Lead,Top}
 */
 func (this *News) Create() *Web.JsonResult {
 	if this.hasAuth() == false {
@@ -87,6 +118,13 @@ func (this *News) Create() *Web.JsonResult {
 			exttype = tmp1
 		}
 	}
+	top := 0
+	if tmp, ok := params["Top"]; ok {
+		tmp1, err := mystr.ToInt(tmp)
+		if err == nil {
+			top = tmp1
+		}
+	}
 	content := ""
 	if tmp, ok := params["Content"]; ok {
 		if tmp1, ok := tmp.(string); ok {
@@ -105,7 +143,7 @@ func (this *News) Create() *Web.JsonResult {
 			lead = tmp1
 		}
 	}
-	news, err := Model.MNews.CreateNews(title, lead, content, exttype)
+	news, err := Model.MNews.CreateNews(title, lead, content, exttype, top)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
@@ -120,14 +158,14 @@ func (this *News) Remove() *Web.JsonResult {
 	if this.hasAuth() == false {
 		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
 	}
-	if !this.IsPost {
-		return this.Json(map[string]interface{}{"code": 43002})
+	if this.IsPost {
+		return this.Json(map[string]interface{}{"code": 43001})
 	}
-	if _, ok := this.Form["data"]; !ok {
+	if _, ok := this.QueryString["data"]; !ok {
 		return this.Json(map[string]interface{}{"code": 43004})
 	}
 	params := make(map[string]interface{})
-	myjson.JsonDecode(this.Form["data"], &params)
+	myjson.JsonDecode(this.QueryString["data"], &params)
 	if idstr, ok := params["IDs"]; !ok || !mystr.IsString(idstr) || len(strings.TrimSpace(idstr.(string))) < 1 {
 		return this.Json(map[string]interface{}{"code": 43005, "msg": "没有需要删除的新闻"})
 	}
@@ -137,7 +175,7 @@ func (this *News) Remove() *Web.JsonResult {
 	for _, v := range ids {
 		idsi = append(idsi, bson.ObjectIdHex(v))
 	}
-	err := Model.MNews.Removes(idsi)
+	err := Model.MNews.Removes(idsi...)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
@@ -145,7 +183,7 @@ func (this *News) Remove() *Web.JsonResult {
 }
 
 /*Update
-@see 更新新闻[get]
+@see 更新新闻[post]
 @param data : json {ID,Data:map[string]interface{}}
 */
 func (this *News) Update() *Web.JsonResult {

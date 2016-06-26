@@ -1,18 +1,232 @@
 <div id="admin-news-index">
-	<h2>&nbsp; <small>新闻管理</small><small style="float:right"><input type="text" placeholder="搜索"/></small></h2>
-	<span class="badge" style="display:none;">新</span>
-	<ul class="list-group">
-	   <li class="list-group-item">
-	   </li>
-	</ul>
+	<div data-bind="attr:{id:CtrlListID}" style="display:none-;">
+		<!-- 新闻管理顶部 -->
+		<h2>
+			&nbsp; <small>新闻管理</small>
+			&nbsp; <small style="float:right">
+			<input data-bind="value:AttrKey,event:{'keydown':EventSearch}" type="text" placeholder="搜索"/></small>
+			&nbsp; <small style="float:right;margin-left:50px;margin-right:80px;">
+				<button data-bind="click:EventAddNews" class="btn btn-primary" type="button" contenteditable="true">
+					<i class="fa fa-plus fa-lg"></i>
+					新增
+				</button>
+				<button data-bind="click:EventRefresh" class="btn btn-primary" type="button" contenteditable="true">
+					<i class="fa fa-refresh fa-lg"></i>
+					刷新
+				</button>
+			</small>
+			&nbsp; 
+		</h2>
+		<span class="badge" style="display:none;">新</span>
+		<!-- 新闻列表 -->
+		<ul class="list-group news-list" data-bind="foreach:ListNews.List">
+		   <li class="list-group-item item">
+		   	<h3>
+		   		<span data-bind="text:$data.Title"></span>
+					<span data-bind="click:$root.EventEdit" class="btn btn-info ctrl" style="display:none;">编辑</span>
+					<span data-bind="click:$root.EventDel" class="btn btn-info ctrl" style="display:none;">删除</span> 
+					<span data-bind="text:$data.ExtType==0?'中文':'英文'" class="label label-warning" style="float:right;"></span>
+					<span style="float:right;">&nbsp;</span>
+					<span data-bind="visible:$data.Top==1" class="label label-primary" style="float:right;">置顶</span> 
+				</h3>
+		   	<p data-bind="text:$data.Lead"></p>
+		   </li>
+		</ul>
+		<!-- 查看更多 -->
+		<div data-bind="visible:ListNews.List().length<ListNews.Total(),click:EventMore" style="text-align:center;cursor: pointer;display:none;">
+			<i class="fa fa-angle-double-down fa-4x"></i>
+		</div>
+	</div>
+	<!-- 编辑隐藏层 -->
+	<div data-bind="attr:{id:CtrlEditID}" style="display:none;">
+		<span data-bind="text:AttrNews.Cn()?'中文':'英文',click:EventChCn" class="label label-warning" style="cursor: pointer;"></span>
+		<a data-bind="click:EventChCn" style="cursor: pointer;">点击切换中/英文</a>
+		<div class="input-group input-group-lg item">
+			  <span class="input-group-addon" id="sizing-addon1">标题 </span>
+			  <input type="text" class="form-control" data-bind="value:AttrNews.Title" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg item">
+			  <span class="input-group-addon" id="sizing-addon1">作者 </span>
+			  <input type="text" class="form-control" data-bind="value:AttrNews.Author" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg item">
+			  <span class="input-group-addon" id="sizing-addon1">导语 </span>
+			  <input type="text" class="form-control" data-bind="value:AttrNews.Lead" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg item">
+			<span class="input-group-addon">
+				<input data-bind="checked:AttrNews.Top()==1,event:{'change':EventTop}" type="checkbox">
+			</span>
+			<span class="form-control">是否置顶</span>
+		</div>
+		<div>
+			<span class="input-group-addon" id="sizing-addon1">新闻正文 <i class="fa fa-hand-o-down"></i></span>
+			<textarea data-bind="attr:{id:CtrlEditorID}" rows="10" cols="80"></textarea>
+		</div>
+		<div style="text-align:center;margin-top:5px;">
+			<button data-bind="click:EventCancel" type="button" class="btn btn-default btn-lg" style="width: 200px;">取　消</button>
+			<button data-bind="click:EventSave" type="button" class="btn btn-primary btn-lg" style="width: 200px;">保　存</button>
+		</div>
+	</div>
 	<script type="text/javascript">
 		var ctrl=$('#admin-news-index');
 		function Admin_News_Index_V1(){
-			this.ListNews={List:ko.observableArray([]),Limit:20,Skip:ko.observable(-1),Total:ko.observable(0)};
-			this.FuncGetNews=function(skip){
-				
+			this.CtrlListID = cowboy.sys.guid();
+			this.CtrlEditID = cowboy.sys.guid();
+			this.CtrlEditorID = cowboy.sys.guid();
+			
+			this.ListNews={List:ko.observableArray([]),Limit:5,Skip:ko.observable(-1),Total:ko.observable(0)};
+			this.AttrKey = ko.observable('');
+			this.AttrNews = {ID:'',Content:'',Author:ko.observable(''),Lead:ko.observable(''),Cn:ko.observable(true),Top:ko.observable(0),Title:ko.observable('')};
+			this.newsediting = {};
+			this.FuncInitNews=function(news){
+				if(news==undefined){
+					news={};
+				}
+				this.AttrNews.ID=news.ID||'';
+				this.AttrNews.Content=news.Content||'';
+				this.AttrNews.Lead(news.Lead||'');
+				this.AttrNews.Author(news.Author||cowboy.views.User().UserName);
+				this.AttrNews.Cn(news.ExtType&&news.ExtType==0||true);
+				this.AttrNews.Top(news.Top||0);
+				this.AttrNews.Title(news.Title||'');
+				$('#'+this.CtrlEditorID).ckeditor().val(this.AttrNews.Content);
 			};
+			this.FuncGetNews=function(skip){
+				if(skip==undefined){
+					skip=-1
+				}
+				if(skip<0){
+					this.ListNews.List([]);
+					this.ListNews.Total(0);
+				}
+				//{Start:float64,Limit:int,Key:string,Top:int}
+				var params={Start:skip,Limit:this.ListNews.Limit,Key:$.trim(this.AttrKey())};
+				$.ajax({url:'/news/query',type:'post',data:{data:JSON.stringify(params)},dataType:'json'}).done(function(data){
+					if(data.code==1){
+						if(skip<0){
+							this.ListNews.Total(data.count);
+							this.ListNews.List(data.data);
+						}else{
+							for(k in data.data){
+								this.ListNews.List.push(data.data[k]);
+							}
+						}
+						if(this.ListNews.List().length>0){
+							this.ListNews.Skip(this.ListNews.List()[this.ListNews.List().length-1].Version);
+						}
+					}else{
+						cowboy.views.FuncAddTip('获取新闻失败');
+						cowboy.views.FuncAddTip(data.error);
+					}
+				}.bind(this));
+			};
+			this.EventSearch = function(m,e){
+				var currKey=e.keyCode||e.which||e.charCode;
+				if(currKey==13){
+					this.AttrKey($(e.target).val());
+					this.FuncGetNews(-1);
+					return false;
+				}
+				return true;
+			};
+			this.EventAddNews = function(m,e){
+				this.FuncInitNews();
+				$('#'+this.CtrlListID).hide();
+				$('#'+this.CtrlEditID).show();
+			};
+			this.EventCancel=function(){
+				$('#'+this.CtrlEditID).hide();
+				$('#'+this.CtrlListID).show();
+			};
+			this.EventSave = function(){
+				var title=$.trim(this.AttrNews.Title());
+				if(title.length<1){
+					cowboy.views.FuncAddTip('请输入新闻标题');
+					return;
+				}
+				var content = $('#'+this.CtrlEditorID).ckeditor().val();
+				if(content.length<1){
+					cowboy.views.FuncAddTip('请输入正文内容');
+					return;
+				}
+				var author = this.AttrNews.Author();
+				if(author.length<1){
+					cowboy.views.FuncAddTip('请输入新闻作者或出处');
+					return;
+				}
+				var exttype=this.AttrNews.Cn()?0:1
+				if(this.AttrNews.ID==''){
+					var params={Content:content,Author:author,Title:title,ExtType:exttype,Lead:this.AttrNews.Lead(),Top:this.AttrNews.Top()};
+					$.ajax({url:'/news/create',data:{data:JSON.stringify(params)},dataType:'json',type:'post'}).done(function(data){
+						if(data.code==1){
+							cowboy.views.FuncAddTip('新增成功');
+							this.FuncGetNews(-1);
+							$('#'+this.CtrlEditID).hide();
+							$('#'+this.CtrlListID).show();
+						}
+					}.bind(this));
+				}else{
+					var params={ID:this.AttrNews.ID,Data:{Content:content,Author:author,Title:title,ExtType:exttype,Lead:this.AttrNews.Lead(),Top:this.AttrNews.Top()}};
+					$.ajax({url:'/news/update',data:{data:JSON.stringify(params)},dataType:'json',type:'post'}).done(function(data){
+						if(data.code==1){
+							cowboy.views.FuncAddTip('更新成功');
+							this.newsediting.Content=content;
+							this.newsediting.Author=author;
+							this.newsediting.Title=title;
+							this.newsediting.ExtType=exttype;
+							this.newsediting.Lead=this.AttrNews.Lead();
+							this.newsediting.Top=this.AttrNews.Top();
+							
+							var tmpl=this.ListNews.List();
+							this.ListNews.List([]);
+							this.ListNews.List(tmpl);
+							$('#'+this.CtrlEditID).hide();
+							$('#'+this.CtrlListID).show();
+						}
+					}.bind(this));
+				}
+			};
+			this.EventChCn = function(){
+				this.AttrNews.Cn(!this.AttrNews.Cn());
+			};
+			this.EventTop = function(){
+				if(this.AttrNews.Top()==1){
+					this.AttrNews.Top(0);
+					return
+				};
+				this.AttrNews.Top(1);
+			};
+			this.EventEdit = function(m,e){
+				this.FuncInitNews(m);
+				this.newsediting=m;
+				$('#'+this.CtrlListID).hide();
+				$('#'+this.CtrlEditID).show();
+			}.bind(this);
+			this.EventRefresh = function(m,e){
+				this.FuncGetNews(-1);
+			};
+			this.EventDel = function(m,e){
+				$.ajax({url:'/news/remove',data:{data:JSON.stringify({IDs:m.ID})},dataType:'json',type:'get'}).done(function(data){
+					if(data.code==1){
+						cowboy.views.FuncAddTip('删除成功');
+						this.ListNews.List.remove(m);
+						this.ListNews.Total(this.ListNews.Total()-1);
+					}
+				}.bind(this));
+			}.bind(this);
+			this.EventMore =function(m,e){
+				this.FuncGetNews(this.ListNews.Skip());
+			};
+			this.FuncInit=function(ctrl){
+				ko.applyBindings(this,ctrl);
+				$('#'+this.CtrlEditorID).ckeditor();
+				//CKEDITOR.replace();
+				this.FuncGetNews(-1);
+			}
 		}
+		var admin_News_Index_V1 = new Admin_News_Index_V1();
+		admin_News_Index_V1.FuncInit(ctrl[0]);
 	</script>
 	
 	
