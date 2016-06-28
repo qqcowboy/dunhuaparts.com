@@ -171,7 +171,7 @@
 					$.ajax({url:'/news/update',data:{data:JSON.stringify(params)},dataType:'json',type:'post'}).done(function(data){
 						if(data.code==1){
 							cowboy.views.FuncAddTip('更新成功');
-							this.newsediting.Content=content;
+							//this.newsediting.Content=content;
 							this.newsediting.Author=author;
 							this.newsediting.Title=title;
 							this.newsediting.ExtType=exttype;
@@ -198,8 +198,12 @@
 				this.AttrNews.Top(1);
 			};
 			this.EventEdit = function(m,e){
-				this.FuncInitNews(m);
 				this.newsediting=m;
+				$.ajax({url:'/news/detail',data:{data:JSON.stringify({ID:m.ID})},dataType:'json',type:'get'}).done(function(data){
+					if(data.code==1){
+						this.FuncInitNews(data.data);
+					}
+				}.bind(this));
 				$('#'+this.CtrlListID).hide();
 				$('#'+this.CtrlEditID).show();
 			}.bind(this);

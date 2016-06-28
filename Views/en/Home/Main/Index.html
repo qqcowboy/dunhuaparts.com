@@ -47,29 +47,16 @@
 			<!-- News -->
 			<div class="news">
 				<a data-bind="click:EventNews" class="tag">News</a>
-				<div class="list" style="display: none;">
+				<div class="list" data-bind="foreach:ListNews">
 					<div class="item" data-bind="click:$root.EventNewsDetail">
-						<img src="/static/img/Fuser Assembly.jpg" />
+						<img src="/static/img/Fuser Assembly.jpg"  style="display: none;"/>
 						<div class="content">
-							<div class="title">习近平以“零容忍”“零懈怠”保证换届的风清气正</div>
-							<div class="innercontent">i3月上旬结束的围棋人机大战，刚让世界领教到谷歌机器人的力量。阿法狗屡建奇功的同时，曾经造出过逆天机器人“大狗”的波士顿动力却要被谷歌卖掉了。同样是狗，差距怎么这么大？t</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="content">
-							<div class="title">习近平以“零容忍”“零懈怠”保证换届的风清气正</div>
-							<div class="innercontent">能开门、能爬坡、还会乖乖搬砖的机器人Atlas吗？他曾一度是各大社交平台的宠儿，也被看作是谷歌对机器人领域所展示出的野心。</div>
-						</div>
-					</div>
-					<div class="item">
-						<img src="/static/img/Fuser Assembly.jpg" />
-						<div class="content">
-							<div class="title">习近平以“零容忍”“零懈怠”保证换届的风清气正</div>
-							<div class="innercontent">前情回顾：波士顿动力与谷歌的前世今生</div>
+							<div data-bind="text:$data.Title" class="title"></div>
+							<div data-bind="text:$data.Lead" class="innercontent"></div>
 						</div>
 					</div>
 				</div>
-				<div>
+				<div data-bind="visible:ListNews().length<1" style="display: none;">
 					&nbsp;&nbsp;no news
 				</div>
 			</div>
@@ -99,6 +86,9 @@
 			this.ListCategories = ko.observableArray([]);
 			this.ListProducts = ko.observableArray([]);
 			this.ListHotProducts = ko.observableArray([]);
+			this.ListNews = ko.observableArray([]);
+			this.AttrNewsLimit = 5;
+			
 			this.FuncGetCategories = function(){
 				$.ajax({url:'/products/categories'}).done(function(data){
 					if(data.code==1){
@@ -115,9 +105,16 @@
 				}.bind(this));
 			};
 			this.FuncGetHotProducts = function(){
-				$.ajax({url:'/products/hot',type:'get',}).done(function(data){
+				$.ajax({url:'/products/hot',type:'get'}).done(function(data){
 					if(data.code==1){
 						this.ListHotProducts(data.data);
+					}
+				}.bind(this));
+			};
+			this.FuncGetNews = function(){
+				$.ajax({url:'/news/query',type:'post',data:{data:JSON.stringify({Limit:this.AttrNewsLimit,Lang:'en'})}}).done(function(data){
+					if(data.code==1){
+						this.ListNews(data.data);
 					}
 				}.bind(this));
 			};
@@ -147,8 +144,17 @@
 			};
 			this.EventNewsDetail = function(m,e){
 				cowboy.func.get('/home/news/detail',function(data){
-					$('#'+this.DialogID).html(data);
+					var ctrl = $('#'+this.DialogID);
+					ctrl.html(data);
 					$('#'+this.DialogID).dialog('open');
+
+					var mod = ko.contextFor(ctrl.children()[0]).$root;
+					if($.isFunction(mod.FuncGetNews)){
+						try{
+							mod.FuncGetNews(m.ID);
+						}catch(e){console.log(e);}
+					}
+					
 				}.bind(this))
 			}.bind(this);
 			this.funcSelCategory = function(ctrl,obj){
@@ -191,6 +197,7 @@
 				this.FuncGetCategories();
 				this.FuncGetProducts();
 				this.FuncGetHotProducts();
+				this.FuncGetNews();
 				$( "#home-main-index-products" ).tabs();
 				$('#'+this.DialogProductID).dialog({
 					autoOpen: false,

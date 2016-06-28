@@ -10,9 +10,9 @@ import (
 type NewsInfo struct {
 	ID         bson.ObjectId `bson:"_id"`
 	Title      string        `bson:"Title" 产品名称`
-	Content    string        `bson:"Content" 内容`
+	Content    string        `bson:"Content" json:",omitempty" 内容`
 	Lead       string        `bson:"Lead" 导语`
-	User       string        `bson:"User" 作者`
+	Author     string        `bson:"Author" 作者`
 	ExtType    int           `bson:"ExtType" 0中文/1英文`
 	Top        int           `bson:"Top" 0/1置顶`
 	Score      int           `bson:"Score" 分数 浏览次数 分数多的为热门`
@@ -79,6 +79,7 @@ func (this *News) QueryNews(start float64, limit int, sorts []string, top int, k
 		return
 	}
 	qs.Limit(limit)
+	qs.Select(bson.M{"Content": 0})
 	news = make([]NewsInfo, 0)
 	err = qs.All(&news)
 	return
@@ -87,9 +88,9 @@ func (this *News) QueryNews(start float64, limit int, sorts []string, top int, k
 /*CreateNews
 @see :新增News
 */
-func (this *News) CreateNews(Title, Lead, Content string, ExtType, Top int) (news NewsInfo, err error) {
+func (this *News) CreateNews(Title, Lead, Content string, ExtType, Top int, author string) (news NewsInfo, err error) {
 	tmp := bson.M{"_id": bson.NewObjectId(), "Title": Title, "Content": Content, "Lead": Lead, "Top": Top,
-		"ExtType": ExtType, "Score": 0, "Version": mystr.TimeStamp(), "CreateDate": mystr.Date(),
+		"ExtType": ExtType, "Score": 0, "Version": mystr.TimeStamp(), "CreateDate": mystr.Date(), "Author": author,
 	}
 	mongo := this.mSession()
 	defer mongo.Close()
@@ -116,5 +117,22 @@ func (this *News) AddScore(id string) (err error) {
 	mdb := mongo.DB(this.db)
 	col := mdb.C(this.coll)
 	err = col.UpdateId(bson.ObjectIdHex(id), bson.M{"$inc": bson.M{"Score": 1}})
+	return
+}
+
+/*Get
+@see :新闻详情
+@params :id
+*/
+func (this *News) Get(id string) (news NewsInfo, err error) {
+	//{_id,Remark,Name,CreateDate,ParentID,UID}
+	mongo := this.mSession()
+	defer mongo.Close()
+	mdb := mongo.DB(this.db)
+	col := mdb.C(this.coll)
+
+	qs := col.FindId(bson.ObjectIdHex(id))
+	err = qs.One(&news)
+	this.AddScore(id)
 	return
 }

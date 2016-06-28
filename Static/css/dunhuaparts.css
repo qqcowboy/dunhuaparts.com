@@ -489,6 +489,8 @@ body{
 
 .news-detail{
 	min-height: 600px;
+	max-height:700px;
+	overflow-y:scroll;
 }
 .news-title{
 	font-size: 26px;
@@ -508,4 +510,33 @@ body{
 	line-height: 28px;
 	margin-top: 28px;
 	box-sizing: initial!important;
+}
+.news-lead{
+	 background-color: #f5f6f6;
+    line-height: 24px;
+    font-size: 12px;
+    color: #888888;
+    padding: 10px;
+    max-height: 67px;
+    overflow: hidden;
+}
+.news-div{
+	width:100%;
+	min-width:910px;
+}
+.newslist{
+	/*padding-left: 26px;
+	padding-top: 26px;*/
+	width:980px;
+	margin: 0 auto;
+	min-height:600px!important;
+	display: table;
+}
+
+.newslist .item{
+	cursor: pointer;
+	max-height:320px;
+	margin-bottom: 5px;
+	overflow:hidden; 
+	text-overflow:ellipsis;
 }

@@ -93,7 +93,7 @@ func (this *News) Query() *Web.JsonResult {
 
 /*Create
 @see 新增新闻[post]
-@param data : json {Title,ExtType:0普通,Content,Lead,Top}
+@param data : json {Title,ExtType:0普通,Content,Lead,Top,Author}
 */
 func (this *News) Create() *Web.JsonResult {
 	if this.hasAuth() == false {
@@ -143,7 +143,39 @@ func (this *News) Create() *Web.JsonResult {
 			lead = tmp1
 		}
 	}
-	news, err := Model.MNews.CreateNews(title, lead, content, exttype, top)
+	author := ""
+	if tmp, ok := params["Author"]; ok {
+		if tmp1, ok := tmp.(string); ok {
+			if len(tmp1) > Model.MAXLEADSIZE {
+				tmp1 = string([]byte(tmp1)[0:Model.MAXLEADSIZE])
+			}
+			author = tmp1
+		}
+	}
+	news, err := Model.MNews.CreateNews(title, lead, content, exttype, top, author)
+	if err != nil {
+		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
+	}
+	return this.Json(map[string]interface{}{"code": 1, "data": news})
+}
+
+/*Detail
+@see 新闻详情[get]
+@param data : json {ID:string}
+*/
+func (this *News) Detail() *Web.JsonResult {
+	if this.IsPost {
+		return this.Json(map[string]interface{}{"code": 43001})
+	}
+	if _, ok := this.QueryString["data"]; !ok {
+		return this.Json(map[string]interface{}{"code": 43004})
+	}
+	params := make(map[string]interface{})
+	myjson.JsonDecode(this.QueryString["data"], &params)
+	if idstr, ok := params["ID"]; !ok || !mystr.IsString(idstr) || len(strings.TrimSpace(idstr.(string))) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "参数不正确"})
+	}
+	news, err := Model.MNews.Get(strings.TrimSpace(params["ID"].(string)))
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
