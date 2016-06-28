@@ -10,6 +10,9 @@
 				</div>
 			</div>
 		</div>
+		<div data-bind="visible:ListNews().length<1" style="display:none;">
+			has no news
+		</div>
 	<div data-bind="attr:{id:DialogID}" ui-dialog="true">
 
 	</div>
