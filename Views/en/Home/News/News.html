@@ -1,9 +1,9 @@
 <div id="Home-News-Index" class="news-div">
-		<div data-bind="visible:ListNews().length<1" style="display:none;">
+		<div data-bind="visible:ListNews().length<1" class="newslist" style="height:100px;display:none;">
 			has no news
 		</div>
 		<!-- current category -->
-		<div data-bind="foreach:ListNews" class="row grid newslist">
+		<div data-bind="visible:ListNews().length>0,foreach:ListNews" class="row grid newslist">
 			<div class="col-md-3 grid-item item" data-bind="click:$root.EventDetail">
 				<div class="thumbnail">
 					<div class="caption">
@@ -41,13 +41,7 @@
 			this.FuncNewsList = function(id){
 				$.ajax({url:'/news/query',data:{data:JSON.stringify({Limit:20,Lang:'en'})},dataType:'json',type:'post'}).done(function(data){
 					if(data.code==1){
-						//this.ListNews(data.data);
-						this.Attrmasonry.masonry('layout');
-						for(var i=0;i<5;i++){
-							$.each(data.data,function(i,item){
-								this.ListNews.push(item);
-							}.bind(this));
-						}
+						this.ListNews(data.data);
 						this.FuncMasonry();
 						//this.Attrmasonry.masonry('layout');
 					}
