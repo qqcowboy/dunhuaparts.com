@@ -1,4 +1,7 @@
 <div id="Home-News-Index" class="news-div">
+		<div data-bind="visible:ListNews().length<1" style="display:none;">
+			has no news
+		</div>
 		<!-- current category -->
 		<div data-bind="foreach:ListNews" class="row grid newslist">
 			<div class="col-md-3 grid-item item" data-bind="click:$root.EventDetail">
@@ -9,9 +12,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		<div data-bind="visible:ListNews().length<1" style="display:none;">
-			has no news
 		</div>
 	<div data-bind="attr:{id:DialogID}" ui-dialog="true">
 
