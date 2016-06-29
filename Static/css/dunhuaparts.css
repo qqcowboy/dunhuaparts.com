@@ -40,7 +40,7 @@ body{
 .index-top-company{
 	float:right;
 	margin:0 auto; 
-	/*text-align:center;*/
+	text-align:center;
 	height:50px;
 	width:100%;
 }
@@ -141,13 +141,13 @@ body{
 }
 .home-main-index-content .about-news{
 	width:910px;
-	height: 200px;
+	height: 235px;
 	margin-top: 20px;
 }
 .home-main-index-content .about{
 	float: left;
 	width:545px;
-	height: 200px;
+	height: 235px;
 	border-radius: 20px 20px;
 	background: rgba(0, 140, 214, 0.43);
 }
@@ -155,7 +155,7 @@ body{
 	float: left;
 	margin-left:10px;
 	width:355px;
-	height: 200px;
+	height: 235px;
 	border-radius: 20px 20px;
 	background: rgba(0, 140, 214, 0.43);
 }

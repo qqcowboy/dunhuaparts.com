@@ -38,7 +38,7 @@
 		<div class="about-news">
 			<!-- about -->
 			<div class="about">
-				<a data-bind="click:EventAboutUs" class="tag">About us</a>
+				<a data-bind="click:EventAboutUs" class="btn btn-success">About us</a>
 				<p>
 				Dunhua Office Equipment Co.,Ltd(Dongguan Beiao Electronics Technology Co.,Ltd)  was established in 2010 which is a professional factory by HP  Laserjet printer parts,Samsung printer parts and Brother Printer parts. After 6 years of development ,we already have a sales department, technical and research department, production department. Our best quality products are popular in Asia, Europe, American etc.We always insist that introduce our products into more people over the world.
 				
@@ -46,7 +46,7 @@
 			</div>
 			<!-- News -->
 			<div class="news">
-				<a data-bind="click:EventNews" class="tag">News</a>
+				<a data-bind="click:EventNews" class="btn btn-success">News</a>
 				<div class="list" data-bind="foreach:ListNews">
 					<div class="item" data-bind="click:$root.EventNewsDetail">
 						<img src="/static/img/Fuser Assembly.jpg"  style="display: none;"/>
@@ -87,7 +87,7 @@
 			this.ListProducts = ko.observableArray([]);
 			this.ListHotProducts = ko.observableArray([]);
 			this.ListNews = ko.observableArray([]);
-			this.AttrNewsLimit = 5;
+			this.AttrNewsLimit = 3;
 			
 			this.FuncGetCategories = function(){
 				$.ajax({url:'/products/categories'}).done(function(data){

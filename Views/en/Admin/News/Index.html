@@ -87,7 +87,7 @@
 				this.AttrNews.Content=news.Content||'';
 				this.AttrNews.Lead(news.Lead||'');
 				this.AttrNews.Author(news.Author||cowboy.views.User().UserName);
-				this.AttrNews.Cn(news.ExtType&&news.ExtType==0||true);
+				this.AttrNews.Cn(news.ExtType&&news.ExtType==0||false);
 				this.AttrNews.Top(news.Top||0);
 				this.AttrNews.Title(news.Title||'');
 				$('#'+this.CtrlEditorID).ckeditor().val(this.AttrNews.Content);
