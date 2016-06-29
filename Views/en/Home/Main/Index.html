@@ -162,6 +162,7 @@
 				var mod = ko.contextFor(ctrl.find('#home-products-products')[0]).$root;
 				console.log(mod);
 				mod.SelCategory(obj);
+				mod.FuncGetProducts(obj.ID);
 			}
 			this.EventSelCategory = function(m,e){
 				var url = '/home/products/products';
