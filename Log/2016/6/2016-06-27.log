@@ -1,0 +1,32 @@
+2016-06-27 21:16:18	in SessionGob.Decode()，EOF
+2016-06-27 21:16:18	in FileSession.readSession，gob.Decode时出错：EOF
+2016-06-27 21:29:58	URL:/news/detail?data=%7B%22ID%22%3A%22576f7ec9e13823133f719981%22%7D	interface conversion: interface is nil, not string
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 (0x54b034)
+	(*Logger).AddErrMsg: content = content + "\r\n" + string(debug.Stack())
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:25 (0x47ab6b)
+	func.004: App.Log.AddErrMsg("URL:" + r.URL.String() + "\t" + fmt.Sprintf("%v", err))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/runtime/panic.go:387 (0x413008)
+	gopanic: reflectcall(unsafe.Pointer(d.fn), deferArgs(d), uint32(d.siz), uint32(d.siz))
+/usr/local/go/src/runtime/iface.go:222 (0x40bb65)
+	assertE2T: panic(&TypeAssertionError{"", "", *t._string, ""})
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/Controllers/News.go:178 (0x45b048)
+	(*News).Detail: news, err := Model.MNews.Get(strings.TrimSpace(params["IDs"].(string)))
+/usr/local/go/src/runtime/asm_amd64.s:401 (0x425c95)
+	call16: CALLFN(·call16, 16)
+/usr/local/go/src/reflect/value.go:419 (0x49fcd5)
+	Value.call: call(fn, args, uint32(frametype.size), uint32(retOffset))
+/usr/local/go/src/reflect/value.go:296 (0x49eacc)
+	Value.Call: return v.call("Call", in)
+/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:100 (0x476708)
+	(*HttpHandler).ServeHTTP: result := method.Call(param)
+/usr/local/go/src/net/http/server.go:1703 (0x4fd55a)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1204 (0x4fb027)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:2232 (0x427db1)
+	goexit: 
+
+2016-06-27 22:16:38	in SessionGob.Decode()，EOF
+2016-06-27 22:16:38	in FileSession.readSession，gob.Decode时出错：EOF

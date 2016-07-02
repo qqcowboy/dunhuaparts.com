@@ -28,7 +28,8 @@ func (this *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}()
-
+	//fmt.Println(r.Header.Get("Referer"))
+	fmt.Println(r.Host)
 	//解析请求
 	contentType := r.Header.Get("Content-Type")
 	enctype, _, _ := mime.ParseMediaType(contentType)
