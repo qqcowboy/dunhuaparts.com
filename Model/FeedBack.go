@@ -48,7 +48,7 @@ func init() {
 @see :查询新闻，默认按时间例序
 @params :exttype []int
 */
-func (this *Feedback) QueryFeedback(start float64, limit int, sorts []string, hide int, key string, selField map[string]interface{}, exttype ...int) (count int, Feedback []FeedbackInfo, err error) {
+func (this *Feedback) QueryFeedback(start float64, limit int, sorts []string, hide int, key, email string, selField map[string]interface{}, exttype ...int) (count int, Feedback []FeedbackInfo, err error) {
 	//{_id,Remark,Name,CreateDate,ParentID,UID}
 	mongo := this.mSession()
 	defer mongo.Close()
@@ -76,6 +76,10 @@ func (this *Feedback) QueryFeedback(start float64, limit int, sorts []string, hi
 		reg := bson.RegEx{fmt.Sprintf("^.*%s.*$", key), "g"}
 		query["$or"] = []bson.M{bson.M{"Content": reg}, bson.M{"Title": reg}}
 	}
+	if len(email) > 0 {
+		query["Mail"] = email
+	}
+	fmt.Println(query)
 	qs := col.Find(query) //.Select(bson.M{"Images": 0})
 	if len(sorts) > 0 {
 		qs.Sort(sorts...)
@@ -134,28 +138,31 @@ func (this *Feedback) Get(id string) (Feedback FeedbackInfo, err error) {
 @see :新增回复
 @params :fdid, username, content
 */
-func (this *Feedback) AddReply(fdid, username, content string) (err error) {
+func (this *Feedback) AddReply(fdid, username, content string) (result FeedbackReply, err error) {
 	mongo := this.mSession()
 	defer mongo.Close()
 	mdb := mongo.DB(this.db)
 	col := mdb.C(this.coll)
-
-	qs := col.FindId(bson.ObjectIdHex(id))
-	err = qs.One(&Feedback)
+	result = FeedbackReply{
+		ID:         bson.NewObjectId().Hex(),
+		UserName:   username,
+		Content:    content,
+		Version:    mystr.TimeStamp(),
+		CreateDate: mystr.Date(),
+	}
+	err = col.UpdateId(bson.ObjectIdHex(fdid), bson.M{"$push": result})
 	return
 }
 
 /*DelReply
 @see :删除回复
-@params :fdid, username, content
+@params :fdid,rpid
 */
-func (this *Feedback) AddReply(fdid, rpid string) (result FeedbackReply, err error) {
+func (this *Feedback) DelReply(fdid, rpid string) (err error) {
 	mongo := this.mSession()
 	defer mongo.Close()
 	mdb := mongo.DB(this.db)
 	col := mdb.C(this.coll)
-
-	qs := col.FindId(bson.ObjectIdHex(id))
-	err = qs.One(&Feedback)
+	err = col.UpdateId(bson.ObjectIdHex(fdid), bson.M{"$pull": bson.M{"Reply": bson.M{"ID": rpid}}})
 	return
 }

@@ -3,8 +3,10 @@ package Controllers
 import (
 	"strings"
 
+	"github.com/dchest/captcha"
 	"github.com/qqcowboy/dunhuaparts.com/Model"
 	"github.com/qqcowboy/dunhuaparts.com/System/Web"
+	"github.com/qqcowboy/lib/mail"
 	"github.com/qqcowboy/lib/myjson"
 	"github.com/qqcowboy/lib/mystr"
 	"gopkg.in/mgo.v2/bson"
@@ -30,19 +32,22 @@ func (this *Feedback) hasAuth() bool {
 	return false
 }
 
-/*Query
-@see 查询[post]
-@param data : json {Start:float64,Limit:int,Key:string,Top:int,Lang:all/cn/en}
+/*AQuery
+@see 管理员查询[post]
+@param data : json {Start:float64,Limit:int,Key:string,Mail:string,Hide:0/1/2}
 */
-func (this *Feedback) Query() *Web.JsonResult {
+func (this *Feedback) AQuery() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
 	start := -0.1
 	limit := 20
-	top := 0
-	lang := "all"
 	key := ""
+	email := ""
+	hide := 0
 	if _, ok := this.Form["data"]; ok {
 		params := make(map[string]interface{})
 		myjson.JsonDecode(this.Form["data"], &params)
@@ -55,36 +60,66 @@ func (this *Feedback) Query() *Web.JsonResult {
 				limit = tmp1
 			}
 		}
-		if tmp, ok := params["Top"]; ok {
+		if tmp, ok := params["Hide"]; ok {
 			tmp1, err := mystr.ToInt(tmp)
 			if err == nil {
-				top = tmp1
+				hide = tmp1
 			}
 		}
-		if tmp, ok := params["Lang"]; ok && mystr.IsString(tmp) {
-			switch tmp.(string) {
-			case "cn":
-				lang = "cn"
-			case "en":
-				lang = "en"
-			default:
-				lang = "all"
-			}
+		if tmp, ok := params["Mail"]; ok && mystr.IsString(tmp) {
+			email = tmp.(string)
 		}
 		if tmp, ok := params["Key"]; ok && mystr.IsString(tmp) {
 			key = tmp.(string)
 		}
 	}
 	exttype := []int{}
-	switch lang {
-	case "cn":
-		exttype = []int{0}
-	case "en":
-		exttype = []int{1}
-	default:
-		exttype = []int{0, 1}
+	sel := map[string]interface{}{"Content": 0, "Reply": 0}
+	count, lists, err := Model.MFeedback.QueryFeedback(start, limit, []string{"-Version"}, hide, key, email, sel, exttype...)
+	if err != nil {
+		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
-	count, lists, err := Model.MFeedback.QueryFeedback(start, limit, []string{"-Top", "-Version"}, top, key, exttype...)
+	return this.Json(map[string]interface{}{"code": 1, "data": lists, "count": count})
+}
+
+/*Query
+@see 查询[post]
+@param data : json {Start:float64,Limit:int,Key:string,Mail:string}
+*/
+func (this *Feedback) Query() *Web.JsonResult {
+	if !this.IsPost {
+		return this.Json(map[string]interface{}{"code": 43002})
+	}
+	start := -0.1
+	limit := 20
+	key := ""
+	email := ""
+	if _, ok := this.Form["data"]; ok {
+		params := make(map[string]interface{})
+		myjson.JsonDecode(this.Form["data"], &params)
+		if _, ok := params["Start"]; ok && mystr.IsFloat64(params["Start"]) {
+			start = params["Start"].(float64)
+		}
+		if tmp, ok := params["Limit"]; ok {
+			tmp1, err := mystr.ToInt(tmp)
+			if err == nil {
+				limit = tmp1
+			}
+		}
+		if tmp, ok := params["Mail"]; ok && mystr.IsString(tmp) {
+			email = tmp.(string)
+		}
+		if tmp, ok := params["Key"]; ok && mystr.IsString(tmp) {
+			key = tmp.(string)
+		}
+	}
+	hide := 2
+	if len(email) > 0 {
+		hide = 0
+	}
+	exttype := []int{}
+	sel := map[string]interface{}{"Content": 0, "Reply": 0, "Mail": 0, "Phone": 0}
+	count, lists, err := Model.MFeedback.QueryFeedback(start, limit, []string{"-Version"}, hide, key, email, sel, exttype...)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
@@ -92,40 +127,39 @@ func (this *Feedback) Query() *Web.JsonResult {
 }
 
 /*Create
-@see 新增新闻[post]
-@param data : json {Title,ExtType:0普通,Content,Lead,Top,Author}
+@see 新增[post]
+@param data : json {Title,Content,Mail,UserName,Phone,Hide},Code
 */
 func (this *Feedback) Create() *Web.JsonResult {
-	if this.hasAuth() == false {
-		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
-	}
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
+	}
+	code, _ := this.Form["Code"] //验证码
+	if len(code) < 1 {
+		return this.JsonResult(43008, nil, "请输入验证码")
+	}
+
+	if !captcha.VerifyString(this.Cookies[VerityCodeCookieName], code) {
+		return this.JsonResult(43008, nil, "验证码不正确")
 	}
 	if _, ok := this.Form["data"]; !ok {
 		return this.Json(map[string]interface{}{"code": 43004})
 	}
 	params := make(map[string]interface{})
 	myjson.JsonDecode(this.Form["data"], &params)
+
+	title := ""
+	content := ""
+	hide := 0
+	user := ""
+	phone := ""
+	email := ""
+	ip := this.Request.RemoteAddr
 	if title, ok := params["Title"]; !ok || !mystr.IsString(title) || len(strings.TrimSpace(title.(string))) < 1 {
 		return this.Json(map[string]interface{}{"code": 43005, "msg": "请输入标题"})
 	}
-	title := strings.TrimSpace(params["Title"].(string))
-	exttype := 0
-	if tmp, ok := params["ExtType"]; ok {
-		tmp1, err := mystr.ToInt(tmp)
-		if err == nil {
-			exttype = tmp1
-		}
-	}
-	top := 0
-	if tmp, ok := params["Top"]; ok {
-		tmp1, err := mystr.ToInt(tmp)
-		if err == nil {
-			top = tmp1
-		}
-	}
-	content := ""
+	title = strings.TrimSpace(params["Title"].(string))
+
 	if tmp, ok := params["Content"]; ok {
 		if tmp1, ok := tmp.(string); ok {
 			if len(tmp1) > Model.MAXCONTENTSIZE {
@@ -134,25 +168,38 @@ func (this *Feedback) Create() *Web.JsonResult {
 			content = tmp1
 		}
 	}
-	lead := ""
-	if tmp, ok := params["Lead"]; ok {
+	if len(content) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "请输入内容"})
+	}
+	if tmp, ok := params["UserName"]; ok {
 		if tmp1, ok := tmp.(string); ok {
-			if len(tmp1) > Model.MAXLEADSIZE {
-				tmp1 = string([]byte(tmp1)[0:Model.MAXLEADSIZE])
-			}
-			lead = tmp1
+			user = tmp1
 		}
 	}
-	author := ""
-	if tmp, ok := params["Author"]; ok {
+	if len(user) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "请输入用户名"})
+	}
+	if tmp, ok := params["Mail"]; ok {
 		if tmp1, ok := tmp.(string); ok {
-			if len(tmp1) > Model.MAXLEADSIZE {
-				tmp1 = string([]byte(tmp1)[0:Model.MAXLEADSIZE])
-			}
-			author = tmp1
+			email = tmp1
 		}
 	}
-	Feedback, err := Model.MFeedback.CreateFeedback(title, lead, content, exttype, top, author)
+	email, err := mail.ParseMailAddr(email)
+	if err != nil {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "邮件地址格式不正确"})
+	}
+	if tmp, ok := params["Phone"]; ok {
+		if tmp1, ok := tmp.(string); ok {
+			phone = tmp1
+		}
+	}
+	if tmp, ok := params["Hide"]; ok {
+		tmp1, err := mystr.ToInt(tmp)
+		if err == nil {
+			hide = tmp1
+		}
+	}
+	Feedback, err := Model.MFeedback.CreateFeedback(title, content, 0, hide, user, phone, email, ip)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
@@ -160,7 +207,7 @@ func (this *Feedback) Create() *Web.JsonResult {
 }
 
 /*Detail
-@see 新闻详情[get]
+@see 详情[get]
 @param data : json {ID:string}
 */
 func (this *Feedback) Detail() *Web.JsonResult {
@@ -183,7 +230,7 @@ func (this *Feedback) Detail() *Web.JsonResult {
 }
 
 /*Remove
-@see 删除新闻[get]
+@see 删除[get]
 @param data : json {IDs:string}
 */
 func (this *Feedback) Remove() *Web.JsonResult {
