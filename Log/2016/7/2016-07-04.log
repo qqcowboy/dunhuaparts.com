@@ -1,0 +1,2 @@
+2016-07-04 20:03:06	in SessionGob.Decode()，EOF
+2016-07-04 20:03:06	in FileSession.readSession，gob.Decode时出错：EOF

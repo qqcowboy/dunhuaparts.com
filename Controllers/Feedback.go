@@ -246,7 +246,7 @@ func (this *Feedback) Remove() *Web.JsonResult {
 	params := make(map[string]interface{})
 	myjson.JsonDecode(this.QueryString["data"], &params)
 	if idstr, ok := params["IDs"]; !ok || !mystr.IsString(idstr) || len(strings.TrimSpace(idstr.(string))) < 1 {
-		return this.Json(map[string]interface{}{"code": 43005, "msg": "没有需要删除的新闻"})
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "没有需要删除的留言"})
 	}
 	idstr := strings.TrimSpace(params["IDs"].(string))
 	ids := strings.Split(idstr, ",")
@@ -262,7 +262,7 @@ func (this *Feedback) Remove() *Web.JsonResult {
 }
 
 /*Update
-@see 更新新闻[post]
+@see 更新[post]
 @param data : json {ID,Data:map[string]interface{}}
 */
 func (this *Feedback) Update() *Web.JsonResult {
@@ -289,6 +289,131 @@ func (this *Feedback) Update() *Web.JsonResult {
 	}
 	ID := bson.ObjectIdHex(strings.TrimSpace(params["ID"].(string)))
 	err := Model.MFeedback.UpdateId(ID, param)
+	if err != nil {
+		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
+	}
+	return this.Json(map[string]interface{}{"code": 1, "data": true})
+}
+
+/*AddReply
+@see 新增回复[post]
+@param data : json {ID,UserName,Content}
+*/
+func (this *Feedback) AddReply() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
+	if !this.IsPost {
+		return this.Json(map[string]interface{}{"code": 43002})
+	}
+	if _, ok := this.Form["data"]; !ok {
+		return this.Json(map[string]interface{}{"code": 43004})
+	}
+	params := make(map[string]interface{})
+	myjson.JsonDecode(this.Form["data"], &params)
+	if idstr, ok := params["ID"]; !ok || !mystr.IsString(idstr) || len(strings.TrimSpace(idstr.(string))) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "ID是必须参数"})
+	}
+	content := ""
+	if tmp, ok := params["Content"]; ok {
+		if tmp1, ok := tmp.(string); ok {
+			if len(tmp1) > Model.MAXCONTENTSIZE {
+				tmp1 = string([]byte(tmp1)[0:Model.MAXCONTENTSIZE])
+			}
+			content = tmp1
+		}
+	}
+	if len(content) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "请输入内容"})
+	}
+	user := ""
+	if tmp, ok := params["UserName"]; ok {
+		if tmp1, ok := tmp.(string); ok {
+			user = tmp1
+		}
+	}
+	if len(user) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "请输入用户名"})
+	}
+	ID := strings.TrimSpace(params["ID"].(string))
+	r, err := Model.MFeedback.AddReply(ID, user, content)
+	if err != nil {
+		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
+	}
+	return this.Json(map[string]interface{}{"code": 1, "data": r})
+}
+
+/*DelReply
+@see 删除回复[get]
+@param data : json {ID,RID}
+*/
+func (this *Feedback) DelReply() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
+	if this.IsPost {
+		return this.Json(map[string]interface{}{"code": 43001})
+	}
+	if _, ok := this.QueryString["data"]; !ok {
+		return this.Json(map[string]interface{}{"code": 43004})
+	}
+	params := make(map[string]interface{})
+	myjson.JsonDecode(this.QueryString["data"], &params)
+	if idstr, ok := params["ID"]; !ok || !mystr.IsString(idstr) || len(strings.TrimSpace(idstr.(string))) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "ID是必须参数"})
+	}
+	if idstr, ok := params["RID"]; !ok || !mystr.IsString(idstr) || len(strings.TrimSpace(idstr.(string))) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "RID是必须参数"})
+	}
+	ID := strings.TrimSpace(params["ID"].(string))
+	RID := strings.TrimSpace(params["RID"].(string))
+	err := Model.MFeedback.DelReply(ID, RID)
+	if err != nil {
+		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
+	}
+	return this.Json(map[string]interface{}{"code": 1, "data": true})
+}
+
+/*UpdateReply
+@see 更新回复[post]
+@param data : json {ID,RID,UserName,Content}
+*/
+func (this *Feedback) UpdateReply() *Web.JsonResult {
+	if this.hasAuth() == false {
+		return this.Json(map[string]interface{}{"code": 40003, "msg": "无权限操作"})
+	}
+	if !this.IsPost {
+		return this.Json(map[string]interface{}{"code": 43002})
+	}
+	if _, ok := this.Form["data"]; !ok {
+		return this.Json(map[string]interface{}{"code": 43004})
+	}
+	params := make(map[string]interface{})
+	myjson.JsonDecode(this.Form["data"], &params)
+	if idstr, ok := params["ID"]; !ok || !mystr.IsString(idstr) || len(strings.TrimSpace(idstr.(string))) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "ID是必须参数"})
+	}
+	if idstr, ok := params["RID"]; !ok || !mystr.IsString(idstr) || len(strings.TrimSpace(idstr.(string))) < 1 {
+		return this.Json(map[string]interface{}{"code": 43005, "msg": "RID是必须参数"})
+	}
+	content := ""
+	if tmp, ok := params["Content"]; ok {
+		if tmp1, ok := tmp.(string); ok {
+			if len(tmp1) > Model.MAXCONTENTSIZE {
+				tmp1 = string([]byte(tmp1)[0:Model.MAXCONTENTSIZE])
+			}
+			content = tmp1
+		}
+	}
+	user := ""
+	if tmp, ok := params["UserName"]; ok {
+		if tmp1, ok := tmp.(string); ok {
+			user = tmp1
+		}
+	}
+	ID := strings.TrimSpace(params["ID"].(string))
+	RID := strings.TrimSpace(params["RID"].(string))
+	err := Model.MFeedback.UpdateReply(ID, RID, user, content)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}

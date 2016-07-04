@@ -154,6 +154,26 @@ func (this *Feedback) AddReply(fdid, username, content string) (result FeedbackR
 	return
 }
 
+/*UpdateReply
+@see :更新回复
+@params :fdid,rpid
+*/
+func (this *Feedback) UpdateReply(fdid, rpid, user, content string) (err error) {
+	mongo := this.mSession()
+	defer mongo.Close()
+	mdb := mongo.DB(this.db)
+	col := mdb.C(this.coll)
+	set := bson.M{}
+	if len(user) > 0 {
+		set["Reply.$.UserName"] = user
+	}
+	if len(content) > 0 {
+		set["Reply.$.Content"] = user
+	}
+	err = col.Update(bson.M{"_id": bson.ObjectIdHex(fdid), "Reply.ID": rpid}, bson.M{"$set": set})
+	return
+}
+
 /*DelReply
 @see :删除回复
 @params :fdid,rpid
