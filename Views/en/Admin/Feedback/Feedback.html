@@ -1,0 +1,227 @@
+<div id="admin-feedback-index">
+	<div data-bind="attr:{id:CtrlListID}" style="display:none-;">
+		<!-- 留言管理顶部 -->
+		<h2>
+			&nbsp; <small>留言管理</small>
+			&nbsp; <small style="float:right">
+			<input data-bind="value:AttrKey,event:{'keydown':EventSearch}" type="text" placeholder="搜索"/></small>
+			&nbsp; <small style="float:right;margin-left:50px;margin-right:80px;">
+				<button data-bind="click:EventRefresh" class="btn btn-primary" type="button" contenteditable="true">
+					<i class="fa fa-refresh fa-lg"></i>
+					刷新
+				</button>
+			</small>
+			&nbsp; 
+		</h2>
+		<!-- 留言列表 -->
+		<div class="feedback-list" data-bind="foreach:ListFeedback.List">
+		   <div class="item">
+		   	<div class="item-menu">
+		   		<span class="title" data-bind="text:$data.Title"></span>
+		   		<span class="date" data-bind="text:$data.CreateDate"></span>
+		   		<span class="user" data-bind="text:$data.UserName"></span>
+					<span data-bind="text:$data.Hide==0?'显示':'隐藏'" class="label label-warning label-xs" style="float:right;margin-right:15px;"></span>
+					<span style="float:right;margin-left:20px;">&nbsp;</span>
+					<span data-bind="click:$root.EventDel" class="btn btn-danger btn-xs ctrl" style="float:right;">删除</span> 
+					<span style="float:right;">&nbsp;</span>
+					<span data-bind="click:$root.EventDel" class="btn btn-info btn-xs ctrl" style="float:right;">回复</span> 
+					<span style="float:right;">&nbsp;</span>
+				</div>
+				<div class="item-content">
+		   		<p class="detail" data-bind="html:$data.Content"></p>
+	   			<div data-bind="foreach:$data.UI_Reply" class="reply">
+   						<div class="reply-menu"></div>
+	   					<div class="reply-content">
+	   							
+	   					</div>
+	   			</div>
+				</div>
+		   </div>
+		</div>
+		<!-- 查看更多 -->
+		<div data-bind="visible:ListFeedback.List().length<ListFeedback.Total(),click:EventMore" style="text-align:center;cursor: pointer;display:none;">
+			<i class="fa fa-angle-double-down fa-4x"></i>
+		</div>
+	</div>
+	<!-- 编辑隐藏层 -->
+	<div data-bind="attr:{id:CtrlEditID}" style="display:none;">
+		<span data-bind="text:AttrFeedback.Cn()?'中文':'英文',click:EventChCn" class="label label-warning" style="cursor: pointer;"></span>
+		<a data-bind="click:EventChCn" style="cursor: pointer;">点击切换中/英文</a>
+		<div class="input-group input-group-lg item">
+			  <span class="input-group-addon" id="sizing-addon1">标题 </span>
+			  <input type="text" class="form-control" data-bind="value:AttrFeedback.Title" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg item">
+			  <span class="input-group-addon" id="sizing-addon1">作者 </span>
+			  <input type="text" class="form-control" data-bind="value:AttrFeedback.Author" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg item">
+			  <span class="input-group-addon" id="sizing-addon1">导语 </span>
+			  <input type="text" class="form-control" data-bind="value:AttrFeedback.Lead" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg item">
+			<span class="input-group-addon">
+				<input data-bind="checked:AttrFeedback.Top()==1,event:{'change':EventTop}" type="checkbox">
+			</span>
+			<span class="form-control">是否置顶</span>
+		</div>
+		<div>
+			<span class="input-group-addon" id="sizing-addon1">留言正文 <i class="fa fa-hand-o-down"></i></span>
+			<textarea data-bind="attr:{id:CtrlEditorID}" rows="10" cols="80"></textarea>
+		</div>
+		<div style="text-align:center;margin-top:5px;">
+			<button data-bind="click:EventCancel" type="button" class="btn btn-default btn-lg" style="width: 200px;">取　消</button>
+			<button data-bind="click:EventSave" type="button" class="btn btn-primary btn-lg" style="width: 200px;">保　存</button>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var ctrl=$('#admin-feedback-index');
+		function Admin_Feedback_Index_V1(){
+			this.CtrlListID = cowboy.sys.guid();
+			this.CtrlEditID = cowboy.sys.guid();
+			this.CtrlEditorID = cowboy.sys.guid();
+			
+			this.ListFeedback={List:ko.observableArray([]),Limit:5,Skip:ko.observable(-1),Total:ko.observable(0)};
+			this.AttrKey = ko.observable('');
+			this.AttrFeedback = {ID:'',Content:'',Author:ko.observable(''),Lead:ko.observable(''),Cn:ko.observable(true),Top:ko.observable(0),Title:ko.observable('')};
+			this.feedbackediting = {};
+			this.FuncInitFeedback=function(feedback){
+				if(feedback==undefined){
+					feedback={};
+				}
+				this.AttrFeedback.ID=feedback.ID||'';
+				this.AttrFeedback.Content=feedback.Content||'';
+				this.AttrFeedback.UserName(feedback.UserName||'管理员');
+				this.AttrFeedback.Cn(feedback.ExtType&&feedback.ExtType==0||false);
+				this.AttrFeedback.Top(feedback.Top||0);
+				this.AttrFeedback.Title(feedback.Title||'');
+				$('#'+this.CtrlEditorID).ckeditor().val(this.AttrFeedback.Content);
+			};
+			this.FuncGetFeedback=function(skip){
+				if(skip==undefined){
+					skip=-1
+				}
+				if(skip<0){
+					this.ListFeedback.List([]);
+					this.ListFeedback.Total(0);
+				}
+				//{Start:float64,Limit:int,Key:string,Top:int}
+				var params={Start:skip,Limit:this.ListFeedback.Limit,Key:$.trim(this.AttrKey())};
+				$.ajax({url:'/feedback/aquery',type:'post',data:{data:JSON.stringify(params)},dataType:'json'}).done(function(data){
+					if(data.code==1){
+						if(skip<0){
+							this.ListFeedback.Total(data.count);
+							this.ListFeedback.List(data.data);
+						}else{
+							for(k in data.data){
+								this.ListFeedback.List.push(data.data[k]);
+							}
+						}
+						if(this.ListFeedback.List().length>0){
+							this.ListFeedback.Skip(this.ListFeedback.List()[this.ListFeedback.List().length-1].Version);
+						}
+					}else{
+						cowboy.views.FuncAddTip('获取留言失败');
+						cowboy.views.FuncAddTip(data.error);
+					}
+				}.bind(this));
+			};
+			this.EventSearch = function(m,e){
+				var currKey=e.keyCode||e.which||e.charCode;
+				if(currKey==13){
+					this.AttrKey($(e.target).val());
+					this.FuncGetFeedback(-1);
+					return false;
+				}
+				return true;
+			};
+			this.EventCancel=function(){
+				$('#'+this.CtrlEditID).hide();
+				$('#'+this.CtrlListID).show();
+			};
+			this.EventSave = function(){
+				var title=$.trim(this.AttrFeedback.Title());
+				if(title.length<1){
+					cowboy.views.FuncAddTip('请输入留言标题');
+					return;
+				}
+				var content = $('#'+this.CtrlEditorID).ckeditor().val();
+				if(content.length<1){
+					cowboy.views.FuncAddTip('请输入正文内容');
+					return;
+				}
+				var author = this.AttrFeedback.Author();
+				if(author.length<1){
+					cowboy.views.FuncAddTip('请输入留言作者或出处');
+					return;
+				}
+				var exttype=this.AttrFeedback.Cn()?0:1
+				if(this.AttrFeedback.ID==''){
+					var params={Content:content,Author:author,Title:title,ExtType:exttype,Lead:this.AttrFeedback.Lead(),Top:this.AttrFeedback.Top()};
+					$.ajax({url:'/feedback/create',data:{data:JSON.stringify(params)},dataType:'json',type:'post'}).done(function(data){
+						if(data.code==1){
+							cowboy.views.FuncAddTip('新增成功');
+							this.FuncGetFeedback(-1);
+							$('#'+this.CtrlEditID).hide();
+							$('#'+this.CtrlListID).show();
+						}
+					}.bind(this));
+				}else{
+					var params={ID:this.AttrFeedback.ID,Data:{Content:content,Author:author,Title:title,ExtType:exttype,Lead:this.AttrFeedback.Lead(),Top:this.AttrFeedback.Top()}};
+					$.ajax({url:'/feedback/update',data:{data:JSON.stringify(params)},dataType:'json',type:'post'}).done(function(data){
+						if(data.code==1){
+							cowboy.views.FuncAddTip('更新成功');
+							//this.feedbackediting.Content=content;
+							this.feedbackediting.Author=author;
+							this.feedbackediting.Title=title;
+							this.feedbackediting.ExtType=exttype;
+							this.feedbackediting.Lead=this.AttrFeedback.Lead();
+							this.feedbackediting.Top=this.AttrFeedback.Top();
+							
+							var tmpl=this.ListFeedback.List();
+							this.ListFeedback.List([]);
+							this.ListFeedback.List(tmpl);
+							$('#'+this.CtrlEditID).hide();
+							$('#'+this.CtrlListID).show();
+						}
+					}.bind(this));
+				}
+			};
+			this.EventChCn = function(){
+				this.AttrFeedback.Cn(!this.AttrFeedback.Cn());
+			};
+			this.EventTop = function(){
+				if(this.AttrFeedback.Top()==1){
+					this.AttrFeedback.Top(0);
+					return
+				};
+				this.AttrFeedback.Top(1);
+			};
+			this.EventRefresh = function(m,e){
+				this.FuncGetFeedback(-1);
+			};
+			this.EventDel = function(m,e){
+				$.ajax({url:'/feedback/remove',data:{data:JSON.stringify({IDs:m.ID})},dataType:'json',type:'get'}).done(function(data){
+					if(data.code==1){
+						cowboy.views.FuncAddTip('删除成功');
+						this.ListFeedback.List.remove(m);
+						this.ListFeedback.Total(this.ListFeedback.Total()-1);
+					}
+				}.bind(this));
+			}.bind(this);
+			this.EventMore =function(m,e){
+				this.FuncGetFeedback(this.ListFeedback.Skip());
+			};
+			this.FuncInit=function(ctrl){
+				ko.applyBindings(this,ctrl);
+				$('#'+this.CtrlEditorID).ckeditor();
+				//CKEDITOR.replace();
+				this.FuncGetFeedback(-1);
+			}
+		}
+		var admin_Feedback_Index_V1 = new Admin_Feedback_Index_V1();
+		admin_Feedback_Index_V1.FuncInit(ctrl[0]);
+	</script>
+	
+	
+</div>

@@ -101,7 +101,7 @@ func (this *Feedback) QueryFeedback(start float64, limit int, sorts []string, hi
 @see :新增Feedback
 */
 func (this *Feedback) CreateFeedback(Title, Content string, ExtType, Hide int, User, Phone, Mail, IP string) (Feedback FeedbackInfo, err error) {
-	tmp := bson.M{"_id": bson.NewObjectId(), "Title": Title, "Content": Content, "Hide": Hide, "User": User, "IP": IP,
+	tmp := bson.M{"_id": bson.NewObjectId(), "Title": Title, "Content": Content, "Hide": Hide, "UserName": User, "IP": IP,
 		"ExtType": ExtType, "Phone": Phone, "Version": mystr.TimeStamp(), "CreateDate": mystr.Date(), "Mail": Mail,
 	}
 	mongo := this.mSession()

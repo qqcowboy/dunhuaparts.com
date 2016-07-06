@@ -191,7 +191,7 @@
 }
 .products-tree .item .name{
 	display: inline-flex;
-	width: 205px;
+	width: 200px;
 	white-space:nowrap; 
 	overflow:hidden; 
 	text-overflow:ellipsis;
@@ -265,4 +265,42 @@
 }
 .news-list .item:hover{
 	background-color: #EFEFEF;
+}
+.feedback-list{
+	background-color: #E2F3E7;
+}
+.feedback-list .item:hover .ctrl{
+	display:inline-table!important;
+}
+.feedback-list .item:hover{
+	background-color: #EFEFEF;
+}
+.feedback-list .item .item-menu{
+	border-bottom: 1px solid rgba(141, 173, 206, 0.3);
+	height: 40px;
+	padding-top: 6px;
+	font-size: 18px;
+}
+.feedback-list .item .item-menu .title{
+	margin-left:20px;
+	font-weight: bolder;
+}
+.feedback-list .item .item-menu .date{
+    margin-left: 10px;
+    font-size: 13px;
+    background-color: white;
+}
+.feedback-list .item .item-menu .user{
+    margin-left: 10px;
+    font-size: 13px;
+    background-color: white;
+}
+.feedback-list .item .item-content{
+	min-height: 100px;
+	padding-top: 10px;
+	margin-left: 20px;
+	border-bottom: 1px solid rgba(141, 173, 206, 0.3);
+}
+.feedback-list .item .item-content .reply{
+	background-color:#D2DDE6;
 }

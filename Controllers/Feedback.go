@@ -74,7 +74,7 @@ func (this *Feedback) AQuery() *Web.JsonResult {
 		}
 	}
 	exttype := []int{}
-	sel := map[string]interface{}{"Content": 0, "Reply": 0}
+	sel := map[string]interface{}{} //{"Content": 0, "Reply": 0}
 	count, lists, err := Model.MFeedback.QueryFeedback(start, limit, []string{"-Version"}, hide, key, email, sel, exttype...)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
@@ -118,7 +118,7 @@ func (this *Feedback) Query() *Web.JsonResult {
 		hide = 0
 	}
 	exttype := []int{}
-	sel := map[string]interface{}{"Content": 0, "Reply": 0, "Mail": 0, "Phone": 0}
+	sel := map[string]interface{}{"Mail": 0, "Phone": 0} //"Content": 0, "Reply": 0
 	count, lists, err := Model.MFeedback.QueryFeedback(start, limit, []string{"-Version"}, hide, key, email, sel, exttype...)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
