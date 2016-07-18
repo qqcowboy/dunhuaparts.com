@@ -540,3 +540,79 @@ body{
 	overflow:hidden; 
 	text-overflow:ellipsis;
 }
+.no-content{
+	font-size: 50px;
+	color: #000;
+	width: 910px;
+	font-family: fantasy;
+	min-height: 600px;
+	line-height: 600px;
+	margin:0 auto;
+	text-align: center;
+}
+.feedback-div{
+	width:100%;
+	min-width:910px;
+}
+.feedback-ctrl{
+	width:910px;
+	margin: 0 auto;
+}
+.feedback-ctrl .add-btn{
+	margin-bottom: 5px;
+	margin-top: 10px;
+}
+.feedback-add .item{
+	margin-top:15px;
+}
+.verifyimg{
+	float:right;
+	margin-right:10px;
+	width:120px;
+	height:50px;
+	cursor: pointer;
+	margin-top: -50px;
+	z-index: 3;
+	position: inherit;
+}
+
+.feedback-list{
+	background-color: #E2F3E7;
+	width: 910px;
+   margin: 0 auto;
+}
+.feedback-list .item:hover .ctrl{
+	display:inline-table!important;
+}
+.feedback-list .item:hover{
+	background-color: #EFEFEF;
+}
+.feedback-list .item .item-menu{
+	border-bottom: 1px solid rgba(141, 173, 206, 0.3);
+	height: 40px;
+	padding-top: 6px;
+	font-size: 18px;
+}
+.feedback-list .item .item-menu .title{
+	margin-left:20px;
+	font-weight: bolder;
+}
+.feedback-list .item .item-menu .date{
+    margin-left: 10px;
+    font-size: 13px;
+    background-color: white;
+}
+.feedback-list .item .item-menu .user{
+    margin-left: 10px;
+    font-size: 13px;
+    background-color: white;
+}
+.feedback-list .item .item-content{
+	min-height: 100px;
+	padding-top: 10px;
+	margin-left: 20px;
+	border-bottom: 1px solid rgba(141, 173, 206, 0.3);
+}
+.feedback-list .item .item-content .reply{
+	background-color:#D2DDE6;
+}

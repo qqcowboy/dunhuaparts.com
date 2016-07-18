@@ -48,20 +48,17 @@ func init() {
 @see :查询新闻，默认按时间例序
 @params :exttype []int
 */
-func (this *Feedback) QueryFeedback(start float64, limit int, sorts []string, hide int, key, email string, selField map[string]interface{}, exttype ...int) (count int, Feedback []FeedbackInfo, err error) {
+func (this *Feedback) QueryFeedback(skip, limit int, sorts []string, hide int, key, email string, selField map[string]interface{}, exttype ...int) (count int, Feedback []FeedbackInfo, err error) {
 	//{_id,Remark,Name,CreateDate,ParentID,UID}
 	mongo := this.mSession()
 	defer mongo.Close()
 	mdb := mongo.DB(this.db)
 	col := mdb.C(this.coll)
 
-	if start < 0 {
-		start = mystr.TimeStamp()
-	}
 	if limit < 1 {
 		limit = 20
 	}
-	query := bson.M{"Version": bson.M{"$lt": start}}
+	query := bson.M{}
 	if len(exttype) > 0 {
 		query["ExtType"] = bson.M{"$in": exttype}
 	}
@@ -79,7 +76,6 @@ func (this *Feedback) QueryFeedback(start float64, limit int, sorts []string, hi
 	if len(email) > 0 {
 		query["Mail"] = email
 	}
-	fmt.Println(query)
 	qs := col.Find(query) //.Select(bson.M{"Images": 0})
 	if len(sorts) > 0 {
 		qs.Sort(sorts...)
@@ -89,6 +85,9 @@ func (this *Feedback) QueryFeedback(start float64, limit int, sorts []string, hi
 	count, err = qs.Count()
 	if err != nil {
 		return
+	}
+	if skip > 0 {
+		qs = qs.Skip(skip)
 	}
 	qs.Limit(limit)
 	qs.Select(selField)

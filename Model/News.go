@@ -44,20 +44,17 @@ func init() {
 @see :查询新闻，默认按时间例序
 @params :exttype []int
 */
-func (this *News) QueryNews(start float64, limit int, sorts []string, top int, key string, exttype ...int) (count int, news []NewsInfo, err error) {
+func (this *News) QueryNews(skip, limit int, sorts []string, top int, key string, exttype ...int) (count int, news []NewsInfo, err error) {
 	//{_id,Remark,Name,CreateDate,ParentID,UID}
 	mongo := this.mSession()
 	defer mongo.Close()
 	mdb := mongo.DB(this.db)
 	col := mdb.C(this.coll)
 
-	if start < 0 {
-		start = mystr.TimeStamp()
-	}
 	if limit < 1 {
 		limit = 20
 	}
-	query := bson.M{"Version": bson.M{"$lt": start}}
+	query := bson.M{}
 	if len(exttype) > 0 {
 		query["ExtType"] = bson.M{"$in": exttype}
 	}
@@ -77,6 +74,9 @@ func (this *News) QueryNews(start float64, limit int, sorts []string, top int, k
 	count, err = qs.Count()
 	if err != nil {
 		return
+	}
+	if skip > 0 {
+		qs = qs.Skip(skip)
 	}
 	qs.Limit(limit)
 	qs.Select(bson.M{"Content": 0})

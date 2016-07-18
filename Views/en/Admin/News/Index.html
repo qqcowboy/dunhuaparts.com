@@ -94,17 +94,17 @@
 			};
 			this.FuncGetNews=function(skip){
 				if(skip==undefined){
-					skip=-1
+					skip=-1;
 				}
-				if(skip<0){
+				if(skip<1){
 					this.ListNews.List([]);
 					this.ListNews.Total(0);
 				}
 				//{Start:float64,Limit:int,Key:string,Top:int}
-				var params={Start:skip,Limit:this.ListNews.Limit,Key:$.trim(this.AttrKey())};
+				var params={Skip:skip,Limit:this.ListNews.Limit,Key:$.trim(this.AttrKey())};
 				$.ajax({url:'/news/query',type:'post',data:{data:JSON.stringify(params)},dataType:'json'}).done(function(data){
 					if(data.code==1){
-						if(skip<0){
+						if(skip<1){
 							this.ListNews.Total(data.count);
 							this.ListNews.List(data.data);
 						}else{
@@ -112,9 +112,7 @@
 								this.ListNews.List.push(data.data[k]);
 							}
 						}
-						if(this.ListNews.List().length>0){
-							this.ListNews.Skip(this.ListNews.List()[this.ListNews.List().length-1].Version);
-						}
+						this.ListNews.Skip(this.ListNews.List().length);
 					}else{
 						cowboy.views.FuncAddTip('获取新闻失败');
 						cowboy.views.FuncAddTip(data.error);
@@ -125,7 +123,7 @@
 				var currKey=e.keyCode||e.which||e.charCode;
 				if(currKey==13){
 					this.AttrKey($(e.target).val());
-					this.FuncGetNews(-1);
+					this.FuncGetNews(0);
 					return false;
 				}
 				return true;
@@ -161,7 +159,7 @@
 					$.ajax({url:'/news/create',data:{data:JSON.stringify(params)},dataType:'json',type:'post'}).done(function(data){
 						if(data.code==1){
 							cowboy.views.FuncAddTip('新增成功');
-							this.FuncGetNews(-1);
+							this.FuncGetNews(0);
 							$('#'+this.CtrlEditID).hide();
 							$('#'+this.CtrlListID).show();
 						}
@@ -208,7 +206,7 @@
 				$('#'+this.CtrlEditID).show();
 			}.bind(this);
 			this.EventRefresh = function(m,e){
-				this.FuncGetNews(-1);
+				this.FuncGetNews(0);
 			};
 			this.EventDel = function(m,e){
 				$.ajax({url:'/news/remove',data:{data:JSON.stringify({IDs:m.ID})},dataType:'json',type:'get'}).done(function(data){
@@ -226,7 +224,7 @@
 				ko.applyBindings(this,ctrl);
 				$('#'+this.CtrlEditorID).ckeditor();
 				//CKEDITOR.replace();
-				this.FuncGetNews(-1);
+				this.FuncGetNews(0);
 			}
 		}
 		var admin_News_Index_V1 = new Admin_News_Index_V1();

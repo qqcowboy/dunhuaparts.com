@@ -99,7 +99,7 @@
 			};
 			this.FuncGetFeedback=function(skip){
 				if(skip==undefined){
-					skip=-1
+					skip=0
 				}
 				if(skip<0){
 					this.ListFeedback.List([]);
@@ -111,9 +111,14 @@
 					if(data.code==1){
 						if(skip<0){
 							this.ListFeedback.Total(data.count);
-							this.ListFeedback.List(data.data);
+							for(k in data.data){
+								//k['UI_Reply']=ko.observableArray(k['Reply']);
+								this.ListFeedback.List.push(data.data[k]);
+							}
+							//this.ListFeedback.List(data.data);
 						}else{
 							for(k in data.data){
+								//k['UI_Reply']=ko.observableArray(k['Reply']);
 								this.ListFeedback.List.push(data.data[k]);
 							}
 						}

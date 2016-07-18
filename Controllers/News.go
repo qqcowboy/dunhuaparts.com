@@ -32,13 +32,13 @@ func (this *News) hasAuth() bool {
 
 /*Query
 @see 查询[post]
-@param data : json {Start:float64,Limit:int,Key:string,Top:int,Lang:all/cn/en}
+@param data : json {Skip:int,Limit:int,Key:string,Top:int,Lang:all/cn/en}
 */
 func (this *News) Query() *Web.JsonResult {
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
-	start := -0.1
+	skip := 0
 	limit := 20
 	top := 0
 	lang := "all"
@@ -46,8 +46,8 @@ func (this *News) Query() *Web.JsonResult {
 	if _, ok := this.Form["data"]; ok {
 		params := make(map[string]interface{})
 		myjson.JsonDecode(this.Form["data"], &params)
-		if _, ok := params["Start"]; ok && mystr.IsFloat64(params["Start"]) {
-			start = params["Start"].(float64)
+		if tmp, ok := params["Skip"]; ok {
+			skip, _ = mystr.ToInt(tmp)
 		}
 		if tmp, ok := params["Limit"]; ok {
 			tmp1, err := mystr.ToInt(tmp)
@@ -84,7 +84,7 @@ func (this *News) Query() *Web.JsonResult {
 	default:
 		exttype = []int{0, 1}
 	}
-	count, lists, err := Model.MNews.QueryNews(start, limit, []string{"-Top", "-Version"}, top, key, exttype...)
+	count, lists, err := Model.MNews.QueryNews(skip, limit, []string{"-Top", "-Version"}, top, key, exttype...)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}

@@ -34,7 +34,7 @@ func (this *Feedback) hasAuth() bool {
 
 /*AQuery
 @see 管理员查询[post]
-@param data : json {Start:float64,Limit:int,Key:string,Mail:string,Hide:0/1/2}
+@param data : json {Skip:int,Limit:int,Key:string,Mail:string,Hide:0/1/2}
 */
 func (this *Feedback) AQuery() *Web.JsonResult {
 	if this.hasAuth() == false {
@@ -43,7 +43,7 @@ func (this *Feedback) AQuery() *Web.JsonResult {
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
-	start := -0.1
+	skip := 0
 	limit := 20
 	key := ""
 	email := ""
@@ -51,8 +51,8 @@ func (this *Feedback) AQuery() *Web.JsonResult {
 	if _, ok := this.Form["data"]; ok {
 		params := make(map[string]interface{})
 		myjson.JsonDecode(this.Form["data"], &params)
-		if _, ok := params["Start"]; ok && mystr.IsFloat64(params["Start"]) {
-			start = params["Start"].(float64)
+		if tmp, ok := params["Skip"]; ok {
+			skip, _ = mystr.ToInt(tmp)
 		}
 		if tmp, ok := params["Limit"]; ok {
 			tmp1, err := mystr.ToInt(tmp)
@@ -75,7 +75,7 @@ func (this *Feedback) AQuery() *Web.JsonResult {
 	}
 	exttype := []int{}
 	sel := map[string]interface{}{} //{"Content": 0, "Reply": 0}
-	count, lists, err := Model.MFeedback.QueryFeedback(start, limit, []string{"-Version"}, hide, key, email, sel, exttype...)
+	count, lists, err := Model.MFeedback.QueryFeedback(skip, limit, []string{"-Version"}, hide, key, email, sel, exttype...)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}
@@ -90,15 +90,15 @@ func (this *Feedback) Query() *Web.JsonResult {
 	if !this.IsPost {
 		return this.Json(map[string]interface{}{"code": 43002})
 	}
-	start := -0.1
+	skip := 0
 	limit := 20
 	key := ""
 	email := ""
 	if _, ok := this.Form["data"]; ok {
 		params := make(map[string]interface{})
 		myjson.JsonDecode(this.Form["data"], &params)
-		if _, ok := params["Start"]; ok && mystr.IsFloat64(params["Start"]) {
-			start = params["Start"].(float64)
+		if tmp, ok := params["Skip"]; ok {
+			skip, _ = mystr.ToInt(tmp)
 		}
 		if tmp, ok := params["Limit"]; ok {
 			tmp1, err := mystr.ToInt(tmp)
@@ -119,7 +119,7 @@ func (this *Feedback) Query() *Web.JsonResult {
 	}
 	exttype := []int{}
 	sel := map[string]interface{}{"Mail": 0, "Phone": 0} //"Content": 0, "Reply": 0
-	count, lists, err := Model.MFeedback.QueryFeedback(start, limit, []string{"-Version"}, hide, key, email, sel, exttype...)
+	count, lists, err := Model.MFeedback.QueryFeedback(skip, limit, []string{"-Version"}, hide, key, email, sel, exttype...)
 	if err != nil {
 		return this.Json(map[string]interface{}{"code": 40000, "msg": err.Error()})
 	}

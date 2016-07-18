@@ -1,0 +1,4 @@
+2016-07-12 22:30:34	in SessionGob.Decode()，EOF
+2016-07-12 22:30:34	in FileSession.readSession，gob.Decode时出错：EOF
+2016-07-12 23:04:49	in SessionGob.Decode()，EOF
+2016-07-12 23:04:49	in FileSession.readSession，gob.Decode时出错：EOF

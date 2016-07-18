@@ -1,10 +1,10 @@
 <div id="Home-News-Index" class="news-div">
-		<div data-bind="visible:ListNews().length<1" class="newslist" style="height:100px;display:none;">
+		<div data-bind="visible:ListNews().length<1" class="no-content" style="height:100px;display:none;">
 			has no news
 		</div>
 		<!-- current category -->
 		<div data-bind="visible:ListNews().length>0,foreach:ListNews" class="row grid newslist">
-			<div class="col-md-3 grid-item item" data-bind="click:$root.EventDetail">
+			<div class="col-md-3 grid-item item well" data-bind="click:$root.EventDetail">
 				<div class="thumbnail">
 					<div class="caption">
 						<h3 data-bind="text:$data.Title"></h3>
@@ -12,6 +12,11 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		<!-- 查看更多 -->
+		<div data-bind="visible:ListNews().length<ListNews.Total(),click:EventMore" style="text-align:center;cursor: pointer;display:none;">
+			<span class="glyphicon glyphicon-chevron-down fa-4x"></span>
+			More...
 		</div>
 	<div data-bind="attr:{id:DialogID}" ui-dialog="true">
 
@@ -37,13 +42,35 @@
 				}.bind(this));
 			};
 			this.ListNews=ko.observableArray([]);
+			this.ListNews.Total=ko.observable(0);
+			this.ListNews.Skip=ko.observable(0);
+			this.ListNews.Limit = 20;
 			
-			this.FuncNewsList = function(id){
-				$.ajax({url:'/news/query',data:{data:JSON.stringify({Limit:20,Lang:'en'})},dataType:'json',type:'post'}).done(function(data){
+			this.FuncNewsList = function(skip){
+				if(skip==undefined){
+					skip=-1;
+				}
+				if(skip<1){
+					this.ListNews([]);
+					this.ListNews.Total(0);
+				}
+				//{Start:float64,Limit:int,Key:string,Top:int}
+				var params={Skip:skip,Limit:this.ListNews.Limit,Lang:'en'};//,Key:$.trim(this.AttrKey())};
+				$.ajax({url:'/news/query',type:'post',data:{data:JSON.stringify(params)},dataType:'json'}).done(function(data){
 					if(data.code==1){
-						this.ListNews(data.data);
+						if(skip<1){
+							this.ListNews.Total(data.count);
+							this.ListNews(data.data);
+						}else{
+							for(k in data.data){
+								this.ListNews.push(data.data[k]);
+							}
+						}
+						this.ListNews.Skip(this.ListNews().length);
 						this.FuncMasonry();
-						//this.Attrmasonry.masonry('layout');
+					}else{
+						cowboy.views.FuncAddTip('get news fail');
+						cowboy.views.FuncAddTip(data.error);
 					}
 				}.bind(this));
 			};
@@ -53,6 +80,9 @@
 						this.AttrNews(data.data);
 					}
 				}.bind(this));
+			};
+			this.EventMore =function(m,e){
+				this.FuncNewsList(this.ListNews.Skip());
 			};
 			this.EventDetail = function(m,e){
 				cowboy.func.get('/home/news/detail',function(data){
