@@ -24,7 +24,7 @@
 					<span style="float:right;margin-left:20px;">&nbsp;</span>
 					<span data-bind="click:$root.EventDel" class="btn btn-danger btn-xs ctrl" style="float:right;">删除</span> 
 					<span style="float:right;">&nbsp;</span>
-					<span data-bind="click:$root.EventDel" class="btn btn-info btn-xs ctrl" style="float:right;">回复</span> 
+					<span data-bind="click:$root.EventReply" class="btn btn-info btn-xs ctrl" style="float:right;">回复</span> 
 					<span style="float:right;">&nbsp;</span>
 				</div>
 				<div class="item-content">
@@ -45,29 +45,9 @@
 	</div>
 	<!-- 编辑隐藏层 -->
 	<div data-bind="attr:{id:CtrlEditID}" style="display:none;">
-		<span data-bind="text:AttrFeedback.Cn()?'中文':'英文',click:EventChCn" class="label label-warning" style="cursor: pointer;"></span>
-		<a data-bind="click:EventChCn" style="cursor: pointer;">点击切换中/英文</a>
-		<div class="input-group input-group-lg item">
-			  <span class="input-group-addon" id="sizing-addon1">标题 </span>
-			  <input type="text" class="form-control" data-bind="value:AttrFeedback.Title" aria-describedby="sizing-addon1">
-		</div>
-		<div class="input-group input-group-lg item">
-			  <span class="input-group-addon" id="sizing-addon1">作者 </span>
-			  <input type="text" class="form-control" data-bind="value:AttrFeedback.Author" aria-describedby="sizing-addon1">
-		</div>
-		<div class="input-group input-group-lg item">
-			  <span class="input-group-addon" id="sizing-addon1">导语 </span>
-			  <input type="text" class="form-control" data-bind="value:AttrFeedback.Lead" aria-describedby="sizing-addon1">
-		</div>
-		<div class="input-group input-group-lg item">
-			<span class="input-group-addon">
-				<input data-bind="checked:AttrFeedback.Top()==1,event:{'change':EventTop}" type="checkbox">
-			</span>
-			<span class="form-control">是否置顶</span>
-		</div>
 		<div>
-			<span class="input-group-addon" id="sizing-addon1">留言正文 <i class="fa fa-hand-o-down"></i></span>
-			<textarea data-bind="attr:{id:CtrlEditorID}" rows="10" cols="80"></textarea>
+			<span class="input-group-addon" id="sizing-addon1">回复<i class="fa fa-hand-o-down"></i></span>
+			<textarea data-bind="attr:{id:CtrlReplyID}" rows="10" cols="80"></textarea>
 		</div>
 		<div style="text-align:center;margin-top:5px;">
 			<button data-bind="click:EventCancel" type="button" class="btn btn-default btn-lg" style="width: 200px;">取　消</button>
@@ -79,7 +59,7 @@
 		function Admin_Feedback_Index_V1(){
 			this.CtrlListID = cowboy.sys.guid();
 			this.CtrlEditID = cowboy.sys.guid();
-			this.CtrlEditorID = cowboy.sys.guid();
+			this.CtrlReplyID = cowboy.sys.guid();
 			
 			this.ListFeedback={List:ko.observableArray([]),Limit:5,Skip:ko.observable(-1),Total:ko.observable(0)};
 			this.AttrKey = ko.observable('');
@@ -213,6 +193,9 @@
 						this.ListFeedback.Total(this.ListFeedback.Total()-1);
 					}
 				}.bind(this));
+			}.bind(this);
+			this.EventReply = function(m,e){
+				
 			}.bind(this);
 			this.EventMore =function(m,e){
 				this.FuncGetFeedback(this.ListFeedback.Skip());
