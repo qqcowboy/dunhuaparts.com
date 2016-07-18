@@ -15,7 +15,7 @@
 		</h2>
 		<!-- 留言列表 -->
 		<div class="feedback-list" data-bind="foreach:ListFeedback.List">
-		   <div class="item">
+		   <div class="item" data-bind="css:{'bitem':$index()%2==0}">
 		   	<div class="item-menu">
 		   		<span class="title" data-bind="text:$data.Title"></span>
 		   		<span class="date" data-bind="text:$data.CreateDate"></span>
@@ -24,16 +24,20 @@
 					<span style="float:right;margin-left:20px;">&nbsp;</span>
 					<span data-bind="click:$root.EventDel" class="btn btn-danger btn-xs ctrl" style="float:right;">删除</span> 
 					<span style="float:right;">&nbsp;</span>
-					<span data-bind="click:$root.EventReply" class="btn btn-info btn-xs ctrl" style="float:right;">回复</span> 
+					<span data-bind="click:$root.EventAddReply" class="btn btn-info btn-xs ctrl" style="float:right;">回复</span> 
 					<span style="float:right;">&nbsp;</span>
 				</div>
 				<div class="item-content">
 		   		<p class="detail" data-bind="html:$data.Content"></p>
-	   			<div data-bind="foreach:$data.UI_Reply" class="reply">
-   						<div class="reply-menu"></div>
-	   					<div class="reply-content">
-	   							
-	   					</div>
+	   			<div data-bind="foreach:$data.UI_Reply" class="reply" style="margin-left:15px;">
+  						<div class="reply-menu">
+		   				<span class="date" data-bind="text:$data.CreateDate"></span>
+		   				<span class="user" data-bind="text:$data.UserName"></span>
+							<span class="label label-default label-xs" style="float:left;margin-right:10px;">回复</span>
+							<span style="float:right;margin-left:20px;">&nbsp;</span>
+  							<span data-bind="click:$root.EventDelReply" class="btn btn-danger btn-xs ctrl" style="float:right;">删除</span> 
+  						</div>
+   					<div class="reply-content" data-bind="html:$data.Content"></div>
 	   			</div>
 				</div>
 		   </div>
@@ -47,7 +51,7 @@
 	<div data-bind="attr:{id:CtrlEditID}" style="display:none;">
 		<div>
 			<span class="input-group-addon" id="sizing-addon1">回复<i class="fa fa-hand-o-down"></i></span>
-			<textarea data-bind="attr:{id:CtrlReplyID}" rows="10" cols="80"></textarea>
+			<textarea data-bind="attr:{id:CtrlEditorID}" rows="10" cols="80"></textarea>
 		</div>
 		<div style="text-align:center;margin-top:5px;">
 			<button data-bind="click:EventCancel" type="button" class="btn btn-default btn-lg" style="width: 200px;">取　消</button>
@@ -59,24 +63,13 @@
 		function Admin_Feedback_Index_V1(){
 			this.CtrlListID = cowboy.sys.guid();
 			this.CtrlEditID = cowboy.sys.guid();
-			this.CtrlReplyID = cowboy.sys.guid();
+			this.CtrlEditorID = cowboy.sys.guid();
 			
 			this.ListFeedback={List:ko.observableArray([]),Limit:5,Skip:ko.observable(-1),Total:ko.observable(0)};
 			this.AttrKey = ko.observable('');
-			this.AttrFeedback = {ID:'',Content:'',Author:ko.observable(''),Lead:ko.observable(''),Cn:ko.observable(true),Top:ko.observable(0),Title:ko.observable('')};
+			this.AttrFeedback = {};
+			this.AttrReply = ko.observable('');
 			this.feedbackediting = {};
-			this.FuncInitFeedback=function(feedback){
-				if(feedback==undefined){
-					feedback={};
-				}
-				this.AttrFeedback.ID=feedback.ID||'';
-				this.AttrFeedback.Content=feedback.Content||'';
-				this.AttrFeedback.UserName(feedback.UserName||'管理员');
-				this.AttrFeedback.Cn(feedback.ExtType&&feedback.ExtType==0||false);
-				this.AttrFeedback.Top(feedback.Top||0);
-				this.AttrFeedback.Title(feedback.Title||'');
-				$('#'+this.CtrlEditorID).ckeditor().val(this.AttrFeedback.Content);
-			};
 			this.FuncGetFeedback=function(skip){
 				if(skip==undefined){
 					skip=0
@@ -92,13 +85,13 @@
 						if(skip<0){
 							this.ListFeedback.Total(data.count);
 							for(k in data.data){
-								//k['UI_Reply']=ko.observableArray(k['Reply']);
+								data.data[k]['UI_Reply']=ko.observableArray(data.data[k]['Reply']);
 								this.ListFeedback.List.push(data.data[k]);
 							}
 							//this.ListFeedback.List(data.data);
 						}else{
 							for(k in data.data){
-								//k['UI_Reply']=ko.observableArray(k['Reply']);
+								data.data[k]['UI_Reply']=ko.observableArray(data.data[k]['Reply']);
 								this.ListFeedback.List.push(data.data[k]);
 							}
 						}
@@ -121,66 +114,30 @@
 				return true;
 			};
 			this.EventCancel=function(){
-				$('#'+this.CtrlEditID).hide();
-				$('#'+this.CtrlListID).show();
+				$('#'+this.CtrlEditID).dialog('close');
 			};
+			this.EventAddReply=function(m,e){
+				this.AttrFeedback=m;
+				$('#'+this.CtrlEditorID).trumbowyg('html','');
+				$('#'+this.CtrlEditID).dialog('open');
+			}.bind(this);
 			this.EventSave = function(){
-				var title=$.trim(this.AttrFeedback.Title());
-				if(title.length<1){
-					cowboy.views.FuncAddTip('请输入留言标题');
-					return;
-				}
-				var content = $('#'+this.CtrlEditorID).ckeditor().val();
+				var content = this.AttrReply();
 				if(content.length<1){
 					cowboy.views.FuncAddTip('请输入正文内容');
 					return;
 				}
-				var author = this.AttrFeedback.Author();
-				if(author.length<1){
-					cowboy.views.FuncAddTip('请输入留言作者或出处');
-					return;
-				}
-				var exttype=this.AttrFeedback.Cn()?0:1
-				if(this.AttrFeedback.ID==''){
-					var params={Content:content,Author:author,Title:title,ExtType:exttype,Lead:this.AttrFeedback.Lead(),Top:this.AttrFeedback.Top()};
-					$.ajax({url:'/feedback/create',data:{data:JSON.stringify(params)},dataType:'json',type:'post'}).done(function(data){
-						if(data.code==1){
-							cowboy.views.FuncAddTip('新增成功');
-							this.FuncGetFeedback(-1);
-							$('#'+this.CtrlEditID).hide();
-							$('#'+this.CtrlListID).show();
-						}
-					}.bind(this));
-				}else{
-					var params={ID:this.AttrFeedback.ID,Data:{Content:content,Author:author,Title:title,ExtType:exttype,Lead:this.AttrFeedback.Lead(),Top:this.AttrFeedback.Top()}};
-					$.ajax({url:'/feedback/update',data:{data:JSON.stringify(params)},dataType:'json',type:'post'}).done(function(data){
-						if(data.code==1){
-							cowboy.views.FuncAddTip('更新成功');
-							//this.feedbackediting.Content=content;
-							this.feedbackediting.Author=author;
-							this.feedbackediting.Title=title;
-							this.feedbackediting.ExtType=exttype;
-							this.feedbackediting.Lead=this.AttrFeedback.Lead();
-							this.feedbackediting.Top=this.AttrFeedback.Top();
-							
-							var tmpl=this.ListFeedback.List();
-							this.ListFeedback.List([]);
-							this.ListFeedback.List(tmpl);
-							$('#'+this.CtrlEditID).hide();
-							$('#'+this.CtrlListID).show();
-						}
-					}.bind(this));
-				}
-			};
-			this.EventChCn = function(){
-				this.AttrFeedback.Cn(!this.AttrFeedback.Cn());
-			};
-			this.EventTop = function(){
-				if(this.AttrFeedback.Top()==1){
-					this.AttrFeedback.Top(0);
-					return
-				};
-				this.AttrFeedback.Top(1);
+				var params={Content:content,UserName:'管理员',ID:this.AttrFeedback.ID};
+				$.ajax({url:'/feedback/addreply',data:{data:JSON.stringify(params)},dataType:'json',type:'post'}).done(function(data){
+					if(data.code==1){
+						cowboy.views.FuncAddTip('回复成功');
+						this.AttrFeedback.UI_Reply.push(data.data);
+						$('#'+this.CtrlEditID).dialog('close');
+					}else{
+						cowboy.views.FuncAddTip('回复失败');
+						cowboy.views.FuncAddTip(data.msg);
+					}
+				}.bind(this));
 			};
 			this.EventRefresh = function(m,e){
 				this.FuncGetFeedback(-1);
@@ -194,15 +151,54 @@
 					}
 				}.bind(this));
 			}.bind(this);
-			this.EventReply = function(m,e){
-				
+			this.EventDelReply = function(m,e){
+				var context = ko.contextFor(e.target).$parent;
+				$.ajax({url:'/feedback/delreply',data:{data:JSON.stringify({RID:m.ID,ID:context.ID})},dataType:'json',type:'get'}).done(function(data){
+					if(data.code==1){
+						cowboy.views.FuncAddTip('删除成功');
+						context.UI_Reply.remove(m);
+					}
+				}.bind(this));
 			}.bind(this);
 			this.EventMore =function(m,e){
 				this.FuncGetFeedback(this.ListFeedback.Skip());
 			};
 			this.FuncInit=function(ctrl){
 				ko.applyBindings(this,ctrl);
-				$('#'+this.CtrlEditorID).ckeditor();
+				$('#'+this.CtrlEditID).dialog({
+					autoOpen: false,
+					modal:true,
+					title:'Feedback',
+					width:910,
+					position:{ my: "top", at: "top", of: window },
+					show: {
+						effect: "blind",
+						duration: 200
+					},
+					hide: {
+						effect: "blind",
+						duration: 100
+					}
+				});
+				var that = this;
+				$('#'+this.CtrlEditorID).trumbowyg({
+	                 //设置中文
+	                lang: 'zh_cn',
+	                // closable: true,
+	                fixedBtnPane: true,
+	                 //设置颜色插件
+	                btnsAdd: ['foreColor','backColor'],
+						btns: ['viewHTML',
+	                 '|', 'formatting',
+	                 '|', 'btnGrp-semantic',
+	                 '|', 'link',
+	                 '|', 'insertImage',
+	                 '|', 'btnGrp-justify',
+	                 '|', 'btnGrp-lists',
+	                 '|', 'horizontalRule'],
+					}).on('tbwchange', function(){
+						that.AttrReply($('#'+that.CtrlEditorID).trumbowyg('html'));
+					});
 				//CKEDITOR.replace();
 				this.FuncGetFeedback(-1);
 			}

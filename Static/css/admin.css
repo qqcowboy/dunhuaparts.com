@@ -269,6 +269,9 @@
 .feedback-list{
 	background-color: #E2F3E7;
 }
+.feedback-list .bitem{
+	background-color: rgba(204, 239, 255, 0.54);
+}
 .feedback-list .item:hover .ctrl{
 	display:inline-table!important;
 }

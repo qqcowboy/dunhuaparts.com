@@ -10,7 +10,7 @@
 		</div>
 		<!-- 留言列表 -->
 		<div class="feedback-list" data-bind="foreach:ListFeedback.List">
-		   <div class="item">
+		   <div class="item" data-bind="css:{'bitem':$index()%2==0}">
 		   	<div class="item-menu">
 		   		<span class="title" data-bind="text:$data.Title"></span>
 		   		<span class="date" data-bind="text:$data.CreateDate"></span>
@@ -19,15 +19,14 @@
 				</div>
 				<div class="item-content">
 		   		<p class="detail" data-bind="html:$data.Content"></p>
-	   			<div data-bind="foreach:$data.Reply" class="reply">
-   						<div class="reply-menu">
-					   		<span class="date" data-bind="text:$data.CreateDate"></span>
-					   		<span class="user" data-bind="text:$data.UserName"></span>
-								<span style="float:right;margin-left:20px;">&nbsp;</span>
-							</div>
-	   					<div class="reply-content" data-bind="html:$data.Content">
-	   							
-	   					</div>
+	   			<div data-bind="foreach:$data.Reply" class="reply" style="margin-left:15px;">
+  						<div class="reply-menu">
+		   				<span class="date" data-bind="text:$data.CreateDate"></span>
+		   				<span class="user" data-bind="text:$data.UserName"></span>
+							<span class="label label-default label-xs" style="float:left;margin-right:10px;">回复</span>
+							<span style="float:right;margin-left:20px;">&nbsp;</span>
+  						</div>
+   					<div class="reply-content" data-bind="html:$data.Content"></div>
 	   			</div>
 				</div>
 		   </div>

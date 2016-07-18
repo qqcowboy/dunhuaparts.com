@@ -149,7 +149,7 @@ func (this *Feedback) AddReply(fdid, username, content string) (result FeedbackR
 		Version:    mystr.TimeStamp(),
 		CreateDate: mystr.Date(),
 	}
-	err = col.UpdateId(bson.ObjectIdHex(fdid), bson.M{"$push": result})
+	err = col.UpdateId(bson.ObjectIdHex(fdid), bson.M{"$push": bson.M{"Reply": result}})
 	return
 }
 
