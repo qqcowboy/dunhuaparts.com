@@ -4,3 +4,7 @@
 2016-07-18 22:30:35	in FileSession.readSession，gob.Decode时出错：EOF
 2016-07-18 22:30:35	in SessionGob.Decode()，EOF
 2016-07-18 22:30:35	in FileSession.readSession，gob.Decode时出错：EOF
+2016-07-18 23:26:27	in SessionGob.Decode()，EOF
+2016-07-18 23:26:27	in FileSession.readSession，gob.Decode时出错：EOF
+2016-07-18 23:26:27	in SessionGob.Decode()，EOF
+2016-07-18 23:26:27	in FileSession.readSession，gob.Decode时出错：EOF
