@@ -1,0 +1,129 @@
+<div id="Home-News-Index" class="news-div">
+		<div data-bind="visible:ListNews().length<1" class="no-content" style="height:100px;display:none;">
+			没有新闻
+		</div>
+		<!-- current category -->
+		<div data-bind="visible:ListNews().length>0,foreach:ListNews" class="row grid newslist">
+			<div class="col-md-3 grid-item item well" data-bind="click:$root.EventDetail">
+				<div class="thumbnail">
+					<div class="caption">
+						<h3 data-bind="text:$data.Title"></h3>
+						<p data-bind="text:$data.Lead"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 查看更多 -->
+		<div data-bind="visible:ListNews().length<ListNews.Total(),click:EventMore" style="text-align:center;cursor: pointer;display:none;">
+			<span class="glyphicon glyphicon-chevron-down fa-4x"></span>
+			更多...
+		</div>
+	<div data-bind="attr:{id:DialogID}" ui-dialog="true">
+
+	</div>
+	<script type="text/javascript">
+		var ctrl = $('#Home-News-Index');
+		function Home_News_Index_V1(){
+			this.AttrNews=ko.observable({});
+			this.DialogID = cowboy.sys.guid();
+			this.AttrmasonryOptions = {
+				itemSelector: '.grid-item',
+				columnWidth:0,
+				fitWidth: false
+			};
+			this.Attrmasonry={};
+			this.FuncMasonry=function(){
+				try{
+					this.Attrmasonry.masonry('destroy');
+				}catch(e){console.log(e);}
+				this.Attrmasonry.masonry( this.AttrmasonryOptions );
+				this.Attrmasonry.imagesLoaded().progress( function() {
+				 	this.Attrmasonry.masonry('layout');
+				}.bind(this));
+			};
+			this.ListNews=ko.observableArray([]);
+			this.ListNews.Total=ko.observable(0);
+			this.ListNews.Skip=ko.observable(0);
+			this.ListNews.Limit = 20;
+			
+			this.FuncNewsList = function(skip){
+				if(skip==undefined){
+					skip=-1;
+				}
+				if(skip<1){
+					this.ListNews([]);
+					this.ListNews.Total(0);
+				}
+				//{Start:float64,Limit:int,Key:string,Top:int}
+				var params={Skip:skip,Limit:this.ListNews.Limit,Lang:'cn'};//,Key:$.trim(this.AttrKey())};
+				$.ajax({url:'/news/query',type:'post',data:{data:JSON.stringify(params)},dataType:'json'}).done(function(data){
+					if(data.code==1){
+						if(skip<1){
+							this.ListNews.Total(data.count);
+							this.ListNews(data.data);
+						}else{
+							for(k in data.data){
+								this.ListNews.push(data.data[k]);
+							}
+						}
+						this.ListNews.Skip(this.ListNews().length);
+						this.FuncMasonry();
+					}else{
+						cowboy.views.FuncAddTip('get news fail');
+						cowboy.views.FuncAddTip(data.error);
+					}
+				}.bind(this));
+			};
+			this.FuncGetNews = function(id){
+				$.ajax({url:'/news/detail',data:{data:JSON.stringify({ID:id})},dataType:'json',type:'get'}).done(function(data){
+					if(data.code==1){
+						this.AttrNews(data.data);
+					}
+				}.bind(this));
+			};
+			this.EventMore =function(m,e){
+				this.FuncNewsList(this.ListNews.Skip());
+			};
+			this.EventDetail = function(m,e){
+				cowboy.func.get('/home/news/detail',function(data){
+					var ctrl = $('#'+this.DialogID);
+					ctrl.html(data);
+					$('#'+this.DialogID).dialog('open');
+
+					var mod = ko.contextFor(ctrl.children()[0]).$root;
+					if($.isFunction(mod.FuncGetNews)){
+						try{
+							mod.FuncGetNews(m.ID);
+						}catch(e){console.log(e);}
+					}
+				}.bind(this));
+			}.bind(this);
+			this.Views=function(){
+				this.Attrmasonry = $('.grid').masonry( this.AttrmasonryOptions );
+				this.AttrNews({});
+				this.FuncNewsList();
+				$('#'+this.DialogID).dialog({
+					autoOpen: false,
+					modal:true,
+					title:'News',
+					width:910,
+					position:{ my: "top", at: "top", of: window },
+					show: {
+						effect: "blind",
+						duration: 500
+					},
+					hide: {
+						effect: "blind",
+						duration: 200
+					}
+				});
+			};
+			this.Bindings=function(ctrl){
+				ko.applyBindings(this,ctrl);
+				this.Views();
+			};
+		}
+		var home_News_Index_V1 = new Home_News_Index_V1();
+		home_News_Index_V1.Bindings(ctrl[0]);
+	</script>
+</div>

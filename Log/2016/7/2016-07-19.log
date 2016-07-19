@@ -1,0 +1,38 @@
+2016-07-19 21:10:57	URL:/admin	View不存在
+goroutine 141 [running]:
+runtime/debug.Stack(0xc4206059c0, 0xc4206059c0, 0xc4206059a8)
+	/usr/local/go/src/runtime/debug/stack.go:24 +0x79
+github.com/qqcowboy/dunhuaparts.com/System/Log.(*Logger).AddErrMsg(0xc420064660, 0xc4206059c0, 0x18, 0xc420266976, 0x6)
+	/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 +0x26
+github.com/qqcowboy/dunhuaparts.com/System/Web.(*HttpHandler).ServeHTTP.func1(0xc420158690, 0xb541d8, 0xb13860, 0xc42001a1a0)
+	/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:28 +0x1fc
+panic(0x871460, 0xc4200b1a20)
+	/usr/local/go/src/runtime/panic.go:458 +0x243
+github.com/qqcowboy/dunhuaparts.com/System/Web.(*HttpHandler).ServeHTTP(0xb541d8, 0xb13860, 0xc42001a1a0, 0xc420158690)
+	/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:122 +0xb1d
+net/http.serverHandler.ServeHTTP(0xc4200df080, 0xb13860, 0xc42001a1a0, 0xc420158690)
+	/usr/local/go/src/net/http/server.go:2203 +0x7d
+net/http.(*conn).serve(0xc4200de100, 0xb140a0, 0xc420276840)
+	/usr/local/go/src/net/http/server.go:1580 +0x4b7
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2296 +0x447
+
+2016-07-19 21:10:57	URL:/admin	View不存在
+goroutine 141 [running]:
+runtime/debug.Stack(0xc4206059c0, 0xc4206059c0, 0xc4206059a8)
+	/usr/local/go/src/runtime/debug/stack.go:24 +0x79
+github.com/qqcowboy/dunhuaparts.com/System/Log.(*Logger).AddErrMsg(0xc420064660, 0xc4206059c0, 0x18, 0xc420266e76, 0x6)
+	/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Log/Logger.go:158 +0x26
+github.com/qqcowboy/dunhuaparts.com/System/Web.(*HttpHandler).ServeHTTP.func1(0xc420158d20, 0xb541d8, 0xb13860, 0xc42001ab60)
+	/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:28 +0x1fc
+panic(0x871460, 0xc4200b1a20)
+	/usr/local/go/src/runtime/panic.go:458 +0x243
+github.com/qqcowboy/dunhuaparts.com/System/Web.(*HttpHandler).ServeHTTP(0xb541d8, 0xb13860, 0xc42001ab60, 0xc420158d20)
+	/home/cowboy/project/go/src/github.com/qqcowboy/dunhuaparts.com/System/Web/HttpHandler.go:122 +0xb1d
+net/http.serverHandler.ServeHTTP(0xc4200df080, 0xb13860, 0xc42001ab60, 0xc420158d20)
+	/usr/local/go/src/net/http/server.go:2203 +0x7d
+net/http.(*conn).serve(0xc4200de100, 0xb140a0, 0xc420276840)
+	/usr/local/go/src/net/http/server.go:1580 +0x4b7
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2296 +0x447
+

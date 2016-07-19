@@ -1,0 +1,240 @@
+<div id="home-main-index">
+	<!-- pic -->
+	<div class="home-main-index-pic">
+		<img src="/static/img/Fuser Assembly.jpg" />
+	</div>
+
+	<div class="home-main-index-content">
+		<div id="home-main-index-products" class="products" >
+			<ul>
+				<li><a href="#tabs-Products">产品</a></li>
+				<li><a href="#tabs-Categories">产品分类</a></li>
+				<li><a href="#tabs-HOT">热门产品</a></li>
+			</ul>
+			<div id="tabs-Products" class="products-products">
+				<div u="slides" data-bind="foreach:ListProducts" class="slides">
+					<div data-bind="click:$root.EventProductsDetail">
+						<span data-bind="text:$data.TitleCN"></span>
+						<img data-bind="attr:{src:'/img/product/4?id='+$data.Images[0]}" u="image" />
+					</div>
+				</div>
+			</div>
+			<div data-bind="foreach:ListCategories" id="tabs-Categories" class="products-category">
+				<div data-bind="click:$root.EventSelCategory,attr:{title:$data.Remark}">
+					<span data-bind="text:$data.NameCN"></span>
+				</div>
+			</div>
+			<div id="tabs-HOT" data-bind="foreach:ListHotProducts" class="products-hot">
+				<div class="item" data-bind="visible:$index()<4,click:$root.EventProductsDetail">
+					<span data-bind="text:$data.TitleCN"></span><br/>
+					<img data-bind="attr:{src:'/img/product/4?id='+$data.Images[0]}" u="image" />
+				</div>
+			</div>
+		</div>
+		<div class="about-news">
+			<!-- about -->
+			<div class="about">
+				<a data-bind="click:EventAboutUs" class="btn btn-success">About us</a>
+				<p>
+				Dunhua Office Equipment Co.,Ltd(Dongguan Beiao Electronics Technology Co.,Ltd)  was established in 2010 which is a professional factory by HP  Laserjet printer parts,Samsung printer parts and Brother Printer parts. After 6 years of development ,we already have a sales department, technical and research department, production department. Our best quality products are popular in Asia, Europe, American etc.We always insist that introduce our products into more people over the world.
+				
+				</p>
+			</div>
+			<!-- News -->
+			<div class="news">
+				<a data-bind="click:EventNews" class="btn btn-success">News</a>
+				<div class="list" data-bind="foreach:ListNews">
+					<div class="item" data-bind="click:$root.EventNewsDetail">
+						<img src="/static/img/Fuser Assembly.jpg"  style="display: none;"/>
+						<div class="content">
+							<div data-bind="text:$data.Title" class="title"></div>
+							<div data-bind="text:$data.Lead" class="innercontent"></div>
+						</div>
+					</div>
+				</div>
+				<div data-bind="visible:ListNews().length<1" style="display: none;">
+					&nbsp;&nbsp;没有新闻
+				</div>
+			</div>
+		</div>
+	</div>
+	<div data-bind="attr:{id:DialogID}" ui-dialog="true">
+
+	</div>
+	<div data-bind="attr:{id:DialogProductID}" ui-dialog="true">
+		<div data-bind="if:SelProducts().ID!=undefined">
+			<div>
+				<span data-bind="text:SelProducts().TitleCN"></span>
+			</div>
+			<div  class="imgdialog">
+				<img data-bind="attr:{src:'/img/product?id='+SelProducts().Images[0]}" />
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+
+	$(function() {
+		var ctrl = $('#home-main-index');
+		function Main_Index_V1(){
+			this.DialogID = cowboy.sys.guid();
+			this.DialogProductID = cowboy.sys.guid();
+			this.SelProducts=ko.observable({});
+			this.ListCategories = ko.observableArray([]);
+			this.ListProducts = ko.observableArray([]);
+			this.ListHotProducts = ko.observableArray([]);
+			this.ListNews = ko.observableArray([]);
+			this.AttrNewsLimit = 3;
+			
+			this.FuncGetCategories = function(){
+				$.ajax({url:'/products/categories'}).done(function(data){
+					if(data.code==1){
+						this.ListCategories(data.data);
+					}
+				}.bind(this));
+			};
+			this.FuncGetProducts = function(){
+				$.ajax({url:'/products/query',type:'post',data:{data:JSON.stringify({Limit:20})}}).done(function(data){
+					if(data.code==1){
+						this.ListProducts(data.data);
+						this.FuncSlide();
+					}
+				}.bind(this));
+			};
+			this.FuncGetHotProducts = function(){
+				$.ajax({url:'/products/hot',type:'get'}).done(function(data){
+					if(data.code==1){
+						this.ListHotProducts(data.data);
+					}
+				}.bind(this));
+			};
+			this.FuncGetNews = function(){
+				$.ajax({url:'/news/query',type:'post',data:{data:JSON.stringify({Limit:this.AttrNewsLimit,Lang:'cn'})}}).done(function(data){
+					if(data.code==1){
+						this.ListNews(data.data);
+					}
+				}.bind(this));
+			};
+			this.FuncSlide = function(){
+		        	var jssor_slider1 = new $JssorSlider$('tabs-Products', {
+		        		$AutoPlay: true,
+					$Idle: 0,/*每张图片滚动间隔*/
+					$SlideDuration: 2920,
+					$SlideEasing: $Jease$.$Linear,
+					$SlideHeight:227,
+					$SlideWidth: 227,
+					$SlideSpacing:5,
+					$Cols: 4,
+					$FillMode:1
+		        	});
+				function ScaleSlider() {
+					var refSize = jssor_slider1.$Elmt.parentNode.clientWidth;
+					if (refSize) {
+						refSize = Math.min(refSize, 810);
+						jssor_slider1.$ScaleWidth(refSize);
+					}
+					else {
+						window.setTimeout(ScaleSlider, 30);
+					}
+				}
+				ScaleSlider();
+			};
+			this.EventNewsDetail = function(m,e){
+				cowboy.func.get('/home/news/detail',function(data){
+					var ctrl = $('#'+this.DialogID);
+					ctrl.html(data);
+					$('#'+this.DialogID).dialog('open');
+
+					var mod = ko.contextFor(ctrl.children()[0]).$root;
+					if($.isFunction(mod.FuncGetNews)){
+						try{
+							mod.FuncGetNews(m.ID);
+						}catch(e){console.log(e);}
+					}
+					
+				}.bind(this))
+			}.bind(this);
+			this.funcSelCategory = function(ctrl,obj){
+				console.log(ctrl.find('#home-products-products'));
+				var mod = ko.contextFor(ctrl.find('#home-products-products')[0]).$root;
+				console.log(mod);
+				mod.SelCategory(obj);
+				mod.FuncGetProducts(obj.ID);
+			}
+			this.EventSelCategory = function(m,e){
+				var url = '/home/products/products';
+				$('[data-url]').removeClass('current');
+				$('[data-url="/home/products/products"]').addClass('current');
+				var nctrl = $('#index-main-content').find('[page-url="'+url+'"]');
+				if(nctrl.length>0){
+					$('[page-url]').hide('fast');
+					nctrl.show('fast');
+					this.funcSelCategory(nctrl,m);
+					return;
+				}
+				cowboy.func.get(url,function(data){
+					$('[page-url]').hide('fast');
+					var div = $('<div page-url="'+url+'"></div>');
+					div.html(data);
+					$('#index-main-content').append(div);
+					this.funcSelCategory(div,m);
+				}.bind(this));
+			}.bind(this);
+			this.EventProductsDetail = function(m,e){
+				this.SelProducts(m);
+				$('#'+this.DialogProductID).dialog('open');
+				$.get('/products/addview?data={"ID":"'+m.ID+'"}');
+			}.bind(this);
+			this.EventAboutUs = function(){
+				$('[data-url="/home/about/about"]').click();
+			};
+			this.EventNews = function(){
+				$('[data-url="/home/news/news"]').click();
+			};
+			this.Init = function(){
+				this.FuncGetCategories();
+				this.FuncGetProducts();
+				this.FuncGetHotProducts();
+				this.FuncGetNews();
+				$( "#home-main-index-products" ).tabs();
+				$('#'+this.DialogProductID).dialog({
+					autoOpen: false,
+					modal:true,
+					title:'Product',
+					width:910,
+					position:{ my: "top", at: "top", of: window },
+					show: {
+						effect: "blind",
+						duration: 500
+					},
+					hide: {
+						effect: "blind",
+						duration: 200
+					}
+				});
+				$('#'+this.DialogID).dialog({
+					autoOpen: false,
+					modal:true,
+					title:'News',
+					width:910,
+					position:{ my: "top", at: "top", of: window },
+					show: {
+						effect: "blind",
+						duration: 500
+					},
+					hide: {
+						effect: "blind",
+						duration: 200
+					}
+				});
+			};
+			this.Bindings=function(ctrl){
+				ko.applyBindings(this,ctrl);
+				this.Init();
+			};
+		};
+		var main_Index_V1 = new Main_Index_V1();
+		main_Index_V1.Bindings(ctrl[0]);
+
+	});
+</script>
+</div>

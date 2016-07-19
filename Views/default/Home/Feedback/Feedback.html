@@ -1,0 +1,210 @@
+<div id="Home-Feedback-Index" class="feedback-div">
+		<div class="feedback-ctrl">
+			<button data-bind="click:EventAddFeedback" class="btn btn-primary add-btn" type="button" contenteditable="true">
+				<i class="glyphicon glyphicon-plus"></i>
+				新增留言
+			</button>
+		</div>
+		<div data-bind="visible:ListFeedback.List().length<1" class="no-content" style="height:100px;display:none;">
+			暂没有留言
+		</div>
+		<!-- 留言列表 -->
+		<div class="feedback-list" data-bind="foreach:ListFeedback.List">
+		   <div class="item" data-bind="css:{'bitem':$index()%2==0}">
+		   	<div class="item-menu">
+		   		<span class="title" data-bind="text:$data.Title"></span>
+		   		<span class="date" data-bind="text:$data.CreateDate"></span>
+		   		<span class="user" data-bind="text:$data.UserName"></span>
+					<span style="float:right;margin-left:20px;">&nbsp;</span>
+				</div>
+				<div class="item-content">
+		   		<p class="detail" data-bind="html:$data.Content"></p>
+	   			<div data-bind="foreach:$data.Reply" class="reply" style="margin-left:15px;">
+  						<div class="reply-menu">
+		   				<span class="date" data-bind="text:$data.CreateDate"></span>
+		   				<span class="user" data-bind="text:$data.UserName"></span>
+							<span class="label label-default label-xs" style="float:left;margin-right:10px;">回复</span>
+							<span style="float:right;margin-left:20px;">&nbsp;</span>
+  						</div>
+   					<div class="reply-content" data-bind="html:$data.Content"></div>
+	   			</div>
+				</div>
+		   </div>
+		</div>
+		<!-- 查看更多 -->
+		<div data-bind="visible:ListFeedback.List().length<ListFeedback.Total(),click:EventMore" style="text-align:center;cursor: pointer;display:none;">
+			<span class="glyphicon glyphicon-chevron-down fa-4x"></span>
+			更多...
+		</div>
+		<div data-bind="attr:{id:DialogID}" ui-dialog="true">
+			<div class="feedback-add">
+				<div class="input-group input-group-lg item">
+					<span class="input-group-addon">
+						<input data-bind="checked:AttrFeedback.Hide()==1,event:{'change':EventHide}" type="checkbox">
+					</span>
+					<span class="form-control">是否隐藏?</span>
+				</div>
+				<div data-bind="css:{'has-error':AttrFeedback.Title.hasError}" class="input-group input-group-lg item">
+				  <span class="input-group-addon">标题</span>
+				  <input type="text" class="form-control" data-bind="textInput:AttrFeedback.Title" >
+				</div>
+				<div data-bind="css:{'has-error':AttrFeedback.UserName.hasError}" class="input-group input-group-lg item">
+				  <span class="input-group-addon">用户名</span>
+				  <input type="text" class="form-control" data-bind="textInput:AttrFeedback.UserName" >
+				</div>
+				<div data-bind="css:{'has-error':AttrFeedback.Mail.hasError}" class="input-group input-group-lg item form-group">
+				  <span class="input-group-addon">邮箱地址</span>
+				  <input type="text" class="form-control" data-bind="textInput:AttrFeedback.Mail" >
+				</div>
+				<div class="input-group input-group-lg item">
+				  <span class="input-group-addon">联系电话</span>
+				  <input type="text" class="form-control" data-bind="textInput:AttrFeedback.Phone" >
+				</div>
+				<div data-bind="css:{'has-error':AttrFeedback.Code.hasError}" class="input-group input-group-lg item">
+				  <span class="input-group-addon">验证码</span>
+					<input type="text" class="form-control" data-bind="textInput:AttrFeedback.Code" >
+					<img class="verifyimg" src="/img/VerityCode" onclick="this.src='/img/VerityCode?_r='+Math.random()" title="点击刷新">
+				</div>
+				<div data-bind="css:{'has-error':AttrFeedback.Content.hasError}" class="input-group input-group-lg item">
+				  <span class="input-group-addon">内容</span>
+				  <textarea class="form-control" data-bind="attr:{id:EditorID},textInput:AttrFeedback.Content" >
+				  </textarea>
+				</div>
+				<div style="text-align:center;margin-top:5px;">
+					<button data-bind="click:EventCancel" type="button" class="btn btn-default btn-lg" style="width: 200px;">取　消</button>
+					<button data-bind="click:EventSave" type="button" class="btn btn-primary btn-lg" style="width: 200px;">添　加</button>
+				</div>
+			</div>
+		</div>
+		
+	<script type="text/javascript">
+		var ctrl = $('#Home-Feedback-Index');
+		function Home_Feedback_Index_V1(){
+			this.DialogID = cowboy.sys.guid();
+			this.EditorID = cowboy.sys.guid();
+			this.ListFeedback={Skip:ko.observable(0),Limit:20,Total:ko.observable(0),List:ko.observableArray([])};
+			this.AttrFeedback={
+				Title:ko.observable('').extend({required:''}),
+				Content:ko.observable('').extend({required:''}),
+				UserName:ko.observable('').extend({required:''}),
+				Code:ko.observable('').extend({required:''}),
+				Mail:ko.observable('').extend({mail:'mail address is not right'}),
+				Phone:ko.observable(''),
+				Hide:ko.observable(0)
+			};
+			
+			this.FuncFeedbackList = function(skip){
+				if(skip==undefined){
+					skip=0
+				}
+				if(skip<1){
+					this.ListFeedback.List([]);
+					this.ListFeedback.Total(0);
+				}
+				$.ajax({url:'/feedback/query',data:{data:JSON.stringify({Limit:20,Skip:skip})},dataType:'json',type:'post'}).done(function(data){
+					if(data.code==1){
+						if(skip<1){
+							this.ListFeedback.Total(data.count);
+							for(k in data.data){
+								this.ListFeedback.List.push(data.data[k]);
+							}
+						}else{
+							for(k in data.data){
+								this.ListFeedback.List.push(data.data[k]);
+							}
+						}
+						this.ListFeedback.Skip(this.ListFeedback.List().length);
+					}else{
+						cowboy.views.FuncAddTip('get list fail');
+						cowboy.views.FuncAddTip(data.error);
+					}
+				}.bind(this));
+			};
+			this.EventMore =function(m,e){
+				this.FuncFeedbackList(this.ListFeedback.Skip());
+			};
+			this.EventAddFeedback = function(m,e){
+				this.AttrFeedback.Title('');
+				this.AttrFeedback.Content('');
+				this.AttrFeedback.Mail('');
+				this.AttrFeedback.UserName('Tourist');
+				this.AttrFeedback.Phone('');
+				this.AttrFeedback.Code('');
+				this.AttrFeedback.Hide(0);
+				$('#'+this.EditorID).trumbowyg('html','');
+				$('#'+this.DialogID).dialog('open');
+			};
+			this.EventHide = function(m,e){
+				if(this.AttrFeedback.Hide()==1){
+					this.AttrFeedback.Hide(0);
+					return;
+				};
+				this.AttrFeedback.Hide(1);
+			};
+			this.EventSave = function(){
+				if(this.AttrFeedback.Code.hasError()||this.AttrFeedback.Title.hasError()||this.AttrFeedback.Content.hasError()||this.AttrFeedback.Mail.hasError()||this.AttrFeedback.UserName.hasError()){
+					return;
+				}
+				var params= {Title:this.AttrFeedback.Title(),Content:this.AttrFeedback.Content(),
+					Mail:this.AttrFeedback.Mail(),UserName:this.AttrFeedback.UserName(),
+					Phone:this.AttrFeedback.Phone(),Hide:this.AttrFeedback.Hide()
+				};
+				$.ajax({url:'/feedback/create',data:{Code:this.AttrFeedback.Code(),data:JSON.stringify(params)},dataType:'json',type:'post'}).done(function(data){
+					if(data.code==1){
+						this.FuncFeedbackList(0);
+						$('#'+this.DialogID).dialog('close');
+					}else{
+						cowboy.views.FuncAddTip('fail');
+						cowboy.views.FuncAddTip(data.error);
+					}
+				}.bind(this));
+			};
+			this.EventCancel = function(){
+				$('#'+this.DialogID).dialog('close');
+			};
+			this.Views=function(){
+				this.FuncFeedbackList(0);
+				var that = this;
+				$('#'+this.EditorID).trumbowyg({
+                 //设置中文
+                lang: 'zh_cn',
+                // closable: true,
+                fixedBtnPane: true,
+                 //设置颜色插件
+                btnsAdd: ['foreColor','backColor'],
+					btns: ['viewHTML',
+                 '|', 'formatting',
+                 '|', 'btnGrp-semantic',
+                 '|', 'link',
+                 '|', 'insertImage',
+                 '|', 'btnGrp-justify',
+                 '|', 'btnGrp-lists',
+                 '|', 'horizontalRule'],
+				}).on('tbwchange', function(){
+					that.AttrFeedback.Content($('#'+that.EditorID).trumbowyg('html'));
+				});
+				$('#'+this.DialogID).dialog({
+					autoOpen: false,
+					modal:true,
+					title:'新增留言',
+					width:910,
+					position:{ my: "top", at: "top", of: window },
+					show: {
+						effect: "blind",
+						duration: 200
+					},
+					hide: {
+						effect: "blind",
+						duration: 100
+					}
+				});
+			};
+			this.Bindings=function(ctrl){
+				ko.applyBindings(this,ctrl);
+				this.Views();
+			};
+		}
+		var home_Feedback_Index_V1 = new Home_Feedback_Index_V1();
+		home_Feedback_Index_V1.Bindings(ctrl[0]);
+	</script>
+</div>

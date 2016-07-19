@@ -1,0 +1,104 @@
+<div class="products-div" id="home-products-products">
+	<!-- left -->
+	<div class="products-left">
+		<div class="products-title">
+			<span>产品分类</span>
+		</div>
+		<div data-bind="foreach:ListCategories" class="products-tree">
+			<a class="item" data-bind="css:{'current':$root.SelCategory().ID==$data.ID},click:$root.EventSelCategory">
+				<span data-bind="text:'&gt;&nbsp;'+$data.NameCN"></span>
+			</a>
+		</div>
+	</div>
+	<!-- right -->
+	<div class="products-right">
+		<div class="products-title aleft">
+			<span>Products</span>
+			<span>all</span>
+		</div>
+		<!-- current category -->
+		<div data-bind="foreach:ListProducts" class="products-current-list">
+			<div class="item" data-bind="click:$root.EventSelProducts">
+				<span data-bind="text:$data.TitleCN">Back Cover1</span>
+				<img data-bind="attr:{src:'/img/product/4?id='+$data.Images[0]}"/>
+			</div>
+		</div>
+	</div>
+	<div data-bind="attr:{id:DialogID}" ui-dialog="true">
+		<div data-bind="if:SelProducts().ID!=undefined">
+			<div>
+				<span data-bind="text:SelProducts().TitleCN"></span>
+			</div>
+			<div class="imgdialog">
+				<img data-bind="attr:{src:'/img/product?id='+SelProducts().Images[0]}" />
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		
+		var ctrl = $('#home-products-products');
+		function Products_Products_V1(){
+			this.DialogID = cowboy.sys.guid();
+			//selected category
+			this.SelCategory = ko.observable({ID:1,ItemName:"HP 1000 Printer Series"});
+			//all categories
+			this.ListCategories = ko.observableArray([]);
+			this.ListProducts = ko.observableArray([]);
+			this.SelProducts = ko.observable({});
+			
+			this.FuncGetCategories = function(){
+				$.ajax({url:'/products/categories'}).done(function(data){
+					if(data.code==1){
+						this.ListCategories(data.data);
+					}
+				}.bind(this));
+			};
+			this.FuncGetProducts = function(categoryid){
+				this.ListProducts([]);
+				$.ajax({url:'/products/query',type:'post',data:{data:JSON.stringify({Limit:30,CategoryID:categoryid})}}).done(function(data){
+					if(data.code==1){
+						this.ListProducts(data.data);
+					}
+				}.bind(this));
+			};
+
+			this.EventSelCategory = function(m,e){
+				if(this.SelCategory().ID==m.ID){
+					this.SelCategory({});
+					return;
+				}
+				this.SelCategory(m);
+				this.FuncGetProducts(m.ID);
+			}.bind(this);
+			this.EventSelProducts = function(m,e){
+				this.SelProducts(m);
+				$('#'+this.DialogID).dialog('open');
+				$.get('/products/addview?data={"ID":"'+m.ID+'"}');
+			}.bind(this);
+			this.Init = function(){
+				this.FuncGetCategories();
+				$('#'+this.DialogID).dialog({
+					autoOpen: false,
+					modal:true,
+					title:'Product',
+					width:910,
+					position:{ my: "top", at: "top", of: window },
+					show: {
+						effect: "blind",
+						duration: 500
+					},
+					hide: {
+						effect: "blind",
+						duration: 200
+					}
+				});
+			};
+			this.Bindings=function(ctrl){
+				ko.applyBindings(this,ctrl);
+				this.Init();
+			};
+		};
+		var products_Products_V1 = new Products_Products_V1();
+		products_Products_V1.Bindings(ctrl[0]);
+	</script>
+</div>

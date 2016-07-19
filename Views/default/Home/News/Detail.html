@@ -1,0 +1,43 @@
+<div id="Home_News_Detail">
+	<div class="news-detail">
+		<div class="news-title">
+			<span data-bind="text:AttrNews().Title">title</span>
+		</div>
+		<div class="news-date">
+			<span data-bind="text:AttrNews().Author">cowboy</span>&nbsp;|&nbsp; 
+			<span data-bind="text:AttrNews().CreateDate">2015-12-08 17:47:45</span>
+			<span data-bind="text:AttrNews().Score+' 浏览'" style="float:right"></span>
+		</div>
+		<div class="news-lead" data-bind="html:AttrNews().Lead">
+		</div>
+		<div class="news-content" data-bind="html:AttrNews().Content">
+		</div>
+	</div>
+	<script type="text/javascript">
+	$(function(){
+		var ctrl = $('#Home_News_Detail');
+		function Home_News_Detail_V1(){
+			this.CtrlID = '';
+			this.AttrNews=ko.observable({});
+			this.FuncGetNews = function(id){
+				$.ajax({url:'/news/detail',data:{data:JSON.stringify({ID:id})},dataType:'json',type:'get'}).done(function(data){
+					if(data.code==1){
+						this.AttrNews(data.data);
+					}
+				}.bind(this));
+			};
+			this.Views=function(){
+				this.CtrlID = cowboy.sys.guid();
+				ctrl.attr('id',this.CtrlID);
+				this.AttrNews({});
+			};
+			this.Bindings=function(ctrl){
+				ko.applyBindings(this,ctrl);
+				this.Views();
+			};
+		}
+		var home_News_Detail_V1 = new Home_News_Detail_V1();
+		home_News_Detail_V1.Bindings(ctrl[0]);
+	});
+	</script>
+</div>
