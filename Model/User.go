@@ -101,7 +101,7 @@ func (this *User) AddUser(name, psw string, enable bool, auths []int) error {
 	return col.Insert(tmp)
 }
 
-/*FindId
+/*DelUser
 @see : 删除用户
 */
 func (this *User) DelUser(id string) error {
@@ -142,7 +142,7 @@ func (this *User) AddAuth(id string, auth ...int) (err error) {
 	defer mongo.Close()
 	mdb := mongo.DB(this.db)
 	col := mdb.C(this.coll)
-	err = col.UpdateId(bson.ObjectIdHex(id), bson.M{"$pushAll": auth})
+	err = col.UpdateId(bson.ObjectIdHex(id), bson.M{"$pushAll": bson.M{"Auths": auth}})
 	return
 }
 
@@ -154,7 +154,7 @@ func (this *User) DelAuth(id string, auth ...int) (err error) {
 	defer mongo.Close()
 	mdb := mongo.DB(this.db)
 	col := mdb.C(this.coll)
-	err = col.UpdateId(bson.ObjectIdHex(id), bson.M{"$pullAll": auth})
+	err = col.UpdateId(bson.ObjectIdHex(id), bson.M{"$pullAll": bson.M{"Auths": auth}})
 	return
 }
 
@@ -198,4 +198,20 @@ func (this *User) FindOne(name, psw string, num int) (user UserInfo, err error) 
 	qs.Select(bson.M{"ExtType": 0, "Password": 0, "Enable": 0})
 	err = qs.One(&user)
 	return
+}
+func (this *User) ChPsw(uid bson.ObjectId, oldpsw, newpsw string) error {
+	mongo := this.mSession()
+	defer mongo.Close()
+	mdb := mongo.DB(this.db)
+	col := mdb.C(this.coll)
+	var qs *mgo.Query
+	qs = col.Find(bson.M{"UID": uid, "Password": oldpsw, "Enable": true})
+	c, err := qs.Count()
+	if err != nil {
+		return err
+	}
+	if c == 0 {
+		return fmt.Errorf("密码不正确")
+	}
+	return col.Update(bson.M{"_id": uid, "Password": oldpsw}, bson.M{"$set": bson.M{"Password": newpsw}})
 }

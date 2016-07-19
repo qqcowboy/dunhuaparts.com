@@ -23,7 +23,7 @@
   						<div class="reply-menu">
 		   				<span class="date" data-bind="text:$data.CreateDate"></span>
 		   				<span class="user" data-bind="text:$data.UserName"></span>
-							<span class="label label-default label-xs" style="float:left;margin-right:10px;">回复</span>
+							<span class="label label-default label-xs" style="float:left;margin-right:10px;">reply</span>
 							<span style="float:right;margin-left:20px;">&nbsp;</span>
   						</div>
    					<div class="reply-content" data-bind="html:$data.Content"></div>
@@ -63,7 +63,7 @@
 				<div data-bind="css:{'has-error':AttrFeedback.Code.hasError}" class="input-group input-group-lg item">
 				  <span class="input-group-addon">VerifyCode </span>
 					<input type="text" class="form-control" data-bind="textInput:AttrFeedback.Code" >
-					<img class="verifyimg" src="/img/VerityCode" onclick="this.src='/img/VerityCode?_r='+Math.random()" title="点击更新">
+					<img class="verifyimg" src="/img/VerityCode" onclick="this.src='/img/VerityCode?_r='+Math.random()" title="refresh">
 				</div>
 				<div data-bind="css:{'has-error':AttrFeedback.Content.hasError}" class="input-group input-group-lg item">
 				  <span class="input-group-addon">Content </span>
@@ -71,8 +71,8 @@
 				  </textarea>
 				</div>
 				<div style="text-align:center;margin-top:5px;">
-					<button data-bind="click:EventCancel" type="button" class="btn btn-default btn-lg" style="width: 200px;">取　消</button>
-					<button data-bind="click:EventSave" type="button" class="btn btn-primary btn-lg" style="width: 200px;">添　加</button>
+					<button data-bind="click:EventCancel" type="button" class="btn btn-default btn-lg" style="width: 200px;">cancel</button>
+					<button data-bind="click:EventSave" type="button" class="btn btn-primary btn-lg" style="width: 200px;">add</button>
 				</div>
 			</div>
 		</div>

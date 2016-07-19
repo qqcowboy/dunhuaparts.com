@@ -82,3 +82,34 @@ func (this *User) Info() *Web.JsonResult {
 
 	return this.JsonResult(1, userinfo)
 }
+
+/*ChPsw
+@see : 更新密码
+@param: OP 旧密码
+@param: NP 新密码
+*/
+func (this *User) ChPsw() *Web.JsonResult {
+	if !this.IsPost {
+		return this.JsonResult(43002, false, "需要POST请求")
+	}
+	if !this.isLogin() {
+		return this.JsonResult(40001, false, "用户未登陆")
+	}
+	if _, ok := this.Form["OP"]; !ok {
+		return this.Json(map[string]interface{}{"code": 43004})
+	}
+	if _, ok := this.Form["NP"]; !ok {
+		return this.Json(map[string]interface{}{"code": 43004})
+	}
+	udata, ok := this.Session["user"]
+	if !ok {
+		return this.JsonResult(40002, false, "用户登陆信息出错")
+	}
+	userinfo := Model.UserInfo{}
+	myjson.JsonDecode(udata.(string), &userinfo)
+	err := Model.UserModel.ChPsw(userinfo.UID, this.Form["OP"], this.Form["NP"])
+	if err != nil {
+		return this.JsonResult(43010, false, err.Error())
+	}
+	return this.JsonResult(1, true)
+}

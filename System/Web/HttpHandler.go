@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"reflect"
+	"regexp"
 	"strings"
 
 	. "github.com/qqcowboy/dunhuaparts.com/System/Config"
@@ -16,6 +17,8 @@ import (
 
 type HttpHandler struct {
 }
+
+var matchUrl = regexp.MustCompile(`^ch\.{1}.*`)
 
 func (this *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	defer func() {
@@ -29,7 +32,6 @@ func (this *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		}
 	}()
 	//fmt.Println(r.Header.Get("Referer"))
-	fmt.Println(r.Host)
 	//解析请求
 	contentType := r.Header.Get("Content-Type")
 	enctype, _, _ := mime.ParseMediaType(contentType)
@@ -51,6 +53,12 @@ func (this *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		this.Show404(rw)
 		return
 	}
+	theme := App.Configs.Theme
+	if matchUrl.MatchString(r.Host) {
+		theme = "default"
+	}
+	fmt.Println(r.Host)
+	routeData["theme"] = theme
 	//创建 Controller
 	ctl, err := App.GetController(routeData)
 	//没有对应的Controller,或Action
@@ -148,11 +156,11 @@ func (this *HttpHandler) initController(ictl IController, rw http.ResponseWriter
 	viewData["Request"] = r
 	viewData["Controller"] = routData["controller"]
 	viewData["Action"] = routData["action"]
-	viewData["Theme"] = App.Configs.Theme
+	viewData["Theme"] = routData["theme"]
 
 	ictl.SetViewData(viewData)
 	ictl.SetSession(session)
-	ictl.SetTheme(App.Configs.Theme)
+	ictl.SetTheme(routData["theme"].(string))
 	ictl.SetViewEngin(App.ViewEngine)
 	ictl.SetCookies(cookies)
 	ictl.SetBinder(binder)
