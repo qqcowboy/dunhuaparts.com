@@ -36,3 +36,7 @@ net/http.(*conn).serve(0xc4200de100, 0xb140a0, 0xc420276840)
 created by net/http.(*Server).Serve
 	/usr/local/go/src/net/http/server.go:2296 +0x447
 
+2016-07-19 21:19:57	in SessionGob.Decode()，EOF
+2016-07-19 21:19:57	in FileSession.readSession，gob.Decode时出错：EOF
+2016-07-19 21:20:08	in SessionGob.Decode()，EOF
+2016-07-19 21:20:08	in FileSession.readSession，gob.Decode时出错：EOF

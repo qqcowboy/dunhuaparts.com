@@ -18,7 +18,7 @@ import (
 type HttpHandler struct {
 }
 
-var matchUrl = regexp.MustCompile(`^ch\.{1}.*`)
+var matchUrl = regexp.MustCompile(`^(ch\.|cn\.){1}.*`)
 
 func (this *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	defer func() {
