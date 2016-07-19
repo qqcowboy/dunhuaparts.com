@@ -57,7 +57,6 @@ func (this *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if matchUrl.MatchString(r.Host) {
 		theme = "default"
 	}
-	fmt.Println(r.Host)
 	routeData["theme"] = theme
 	//创建 Controller
 	ctl, err := App.GetController(routeData)
