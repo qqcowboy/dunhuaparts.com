@@ -224,12 +224,22 @@
 					return;
 				}
 				params.Images=[];
-				$.each(this.AttrProduct().UI_Image(),function(i,item){
-					if(item.ID==undefined||item.ID.length<1){
-						return true;
-					}
-					params.Images.push(item.ID);
-				});
+				if(this.AttrProduct().ID){
+					$.each(this.AttrProduct().UI_Image(),function(i,item){
+						if(item.ID==undefined||item.ID.length<1){
+							return true;
+						}
+						params.Images.push(item.ID);
+					});
+				}{
+					$.each(this.AttrProduct().UI_Image(),function(i,item){
+                                                if(item.Data){
+                                                        params.Images.push(item.Data);
+                                                }
+                                                
+                                        });
+				
+				}
 				if (params.Images.length<1){
 					cowboy.views.FuncAddTip('需要上传产品图片');
 					return;
@@ -392,15 +402,19 @@
 						cowboy.views.FuncAddTip('图片上传失败');
 						return;
 					}
-					$.ajax({url:'/products/addproductimg',type:'post',dataType:'json',data:{data:JSON.stringify({ProductID:this.AttrProduct().ID,Image:data})}}).done(function(result){
-						if(result.code==1){
-							this.AttrProduct().UI_Image.push({ID:result.data,Data:''});
-						}else{
-							cowboy.views.FuncAddTip(result.msg);
-						}
-					}.bind(this)).fail(function(){
-						cowboy.views.FuncAddTip('网络出小差了...');
-					});
+					if(this.AttrProduct().ID){
+						$.ajax({url:'/products/addproductimg',type:'post',dataType:'json',data:{data:JSON.stringify({ProductID:this.AttrProduct().ID,Image:data})}}).done(function(result){
+							if(result.code==1){
+								this.AttrProduct().UI_Image.push({ID:result.data,Data:''});
+							}else{
+								cowboy.views.FuncAddTip(result.msg);
+							}
+						}.bind(this)).fail(function(){
+							cowboy.views.FuncAddTip('网络出小差了...');
+						});
+					}else{
+						this.AttrProduct().UI_Image.push({ID:'',Data:data});
+					}
 				}.bind(this),800);
 			};
 			this.EventSureDel = function(){

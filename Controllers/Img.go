@@ -2,8 +2,8 @@ package Controllers
 
 import (
 	"net/http"
-	"strconv"
-	"strings"
+	//"strconv"
+	//"strings"
 
 	"github.com/dchest/captcha"
 	"github.com/qqcowboy/dunhuaparts.com/Model"
@@ -26,15 +26,16 @@ func (this *Img) OnLoad() {
 //输出产品图片
 func (this *Img) Product() *Web.ImgResult {
 	result := &Web.ImgResult{Response: this.Response}
-	if tmp, ok := this.RouteData["views"]; ok {
-		if str, ok := tmp.(string); ok && len(str) > 0 {
-			views := strings.Split(str, "/")
-			i, err := strconv.Atoi(views[0])
-			if err == nil {
-				result.MaxSize = i * 1024
+	/*
+		if tmp, ok := this.RouteData["views"]; ok {
+			if str, ok := tmp.(string); ok && len(str) > 0 {
+				views := strings.Split(str, "/")
+				i, err := strconv.Atoi(views[0])
+				if err == nil {
+					result.MaxSize = i * 1024
+				}
 			}
-		}
-	}
+		}*/
 	params := this.QueryString
 	if this.IsPost {
 		params = this.Form
