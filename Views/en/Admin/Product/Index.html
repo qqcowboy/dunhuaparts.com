@@ -37,7 +37,7 @@
 			<div class="col-sm-3 col-md-2 grid-item item" data-bind="click:$root.EventSelProducts">
 				<div class="thumbnail">
 					<i data-bind="visible:$data.ExtType==1" class="label label-warning fa-lg hometag" style="display:none;">首页大图</i>
-					<img data-bind="attr:{src:'/img/product/3?id='+$data.Images[0]}">
+					<img data-bind="attr:{src:'/img/product?id='+$data.Images[0]}">
 					<div class="caption">
 						<h3 data-bind="text:$root.AttrLang()==0?$data.Title:$data.TitleCN"></h3>
 						<p data-bind="text:$root.AttrLang()==0?$data.Remark:$data.RemarkCN"></p>

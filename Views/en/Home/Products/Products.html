@@ -20,7 +20,7 @@
 		<div data-bind="foreach:ListProducts" class="products-current-list">
 			<div class="item" data-bind="click:$root.EventSelProducts">
 				<span data-bind="text:$data.Title">Back Cover1</span>
-				<img data-bind="attr:{src:'/img/product/4?id='+$data.Images[0]}"/>
+				<img data-bind="attr:{src:'/img/product?id='+$data.Images[0]}"/>
 			</div>
 		</div>
 	</div>

@@ -19,7 +19,7 @@
 				<div u="slides" data-bind="foreach:ListProducts" class="slides">
 					<div data-bind="click:$root.EventProductsDetail">
 						<span data-bind="text:$data.Title"></span>
-						<img data-bind="attr:{src:'/img/product/4?id='+$data.Images[0]}" u="image" />
+						<img data-bind="attr:{src:'/img/product?id='+$data.Images[0]}" u="image" />
 					</div>
 				</div>
 			</div>
@@ -31,7 +31,7 @@
 			<div id="tabs-HOT" data-bind="foreach:ListHotProducts" class="products-hot">
 				<div class="item" data-bind="visible:$index()<4,click:$root.EventProductsDetail">
 					<span data-bind="text:$data.Title"></span><br/>
-					<img data-bind="attr:{src:'/img/product/4?id='+$data.Images[0]}" u="image" />
+					<img data-bind="attr:{src:'/img/product?id='+$data.Images[0]}" u="image" />
 				</div>
 			</div>
 		</div>
