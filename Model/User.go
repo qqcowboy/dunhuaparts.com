@@ -205,7 +205,7 @@ func (this *User) ChPsw(uid bson.ObjectId, oldpsw, newpsw string) error {
 	mdb := mongo.DB(this.db)
 	col := mdb.C(this.coll)
 	var qs *mgo.Query
-	qs = col.Find(bson.M{"UID": uid, "Password": oldpsw, "Enable": true})
+	qs = col.Find(bson.M{"_id": uid, "Password": oldpsw, "Enable": true})
 	c, err := qs.Count()
 	if err != nil {
 		return err
