@@ -109,6 +109,11 @@ cowboy.func={
 		}
 		function img_context(img,p){
 			if(p==undefined) p = 100;
+			if (p<1){
+				p=1;
+			}
+			p=p*10/Math.sqrt(p);
+
 			var canvas_tmp = $('<canvas ></canvas>').get(0);
 			var width = img.width,height = img.height;
 			canvas_tmp.width = width*(p/100);canvas_tmp.height = height*(p/100);
