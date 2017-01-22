@@ -1,1 +1,113 @@
-建设中。。。
+<div id="admin-user-index">
+	<div>
+		<form class="form-horizontal" role="form" id="form-admin-user-chpsw">
+			<div class="form-group" style="margin-top:20px;">
+				<label for="oldpassword" class="col-sm-2 control-label">旧密码</label>
+				<div class="col-sm-10">
+					<input type="password" data-bind="value:AttrUserPsw().OP" name="OP" class="form-control" id="oldpassword" placeholder="请输入旧密码">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="newpassword" class="col-sm-2 control-label">新密码</label>
+				<div class="col-sm-10">
+					<input type="password" name="NP" data-bind="value:AttrUserPsw().NP" class="form-control" id="newpassword" placeholder="请输入新密码">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="newpassword" class="col-sm-2 control-label">确认新密码</label>
+				<div class="col-sm-10">
+					<input type="password" name="RP" class="form-control" id="rppassword" placeholder="请再次输入新密码">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button data-bind="click:EventChPsw" type="button" class="btn btn-default">修改密码</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script type="text/javascript">
+		var ctrl=$('#admin-user-index');
+		function Mod_Admin_User_Index(){
+			this.AttrUserPsw=ko.observable({});
+			this.FuncInitPsw=function(){
+				$('#form-admin-user-chpsw').data('bootstrapValidator').resetForm();
+				this.AttrUserPsw({});
+				$('#rppassword').val('');
+			};
+			this.EventChPsw=function(){
+				cowboy.views.FuncAddTip('正在保存...',300);
+				if(this.eventChPsw){
+					return;
+				}
+				this.eventChPsw=true;
+				var obj=$('#form-admin-user-chpsw').data('bootstrapValidator');
+				obj.validate();
+				if(!obj.isValid()){
+					this.eventChPsw=false;
+					return;
+				}
+				var params={NP:SparkMD5.hash(this.AttrUserPsw().NP),OP:SparkMD5.hash(this.AttrUserPsw().OP)};
+
+				$.ajax({url:'/user/chpsw',data:params,dataType:'json',type:'post'}).done(function(data){
+					if(data.code==1){
+						cowboy.views.FuncAddTip('修改成功');
+						this.FuncInitPsw();
+					}else{
+						cowboy.views.FuncAddTip(data.error);
+					}
+				}.bind(this)).always( function() {
+					this.eventChPsw=false;
+				}.bind(this));
+			};
+			this.FuncInit=function(ctrl){
+				ko.applyBindings(this,ctrl);
+			};
+		}
+		var mod_Admin_User_Index = new Mod_Admin_User_Index();
+		mod_Admin_User_Index.FuncInit(ctrl[0]);
+		
+	$(function() {
+		$('#form-admin-user-chpsw').bootstrapValidator({
+			message: 'This value is not valid',
+			feedbackIcons: {
+				valid: 'glyphicon glyphicon-ok',
+				invalid: 'glyphicon glyphicon-remove',
+				validating: 'glyphicon glyphicon-refresh'
+			},
+			fields: {
+				OP: {
+					message: '旧密码验证失败',
+					validators: {
+						notEmpty: {
+							message: '旧密码不能为空'
+						}
+					}
+				},
+				RP: {
+					message: '重复密码验证失败',
+					validators: {
+						identical: {
+							field: 'NP',
+							message: '两次输入不一致'
+						}
+					}
+				},
+				NP: {
+					message: '密码验证失败',
+					validators: {
+						notEmpty: {
+							message: '密码不能为空'
+						},
+						stringLength: {
+							min: 6,
+							max: 20,
+							message: '新密码长度必须在6到20位之间'
+						}
+					}
+				}
+			}
+		});
+	});
+	</script>
+</div>
